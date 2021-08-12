@@ -12,3 +12,6 @@ platformctl init build scott vscode
 
 platformctl clean build scott vscode
 
+platformctl start console
+
+platformctl start chatbot
