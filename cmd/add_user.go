@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/spf13/viper"
 	"log"
 
 	haikunator "github.com/atrox/haikunatorgo/v2"
@@ -22,19 +23,18 @@ var addUserCmd = &cobra.Command{
 
 		fmt.Printf("hashed email %s\n", hashedEmail)
 
-		haikunator := haikunator.New()
-		randomUsername := haikunator.Haikunate()
+		randomUsername := haikunator.New().Haikunate()
 
 		fmt.Printf("random_username = %s\n", randomUsername)
 
 		// Generate a password that is 64 characters long with 10 digits, 10 symbols,
 		// allowing upper and lower case letters, disallowing repeat characters.
-		res, err := password.Generate(32, 10, 0, false, false)
+		randomPassword, err := password.Generate(32, 10, 0, false, false)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("generated password = %s\n", res)
+		fmt.Printf("generated password = %s\n", randomPassword)
 
 		randomEmail := fmt.Sprintf("%s@example.com", randomUsername)
 
@@ -44,6 +44,8 @@ var addUserCmd = &cobra.Command{
 
 		fmt.Printf("private key = %s", privateKey)
 		fmt.Printf("public key = %s", publicKey)
+
+		fmt.Printf("database.conn = %s", viper.Get("database.conn"))
 	},
 }
 

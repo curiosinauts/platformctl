@@ -40,9 +40,6 @@ func GenerateRSAKeys() (string, string) {
 		Type:  "PUBLIC KEY",
 		Bytes: publicKeyBytes,
 	}
-	if err != nil {
-		log.Fatalf("error when create public.pem: %s \n", err)
-	}
 
 	buf2 := make([]byte, 0, 1024)
 	publicPem := bytes.NewBuffer(buf2)

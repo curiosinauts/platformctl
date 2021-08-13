@@ -2,14 +2,16 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/jmoiron/sqlx"
+	"log"
 	"os"
 
 	"github.com/spf13/cobra"
-
 	"github.com/spf13/viper"
 )
 
 var cfgFile string
+var db *sqlx.DB
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -46,6 +48,16 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
+func initDB() {
+	connStr := viper.Get("database.conn").(string)
+	newdb, err := sqlx.Connect("postgres", connStr)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	db = newdb
+	db.Exec(`set search_path='curiosity'`)
+}
+
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 	if cfgFile != "" {
@@ -68,4 +80,5 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 	}
+	initDB()
 }
