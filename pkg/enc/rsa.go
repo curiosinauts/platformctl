@@ -6,21 +6,19 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
-	"fmt"
-	"os"
+	"log"
 )
 
 // CREDIT: https://www.systutorials.com/how-to-generate-rsa-private-and-public-key-pair-in-go-lang/
-func GenerateRSAKeys() string {
+
+func GenerateRSAKeys() (string, string) {
 	// generate key
 	privatekey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
-		fmt.Printf("Cannot generate RSA key\n")
-		os.Exit(1)
+		log.Fatal(err)
 	}
 	publickey := &privatekey.PublicKey
 
-	// dump private key to file
 	var privateKeyBytes []byte = x509.MarshalPKCS1PrivateKey(privatekey)
 	privateKeyBlock := &pem.Block{
 		Type:  "RSA PRIVATE KEY",
@@ -30,29 +28,27 @@ func GenerateRSAKeys() string {
 	privatePem := bytes.NewBuffer(buf)
 	err = pem.Encode(privatePem, privateKeyBlock)
 	if err != nil {
-		fmt.Printf("error when encode private pem: %s \n", err)
-		os.Exit(1)
+		log.Fatalf("error when encoding private pem: %s \n", err)
 	}
 
-	// dump public key to file
 	publicKeyBytes, err := x509.MarshalPKIXPublicKey(publickey)
 	if err != nil {
-		fmt.Printf("error when dumping publickey: %s \n", err)
-		os.Exit(1)
+		log.Fatalf("error when dumping publickey: %s \n", err)
 	}
 	publicKeyBlock := &pem.Block{
 		Type:  "PUBLIC KEY",
 		Bytes: publicKeyBytes,
 	}
 	if err != nil {
-		fmt.Printf("error when create public.pem: %s \n", err)
-		os.Exit(1)
-	}
-	err = pem.Encode(publicPem, publicKeyBlock)
-	if err != nil {
-		fmt.Printf("error when encode public pem: %s \n", err)
-		os.Exit(1)
+		log.Fatalf("error when create public.pem: %s \n", err)
 	}
 
-	return string(privatePem.String())
+	buf2 := make([]byte, 0, 1024)
+	publicPem := bytes.NewBuffer(buf2)
+	err = pem.Encode(publicPem, publicKeyBlock)
+	if err != nil {
+		log.Fatalf("error when encode public pem: %s \n", err)
+	}
+
+	return privatePem.String(), publicPem.String()
 }

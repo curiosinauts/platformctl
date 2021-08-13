@@ -40,9 +40,10 @@ var addUserCmd = &cobra.Command{
 
 		fmt.Printf("random_email = %s\n", randomEmail)
 
-		privateKey := enc.GenerateRSAKeys()
+		privateKey, publicKey := enc.GenerateRSAKeys()
 
 		fmt.Printf("private key = %s", privateKey)
+		fmt.Printf("public key = %s", publicKey)
 	},
 }
 
