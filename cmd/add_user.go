@@ -2,11 +2,11 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
+	"github.com/curiosinauts/platformctl/internal/database"
+	"github.com/curiosinauts/platformctl/pkg/crypto"
 	"log"
 
 	haikunator "github.com/atrox/haikunatorgo/v2"
-	"github.com/curiosinauts/platformctl/pkg/enc"
 	"github.com/sethvargo/go-password/password"
 	"github.com/spf13/cobra"
 )
@@ -19,46 +19,47 @@ var addUserCmd = &cobra.Command{
 	runtime installs, user repos.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		email := args[0]
-		hashedEmail := enc.Hashed(email)
 
-		fmt.Printf("hashed email %s\n", hashedEmail)
+		hashedEmail := crypto.Hashed(email)
 
 		randomUsername := haikunator.New().Haikunate()
 
-		fmt.Printf("random_username = %s\n", randomUsername)
-
-		// Generate a password that is 64 characters long with 10 digits, 10 symbols,
-		// allowing upper and lower case letters, disallowing repeat characters.
 		randomPassword, err := password.Generate(32, 10, 0, false, false)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("generated password = %s\n", randomPassword)
-
 		randomEmail := fmt.Sprintf("%s@example.com", randomUsername)
 
-		fmt.Printf("random_email = %s\n", randomEmail)
+		privateKey, publicKey := crypto.GenerateRSASSHKeys()
 
-		privateKey, publicKey := enc.GenerateRSASSHKeys()
+		if debug {
+			fmt.Printf("hashed email       : %s\n", hashedEmail)
+			fmt.Printf("random_username    : %s\n", randomUsername)
+			fmt.Printf("generated password : %s\n", randomPassword)
+			fmt.Printf("random_email       : %s\n", randomEmail)
+			fmt.Printf("private key        : \n%s", privateKey)
+			fmt.Printf("public key         : \n%s", publicKey)
+		}
 
-		fmt.Printf("private key = %s", privateKey)
-		fmt.Printf("public key = %s", publicKey)
+		userService := database.NewUserService(db)
 
-		fmt.Printf("database.conn = %s", viper.Get("database.conn"))
+		user := database.User{
+			Username:    randomUsername,
+			Password:    randomPassword,
+			Email:       randomEmail,
+			HashedEmail: hashedEmail,
+			PrivateKey:  string(privateKey),
+			PublicKey:   string(publicKey),
+			IsActive:    true,
+		}
+		dberr := userService.Add(user)
+		if dberr != nil {
+			fmt.Printf("adding user failed: %v", dberr)
+		}
 	},
 }
 
 func init() {
 	addCmd.AddCommand(addUserCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// userCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// userCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }

@@ -1,4 +1,4 @@
-package enc
+package crypto
 
 import (
 	"bytes"
@@ -115,7 +115,6 @@ func generatePublicKey(privatekey *rsa.PublicKey) ([]byte, error) {
 
 	pubKeyBytes := ssh.MarshalAuthorizedKey(publicRsaKey)
 
-	log.Println("Public key generated")
 	return pubKeyBytes, nil
 }
 

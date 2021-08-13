@@ -11,6 +11,7 @@ import (
 )
 
 var cfgFile string
+var debug bool
 var db *sqlx.DB
 
 // rootCmd represents the base command when called without any subcommands
@@ -42,6 +43,7 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.platformctl.yaml)")
+	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "enable debugging")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
@@ -56,6 +58,9 @@ func initDB() {
 	}
 	db = newdb
 	db.Exec(`set search_path='curiosity'`)
+	if debug {
+		fmt.Printf("database.conn : %s\n", viper.Get("database.conn"))
+	}
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -77,7 +82,7 @@ func initConfig() {
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
+	if err := viper.ReadInConfig(); err == nil && debug {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 	}
 	initDB()
