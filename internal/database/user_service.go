@@ -32,19 +32,67 @@ func (u UserService) AddRepo(userRepo UserRepo) (sql.Result, *DBError) {
 			  (uri, user_id) 
 		VALUES 
 			  (:uri, :user_id)
+		RETURNING
+			  id
 	`
 	return u.PrepareNamed(sql, &userRepo)
+}
+
+func (u UserService) AddUserIDE(userIDE UserIDE) (sql.Result, *DBError) {
+	sql := `
+		INSERT INTO user_ide
+			  (user_id, ide_id) 
+		VALUES 
+			  (:user_id, :ide_id)
+		RETURNING
+			  id
+	`
+	return u.PrepareNamed(sql, &userIDE)
+}
+
+func (u UserService) AddIDERuntimeInstall(ideRuntimeInstall IDERuntimeInstall) (sql.Result, *DBError) {
+	sql := `
+		INSERT INTO ide_runtime_install
+			  (user_ide_id, runtime_install_id) 
+		VALUES 
+			  (:user_ide_id, :runtime_install_id)
+		RETURNING
+			  id
+	`
+	return u.PrepareNamed(sql, &ideRuntimeInstall)
 }
 
 func (u UserService) Get(id string) (User, *DBError) {
 	db := u.DB
 	user := User{}
-	sql := "SELECT * FROM users WHERE user_id=$1"
+	sql := "SELECT * FROM curiosity.user WHERE user_id=$1"
 	err := db.Get(&user, sql, id)
 	if err != nil {
 		return user, &DBError{sql, err}
 	}
 	return user, nil
+}
+
+func (u UserService) FindIDEByName(name string) (IDE, *DBError) {
+	db := u.DB
+	ide := IDE{}
+	sql := "SELECT * FROM ide WHERE name=$1"
+	err := db.Get(&ide, sql, name)
+	if err != nil {
+		return ide, &DBError{sql, err}
+	}
+	return ide, nil
+}
+
+func (u UserService) FindRuntimeInstallName(name string) (RuntimeInstall, *DBError) {
+	db := u.DB
+	runtimeInstall := RuntimeInstall{}
+	sql := "SELECT * FROM runtime_install WHERE name=$1"
+	err := db.Get(&runtimeInstall, sql, name)
+	if err != nil {
+		return runtimeInstall, &DBError{sql, err}
+	}
+	return runtimeInstall, nil
 }
 
 func (u UserService) Delete(id string) *DBError {

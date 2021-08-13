@@ -16,14 +16,15 @@ func NewDBService(db *sqlx.DB) DBService {
 type DBResult struct {
 	id       int64
 	affected int64
+	err      error
 }
 
 func (dbr DBResult) LastInsertId() (int64, error) {
-	return dbr.id, nil
+	return dbr.id, dbr.err
 }
 
 func (dbr DBResult) RowsAffected() (int64, error) {
-	return dbr.affected, nil
+	return dbr.affected, dbr.err
 }
 
 func (u DBService) NamedExec(sql string, obj interface{}) (sql.Result, *DBError) {
@@ -58,23 +59,18 @@ func (u DBService) MustExec(sql string, args ...interface{}) *DBError {
 	return nil
 }
 
-func (u DBService) PrepareNamed(sql string, args ...interface{}) (sql.Result, *DBError) {
+func (u DBService) PrepareNamed(sql string, arg interface{}) (sql.Result, *DBError) {
 	db := u.DB
 	result := DBResult{}
 
-	sql, _, err := db.BindNamed(sql, args)
-	if err != nil {
-		panic(err)
-	}
-
-	//tx := db.MustBegin()
+	tx := db.MustBegin()
 	stmt, err := db.PrepareNamed(sql)
 
 	var id int
-	err = stmt.Get(&id, args)
+	err = stmt.Get(&id, arg)
 	result.id = int64(id)
 
-	//err = tx.Commit()
+	err = tx.Commit()
 	if err != nil {
 		return result, &DBError{sql, err}
 	}

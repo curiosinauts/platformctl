@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// userCmd represents the user command
+// addUserCmd represents the user command
 var addUserCmd = &cobra.Command{
 	Use:   "user",
 	Short: "Adds user",
@@ -68,6 +68,36 @@ var addUserCmd = &cobra.Command{
 			UserID: userID,
 		}
 		userService.AddRepo(userRepo)
+
+		ide, dberr := userService.FindIDEByName("vscode")
+		if dberr != nil {
+			fmt.Printf("adding user failed: %v", dberr)
+		}
+
+		userIDE := database.UserIDE{
+			UserID: userID,
+			IDEID:  ide.ID,
+		}
+		result, dberr = userService.AddUserIDE(userIDE)
+		if dberr != nil {
+			fmt.Printf("adding user failed: %v", dberr)
+		}
+
+		userIDEID, err := result.LastInsertId()
+		if err != nil {
+			fmt.Printf("adding user failed: %v", err)
+		}
+
+		runtimeInstall, dberr := userService.FindRuntimeInstallName("tmux")
+		if dberr != nil {
+			fmt.Printf("adding user failed: %v", dberr)
+		}
+
+		ideRuntimeInstall := database.IDERuntimeInstall{
+			UserIDEID:        userIDEID,
+			RuntimeInstallID: runtimeInstall.ID,
+		}
+		userService.AddIDERuntimeInstall(ideRuntimeInstall)
 	},
 }
 

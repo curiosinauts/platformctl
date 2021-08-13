@@ -39,6 +39,23 @@ CREATE TABLE user_repo (
 	PRIMARY KEY (id)
 );
 
+
+CREATE TABLE user_ide (
+	id SERIAL NOT NULL, 
+	user_id INTEGER, 
+	ide_id INTEGER, 
+	PRIMARY KEY (id)
+);
+
+
+CREATE TABLE ide_runtime_install (
+	id SERIAL NOT NULL, 
+	user_ide_id INTEGER, 
+	runtime_install_id INTEGER, 
+	PRIMARY KEY (id)
+);
+
+
 -- data goes here
 INSERT INTO ide (id, name) VALUES (1, 'vscode');
 INSERT INTO ide (id, name) VALUES (2, 'intellij');
@@ -79,4 +96,8 @@ DROP TABLE IF EXISTS ide CASCADE;
 DROP TABLE IF EXISTS runtime_install CASCADE;
 
 DROP TABLE IF EXISTS user_repo;
+
+DROP TABLE IF EXISTS user_ide CASCADE;
+
+DROP TABLE IF EXISTS ide_runtime_install CASCADE;
 `

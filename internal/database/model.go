@@ -17,3 +17,26 @@ type UserRepo struct {
 	URI    string `db:"uri"`
 	UserID int64  `db:"user_id"`
 }
+
+type UserIDE struct {
+	ID     int64 `db:"id"`
+	UserID int64 `db:"user_id"`
+	IDEID  int64 `db:"ide_id"`
+}
+
+type IDE struct {
+	ID   int64  `db:"id"`
+	Name string `db:"name"`
+}
+
+type IDERuntimeInstall struct {
+	ID               int64 `db:"id"`
+	UserIDEID        int64 `db:"user_ide_id"`
+	RuntimeInstallID int64 `db:"runtime_install_id"`
+}
+
+type RuntimeInstall struct {
+	ID         int64  `db:"id"`
+	Name       string `db:"name"`
+	ScriptBody string `db:"script_body"`
+}
