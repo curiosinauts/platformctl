@@ -11,7 +11,7 @@ import (
 )
 
 // userCmd represents the user command
-var userCmd = &cobra.Command{
+var addUserCmd = &cobra.Command{
 	Use:   "user",
 	Short: "Adds user",
 	Long: `Adding user means adding user to the user database, user's own dev database, gitea, pgadmin, 
@@ -34,12 +34,20 @@ var userCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
-		fmt.Printf("generated password = %s", res)
+		fmt.Printf("generated password = %s\n", res)
+
+		randomEmail := fmt.Sprintf("%s@example.com", randomUsername)
+
+		fmt.Printf("random_email = %s\n", randomEmail)
+
+		privateKey := enc.GenerateRSAKeys()
+
+		fmt.Printf("private key = %s", privateKey)
 	},
 }
 
 func init() {
-	addCmd.AddCommand(userCmd)
+	addCmd.AddCommand(addUserCmd)
 
 	// Here you will define your flags and configuration settings.
 
