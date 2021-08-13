@@ -53,10 +53,21 @@ var addUserCmd = &cobra.Command{
 			PublicKey:   string(publicKey),
 			IsActive:    true,
 		}
-		dberr := userService.Add(user)
+		result, dberr := userService.Add(user)
 		if dberr != nil {
 			fmt.Printf("adding user failed: %v", dberr)
 		}
+
+		repoURI := fmt.Sprintf("ssh://gitea@git-ssh.curiosityworks.org:2222/%s/project.git", randomUsername)
+		userID, err := result.LastInsertId()
+		if err != nil {
+			fmt.Printf("adding user failed: %v", err)
+		}
+		userRepo := database.UserRepo{
+			URI:    repoURI,
+			UserID: userID,
+		}
+		userService.AddRepo(userRepo)
 	},
 }
 

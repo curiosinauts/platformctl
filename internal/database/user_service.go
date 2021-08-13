@@ -1,6 +1,9 @@
 package database
 
-import "github.com/jmoiron/sqlx"
+import (
+	"database/sql"
+	"github.com/jmoiron/sqlx"
+)
 
 type UserService struct {
 	*DBService
@@ -11,14 +14,26 @@ func NewUserService(db *sqlx.DB) UserService {
 	return UserService{&dbService}
 }
 
-func (u UserService) Add(user User) *DBError {
+func (u UserService) Add(user User) (sql.Result, *DBError) {
 	sql := `
 		INSERT INTO curiosity.user
-			  (id,  google_id, username, password, email, hashed_email, is_active, private_key, public_key) 
+			  (google_id, username, password, email, hashed_email, is_active, private_key, public_key) 
 		VALUES 
-			  (:id, :google_id, :username, :password, :email, :hashed_email, :is_active, :private_key, :public_key)
+			  (:google_id, :username, :password, :email, :hashed_email, :is_active, :private_key, :public_key)
+		RETURNING
+			  id
 	`
-	return u.NamedExec(sql, &user)
+	return u.PrepareNamed(sql, &user)
+}
+
+func (u UserService) AddRepo(userRepo UserRepo) (sql.Result, *DBError) {
+	sql := `
+		INSERT INTO user_repo
+			  (uri, user_id) 
+		VALUES 
+			  (:uri, :user_id)
+	`
+	return u.PrepareNamed(sql, &userRepo)
 }
 
 func (u UserService) Get(id string) (User, *DBError) {
@@ -64,7 +79,7 @@ func (u UserService) List() ([]User, *DBError) {
 	return users, nil
 }
 
-func (u UserService) UpdateProfile(user User) *DBError {
+func (u UserService) UpdateProfile(user User) (sql.Result, *DBError) {
 	sql := `
 		UPDATE 
 			users 

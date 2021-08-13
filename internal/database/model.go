@@ -1,7 +1,7 @@
 package database
 
 type User struct {
-	ID          int    `db:"id"`
+	ID          int64  `db:"id"`
 	GoogleID    string `db:"google_id"`
 	Username    string `db:"username"`
 	Password    string `db:"password"`
@@ -10,4 +10,10 @@ type User struct {
 	IsActive    bool   `db:"is_active"`
 	PrivateKey  string `db:"private_key"`
 	PublicKey   string `db:"public_key"`
+}
+
+type UserRepo struct {
+	ID     int64  `db:"id"`
+	URI    string `db:"uri"`
+	UserID int64  `db:"user_id"`
 }
