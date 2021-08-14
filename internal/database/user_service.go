@@ -26,7 +26,7 @@ func (u UserService) Add(user User) (sql.Result, *DBError) {
 	return u.PrepareNamed(sql, &user)
 }
 
-func (u UserService) AddRepo(userRepo UserRepo) (sql.Result, *DBError) {
+func (u UserService) AddUserRepo(userRepo UserRepo) (sql.Result, *DBError) {
 	sql := `
 		INSERT INTO user_repo
 			  (uri, user_id) 

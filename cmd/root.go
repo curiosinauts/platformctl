@@ -1,7 +1,10 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
+	"github.com/curiosinauts/platformctl/internal/database"
+	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/jmoiron/sqlx"
 	"log"
 	"os"
@@ -86,4 +89,29 @@ func initConfig() {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 	}
 	initDB()
+}
+
+type ErrorHandler struct {
+	message string
+}
+
+func (eh ErrorHandler) HandleError(step string, err error) {
+	var e *database.DBError
+	if errors.As(err, &e) {
+		if e != nil {
+			msg.Info(step)
+			msg.Failure(eh.message)
+			msg.Formaterr(e.Err)
+			os.Exit(1)
+		} else {
+			return
+		}
+	}
+
+	if err != nil {
+		msg.Info(step)
+		msg.Failure(eh.message)
+		msg.Formaterr(err)
+		os.Exit(1)
+	}
 }
