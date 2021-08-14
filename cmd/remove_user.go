@@ -10,21 +10,18 @@ import (
 // removeUserCmd represents the user command
 var removeUserCmd = &cobra.Command{
 	Use:   "user",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Remove user from the platforms",
+	Long:  `Remove user from the platforms`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println()
 
+		email := args[0]
 		userService := database.NewUserService(db)
 
 		eh := ErrorHandler{"removing user"}
 
-		userIDEIDs, dberr := userService.FindUserIDEByUserID(1)
+		user, dberr := userService.FindByEmail(email)
+		userIDEIDs, dberr := userService.FindUserIDEsByUserID(user.ID)
 		// dberr := userService.RemoveIDERuntimeInstall(1)
 		eh.HandleError("delete ide runtime install", dberr)
 

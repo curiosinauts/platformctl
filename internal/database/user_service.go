@@ -113,7 +113,7 @@ func (u UserService) FindRuntimeInstallName(name string) (RuntimeInstall, *DBErr
 	return runtimeInstall, nil
 }
 
-func (u UserService) FindUserIDEByUserID(userID int64) ([]int64, *DBError) {
+func (u UserService) FindUserIDEsByUserID(userID int64) ([]int64, *DBError) {
 	db := u.DB
 	userIDEIDs := make([]int64, 0, 10)
 	sql := "SELECT id FROM user_ide WHERE user_id=$1"
@@ -124,9 +124,20 @@ func (u UserService) FindUserIDEByUserID(userID int64) ([]int64, *DBError) {
 	return userIDEIDs, nil
 }
 
-func (u UserService) Delete(id string) *DBError {
+func (u UserService) FindUserReposUserID(userID int64) ([]int64, *DBError) {
 	db := u.DB
-	sql := "DELETE FROM users WHERE user_id=$1"
+	userIDEIDs := make([]int64, 0, 10)
+	sql := "SELECT id FROM user_ide WHERE user_id=$1"
+	err := db.Select(&userIDEIDs, sql, userID)
+	if err != nil {
+		return userIDEIDs, &DBError{sql, err}
+	}
+	return userIDEIDs, nil
+}
+
+func (u UserService) Delete(id int64) *DBError {
+	db := u.DB
+	sql := "DELETE FROM curiosity.user WHERE user_id=$1"
 	_, err := db.Exec(sql, id)
 	if err != nil {
 		return &DBError{sql, err}
@@ -137,7 +148,7 @@ func (u UserService) Delete(id string) *DBError {
 func (u UserService) FindByEmail(email string) (User, *DBError) {
 	db := u.DB
 	user := User{}
-	sql := "SELECT * FROM users WHERE email=$1"
+	sql := "SELECT * FROM curiosity.user WHERE email=$1"
 	err := db.Get(&user, sql, email)
 	if err != nil {
 		return user, &DBError{sql, err}
