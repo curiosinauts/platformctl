@@ -83,3 +83,12 @@ func (u DBService) PrepareNamed(sql string, arg interface{}) (sql.Result, *DBErr
 
 	return result, nil
 }
+
+func (u DBService) Delete(sql string, id int64) *DBError {
+	db := u.DB
+	_, err := db.Exec(sql, id)
+	if err != nil {
+		return &DBError{sql, err}
+	}
+	return nil
+}

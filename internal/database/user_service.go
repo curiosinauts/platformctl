@@ -62,6 +62,11 @@ func (u UserService) AddIDERuntimeInstall(ideRuntimeInstall IDERuntimeInstall) (
 	return u.PrepareNamed(sql, &ideRuntimeInstall)
 }
 
+func (u UserService) RemoveIDERuntimeInstall(id int64) *DBError {
+	sql := `DELETE FROM ide_runtime_install WHERE id = $1`
+	return u.DBService.Delete(sql, id)
+}
+
 func (u UserService) Get(id string) (User, *DBError) {
 	db := u.DB
 	user := User{}
