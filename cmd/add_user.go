@@ -2,13 +2,14 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+
 	haikunator "github.com/atrox/haikunatorgo/v2"
 	"github.com/curiosinauts/platformctl/internal/database"
 	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/curiosinauts/platformctl/pkg/crypto"
 	"github.com/sethvargo/go-password/password"
 	"github.com/spf13/cobra"
-	"log"
 )
 
 // addUserCmd represents the user command
@@ -80,6 +81,12 @@ var addUserCmd = &cobra.Command{
 
 		userIDEID, err := result.LastInsertId()
 		eh.HandleError("user_ide new id", err)
+
+		_, dberr = userService.AddIDERepo(database.IDERepo{
+			UserIDEID: userIDEID,
+			URI:       repoURI,
+		})
+		eh.HandleError("ide_repo insert", dberr)
 
 		runtimeInstall, dberr := userService.FindRuntimeInstallName("tmux")
 		eh.HandleError("finding runtime install", dberr)

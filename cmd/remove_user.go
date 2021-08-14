@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/curiosinauts/platformctl/internal/database"
 	"github.com/spf13/cobra"
 )
@@ -23,8 +24,11 @@ to quickly create a Cobra application.`,
 
 		eh := ErrorHandler{"removing user"}
 
-		dberr := userService.RemoveIDERuntimeInstall(1)
+		userIDEIDs, dberr := userService.FindUserIDEByUserID(1)
+		// dberr := userService.RemoveIDERuntimeInstall(1)
 		eh.HandleError("delete ide runtime install", dberr)
+
+		fmt.Println(userIDEIDs)
 	},
 }
 

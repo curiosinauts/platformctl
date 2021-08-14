@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+
 	"github.com/jmoiron/sqlx"
 )
 
@@ -36,6 +37,18 @@ func (u UserService) AddUserRepo(userRepo UserRepo) (sql.Result, *DBError) {
 			  id
 	`
 	return u.PrepareNamed(sql, &userRepo)
+}
+
+func (u UserService) AddIDERepo(ideRepo IDERepo) (sql.Result, *DBError) {
+	sql := `
+		INSERT INTO ide_repo
+			  (user_ide_id, uri) 
+		VALUES 
+			  (:user_ide_id, :uri)
+		RETURNING
+			  id
+	`
+	return u.PrepareNamed(sql, &ideRepo)
 }
 
 func (u UserService) AddUserIDE(userIDE UserIDE) (sql.Result, *DBError) {
@@ -98,6 +111,17 @@ func (u UserService) FindRuntimeInstallName(name string) (RuntimeInstall, *DBErr
 		return runtimeInstall, &DBError{sql, err}
 	}
 	return runtimeInstall, nil
+}
+
+func (u UserService) FindUserIDEByUserID(userID int64) ([]int64, *DBError) {
+	db := u.DB
+	userIDEIDs := make([]int64, 0, 10)
+	sql := "SELECT id FROM user_ide WHERE user_id=$1"
+	err := db.Select(&userIDEIDs, sql, userID)
+	if err != nil {
+		return userIDEIDs, &DBError{sql, err}
+	}
+	return userIDEIDs, nil
 }
 
 func (u UserService) Delete(id string) *DBError {

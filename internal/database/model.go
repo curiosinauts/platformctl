@@ -29,6 +29,12 @@ type IDE struct {
 	Name string `db:"name"`
 }
 
+type IDERepo struct {
+	ID        int64  `db:"id"`
+	UserIDEID int64  `db:"user_ide_id"`
+	URI       string `db:"uri"`
+}
+
 type IDERuntimeInstall struct {
 	ID               int64 `db:"id"`
 	UserIDEID        int64 `db:"user_ide_id"`

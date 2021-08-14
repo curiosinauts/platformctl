@@ -41,6 +41,14 @@ CREATE TABLE user_repo (
 );
 
 
+CREATE TABLE ide_repo (
+  id SERIAL NOT NULL, 
+  user_ide_id INTEGER, 
+  uri CHARACTER VARYING(100), 
+  PRIMARY KEY (id)
+);
+
+
 CREATE TABLE user_ide (
 	id SERIAL NOT NULL, 
 	user_id INTEGER, 
@@ -101,4 +109,6 @@ DROP TABLE IF EXISTS user_repo;
 DROP TABLE IF EXISTS user_ide CASCADE;
 
 DROP TABLE IF EXISTS ide_runtime_install CASCADE;
+
+DROP TABLE IF EXISTS ide_repo CASCADE;
 `
