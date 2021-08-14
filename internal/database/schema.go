@@ -12,7 +12,8 @@ CREATE TABLE curiosity.user (
      private_key  CHARACTER VARYING(4000),
      public_key   CHARACTER VARYING(1000),
      PRIMARY KEY (id),
-     UNIQUE (username)
+     UNIQUE (username),
+	 UNIQUE (hashed_email)
 );
 
 

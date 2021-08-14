@@ -99,9 +99,8 @@ func (eh ErrorHandler) HandleError(step string, err error) {
 	var e *database.DBError
 	if errors.As(err, &e) {
 		if e != nil {
-			msg.Info(step)
+			msg.Info("step = [" + step + "]" + " error = [" + e.Err.Error() + "]")
 			msg.Failure(eh.message)
-			msg.Formaterr(e.Err)
 			os.Exit(1)
 		} else {
 			return
@@ -109,9 +108,8 @@ func (eh ErrorHandler) HandleError(step string, err error) {
 	}
 
 	if err != nil {
-		msg.Info(step)
+		msg.Info("step = [" + step + "]" + " error = [" + e.Err.Error() + "]")
 		msg.Failure(eh.message)
-		msg.Formaterr(err)
 		os.Exit(1)
 	}
 }

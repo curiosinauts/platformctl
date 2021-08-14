@@ -17,7 +17,7 @@ func Info(message string) {
 }
 
 func Formaterr(err error) {
-	fmt.Println("  ", err.Error())
+	fmt.Println("   ", err.Error())
 	fmt.Println()
 }
 

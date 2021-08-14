@@ -65,9 +65,15 @@ func (u DBService) PrepareNamed(sql string, arg interface{}) (sql.Result, *DBErr
 
 	tx := db.MustBegin()
 	stmt, err := db.PrepareNamed(sql)
+	if err != nil {
+		return result, &DBError{sql, err}
+	}
 
 	var id int
 	err = stmt.Get(&id, arg)
+	if err != nil {
+		return result, &DBError{sql, err}
+	}
 	result.id = int64(id)
 
 	err = tx.Commit()
