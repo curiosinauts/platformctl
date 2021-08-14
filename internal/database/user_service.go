@@ -122,7 +122,7 @@ func (u UserService) FindIDEByName(name string) (IDE, *DBError) {
 	return ide, nil
 }
 
-func (u UserService) FindRuntimeInstallName(name string) (RuntimeInstall, *DBError) {
+func (u UserService) FindRuntimeInstallByName(name string) (RuntimeInstall, *DBError) {
 	db := u.DB
 	runtimeInstall := RuntimeInstall{}
 	sql := "SELECT * FROM runtime_install WHERE name=$1"
@@ -145,6 +145,17 @@ func (u UserService) FindUserIDEsByUserID(userID int64) ([]int64, *DBError) {
 }
 
 func (u UserService) FindUserReposUserID(userID int64) ([]int64, *DBError) {
+	db := u.DB
+	userIDEIDs := make([]int64, 0, 10)
+	sql := "SELECT id FROM user_ide WHERE user_id=$1"
+	err := db.Select(&userIDEIDs, sql, userID)
+	if err != nil {
+		return userIDEIDs, &DBError{sql, err}
+	}
+	return userIDEIDs, nil
+}
+
+func (u UserService) FindIDEReposByUserID(userID int64) ([]int64, *DBError) {
 	db := u.DB
 	userIDEIDs := make([]int64, 0, 10)
 	sql := "SELECT id FROM user_ide WHERE user_id=$1"

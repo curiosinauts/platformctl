@@ -88,7 +88,7 @@ var addUserCmd = &cobra.Command{
 		})
 		eh.HandleError("ide_repo insert", dberr)
 
-		runtimeInstall, dberr := userService.FindRuntimeInstallName("tmux")
+		runtimeInstall, dberr := userService.FindRuntimeInstallByName("tmux")
 		eh.HandleError("finding runtime install", dberr)
 
 		_, dberr = userService.AddIDERuntimeInstall(database.IDERuntimeInstall{

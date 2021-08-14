@@ -108,7 +108,7 @@ func (eh ErrorHandler) HandleError(step string, err error) {
 	}
 
 	if err != nil {
-		msg.Info("step = [" + step + "]" + " error = [" + e.Err.Error() + "]")
+		msg.Info("step = [" + step + "]" + " error = [" + err.Error() + "]")
 		msg.Failure(eh.message)
 		os.Exit(1)
 	}
