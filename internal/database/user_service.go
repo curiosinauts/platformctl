@@ -185,6 +185,27 @@ func (u UserService) FindUserIDEReroURIsByUserAndIDE(hashedEmail string, ide str
 	return repositories, nil
 }
 
+func (u UserService) FindUserIDERuntimeInstallsByUserAndIDE(hashedEmail string, ide string) ([]string, *DBError) {
+	db := u.DB
+	runtimeInstalls := []string{}
+	sql := `SELECT script_body FROM runtime_install WHERE id in (
+        SELECT runtime_install_id FROM ide_runtime_install WHERE user_ide_id = (
+                SELECT 
+                        id as user_ide_id 
+                FROM 
+                        user_ide 
+                WHERE 
+                        user_id = (SELECT id as user_id FROM curiosity.user WHERE hashed_email = $1) AND
+                        ide_id = (SELECT id ide_id FROM ide WHERE name = $2)       
+        )
+)`
+	err := db.Select(&runtimeInstalls, sql, hashedEmail, ide)
+	if err != nil {
+		return []string{}, &DBError{sql, err}
+	}
+	return runtimeInstalls, nil
+}
+
 func (u UserService) Delete(id int64) *DBError {
 	db := u.DB
 	sql := "DELETE FROM curiosity.user WHERE id=$1"

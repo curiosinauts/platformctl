@@ -2,11 +2,12 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/curiosinauts/platformctl/internal/database"
 	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/curiosinauts/platformctl/pkg/crypto"
 	"github.com/curiosinauts/platformctl/pkg/io"
-	"os"
 
 	"github.com/spf13/cobra"
 )
@@ -14,13 +15,8 @@ import (
 // beforeDockerBuildCmd represents the dockerBuild command
 var beforeDockerBuildCmd = &cobra.Command{
 	Use:   "docker-build",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Generates files for docker build",
+	Long:  `Generate files for docker build. Generated files are used to configure codeserver and customize.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println()
 
@@ -64,6 +60,25 @@ cert: false `, user.Password, "./config.yml")
 		io.WriteTemplate(`{{range $val := .}}
 {{$val}}
 {{end}}`, repositories, "./repositories.txt")
+
+		runtimeInstalls, dberr := userService.FindUserIDERuntimeInstallsByUserAndIDE(hashedEmail, "vscode")
+		io.WriteTemplate(`#!/bin/bash -e
+    
+set -x
+{{range $val := .}}
+{{$val}}
+{{end}}`, runtimeInstalls, "./runtime_install.sh")
+
+		err := os.Chmod("./runtime_install.sh", 0755)
+		eh.HandleError("writing runtime install", err)
+
+		io.WriteTemplate(`#!/bin/sh
+
+export TERM=xterm
+
+/home/coder/go/bin/gotty --ws-origin "vscode-{{.Username}}.curiosityworks.org" -p 2222 -c "{{.Username}}:{{.Password}}" -w /usr/bin/zsh >>/dev/null 2>&1 
+`, user, "./gotty.sh")
+		err = os.Chmod("./gotty.sh", 0755)
 
 		msg.Success("before docker-build")
 	},
