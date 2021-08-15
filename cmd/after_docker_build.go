@@ -28,6 +28,11 @@ var afterDockerBuildCmd = &cobra.Command{
 
 		os.Remove("runtime_install.sh")
 
+		if len(args) > 0 {
+			username := args[0]
+			os.Remove("vscode-" + username + ".yml")
+		}
+
 		msg.Success("after docker-build")
 	},
 }
