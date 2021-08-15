@@ -20,6 +20,7 @@ var beforeDockerBuildCmd = &cobra.Command{
 		fmt.Println()
 
 		username := args[0]
+		dockertag := args[1]
 
 		eh := ErrorHandler{"before docker-build"}
 
@@ -73,6 +74,9 @@ export TERM=xterm
 `, user, "./gotty.sh")
 		err = os.Chmod("./gotty.sh", 0755)
 
+		user.DockerTag = dockertag
+		io.WriteTemplate(deployServiceIngressTemplate, user, "./vscode-"+user.Username+".yml")
+
 		msg.Success("before docker-build")
 	},
 }
@@ -80,3 +84,59 @@ export TERM=xterm
 func init() {
 	beforeCmd.AddCommand(beforeDockerBuildCmd)
 }
+
+var deployServiceIngressTemplate = `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vscode-{{.Username}}
+  labels:
+    app: vscode-{{.Username}}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vscode-{{.Username}}
+  template:
+    metadata:
+      labels:
+        app: vscode-{{.Username}}
+    spec:
+      containers:
+      - name: vscode-{{.Username}}
+        image: docker-registry.int.curiosityworks.org/7onetella/vscode-{{.Username}}:{{.DockerTag}}
+        ports:
+        - containerPort: 9991
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vscode-{{.Username}}
+spec:
+  selector:
+    app: vscode-{{.Username}}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9991
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vscode-{{.Username}}
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+spec:
+  rules:
+  - host: vscode-{{.Username}}.curiosityworks.org
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: vscode-{{.Username}}
+            port: 
+              number: 80
+`

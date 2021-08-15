@@ -10,6 +10,7 @@ type User struct {
 	IsActive    bool   `db:"is_active"`
 	PrivateKey  string `db:"private_key"`
 	PublicKey   string `db:"public_key"`
+	DockerTag   string
 }
 
 type UserRepo struct {
