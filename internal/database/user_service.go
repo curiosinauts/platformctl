@@ -166,7 +166,7 @@ func (u UserService) FindIDEReposByUserID(userID int64) ([]int64, *DBError) {
 	return userIDEIDs, nil
 }
 
-func (u UserService) FindUserIDEReroURIsByUserAndIDE(hashedEmail string, ide string) ([]string, *DBError) {
+func (u UserService) FindUserIDEReroURIsByUserAndIDE(username string, ide string) ([]string, *DBError) {
 	db := u.DB
 	repositories := []string{}
 	sql := `SELECT uri FROM ide_repo WHERE user_ide_id = (
@@ -175,17 +175,17 @@ func (u UserService) FindUserIDEReroURIsByUserAndIDE(hashedEmail string, ide str
         FROM 
                 user_ide 
         WHERE 
-                user_id = (SELECT id as user_id FROM curiosity.user WHERE hashed_email = $1) AND
+                user_id = (SELECT id as user_id FROM curiosity.user WHERE username = $1) AND
                 ide_id = (SELECT id ide_id FROM ide WHERE name = $2)       
     )`
-	err := db.Select(&repositories, sql, hashedEmail, ide)
+	err := db.Select(&repositories, sql, username, ide)
 	if err != nil {
 		return []string{}, &DBError{sql, err}
 	}
 	return repositories, nil
 }
 
-func (u UserService) FindUserIDERuntimeInstallsByUserAndIDE(hashedEmail string, ide string) ([]string, *DBError) {
+func (u UserService) FindUserIDERuntimeInstallsByUserAndIDE(username string, ide string) ([]string, *DBError) {
 	db := u.DB
 	runtimeInstalls := []string{}
 	sql := `SELECT script_body FROM runtime_install WHERE id in (
@@ -195,11 +195,11 @@ func (u UserService) FindUserIDERuntimeInstallsByUserAndIDE(hashedEmail string, 
                 FROM 
                         user_ide 
                 WHERE 
-                        user_id = (SELECT id as user_id FROM curiosity.user WHERE hashed_email = $1) AND
+                        user_id = (SELECT id as user_id FROM curiosity.user WHERE username = $1) AND
                         ide_id = (SELECT id ide_id FROM ide WHERE name = $2)       
         )
 )`
-	err := db.Select(&runtimeInstalls, sql, hashedEmail, ide)
+	err := db.Select(&runtimeInstalls, sql, username, ide)
 	if err != nil {
 		return []string{}, &DBError{sql, err}
 	}
@@ -232,6 +232,17 @@ func (u UserService) FindUserByHashedEmail(hashedEmail string) (User, *DBError) 
 	user := User{}
 	sql := "SELECT * FROM curiosity.user WHERE hashed_email=$1"
 	err := db.Get(&user, sql, hashedEmail)
+	if err != nil {
+		return user, &DBError{sql, err}
+	}
+	return user, nil
+}
+
+func (u UserService) FindUserByUsername(username string) (User, *DBError) {
+	db := u.DB
+	user := User{}
+	sql := "SELECT * FROM curiosity.user WHERE username=$1"
+	err := db.Get(&user, sql, username)
 	if err != nil {
 		return user, &DBError{sql, err}
 	}

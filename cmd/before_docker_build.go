@@ -6,7 +6,6 @@ import (
 
 	"github.com/curiosinauts/platformctl/internal/database"
 	"github.com/curiosinauts/platformctl/internal/msg"
-	"github.com/curiosinauts/platformctl/pkg/crypto"
 	"github.com/curiosinauts/platformctl/pkg/io"
 
 	"github.com/spf13/cobra"
@@ -20,8 +19,7 @@ var beforeDockerBuildCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println()
 
-		email := args[0]
-		hashedEmail := crypto.Hashed(email)
+		username := args[0]
 
 		eh := ErrorHandler{"before docker-build"}
 
@@ -32,11 +30,10 @@ var beforeDockerBuildCmd = &cobra.Command{
 
 		userService := database.NewUserService(db)
 
-		user, dberr := userService.FindUserByHashedEmail(hashedEmail)
+		user, dberr := userService.FindUserByUsername(username)
 		eh.HandleError("finding user by email", dberr)
 
 		io.WriteStringTofile(user.PrivateKey, "./.ssh/id-rsa")
-		io.WriteStringTofile(user.PublicKey, "./.ssh/id-rsa.pub")
 
 		// codeserver .config.yml
 		io.WriteTemplate(`bind-addr: 0.0.0.0:9991
@@ -51,13 +48,13 @@ cert: false `, user.Password, "./config.yml")
 	name = {{.Username}}
 	email = {{.Email }}"`, user, "./.gitconfig")
 
-		repositories, dberr := userService.FindUserIDEReroURIsByUserAndIDE(hashedEmail, "vscode")
+		repositories, dberr := userService.FindUserIDEReroURIsByUserAndIDE(username, "vscode")
 		// repositories.txt
 		io.WriteTemplate(`{{range $val := .}}
 {{$val}}
 {{end}}`, repositories, "./repositories.txt")
 
-		runtimeInstalls, dberr := userService.FindUserIDERuntimeInstallsByUserAndIDE(hashedEmail, "vscode")
+		runtimeInstalls, dberr := userService.FindUserIDERuntimeInstallsByUserAndIDE(username, "vscode")
 		io.WriteTemplate(`#!/bin/bash -e
     
 set -x

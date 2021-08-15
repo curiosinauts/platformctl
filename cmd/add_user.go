@@ -98,6 +98,8 @@ var addUserCmd = &cobra.Command{
 		eh.HandleError("ide_runtime_install insert", dberr)
 
 		msg.Success("adding user")
+
+		msg.Info("username: " + randomUsername)
 	},
 }
 
