@@ -20,8 +20,6 @@ var beforeDockerBuildCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println()
 
-		cobra.MinimumNArgs(1)(cmd, args)
-
 		email := args[0]
 		hashedEmail := crypto.Hashed(email)
 
@@ -39,8 +37,6 @@ var beforeDockerBuildCmd = &cobra.Command{
 
 		io.WriteStringTofile(user.PrivateKey, "./.ssh/id-rsa")
 		io.WriteStringTofile(user.PublicKey, "./.ssh/id-rsa.pub")
-
-		//os.RemoveAll("./.ssh")
 
 		// codeserver .config.yml
 		io.WriteTemplate(`bind-addr: 0.0.0.0:9991
