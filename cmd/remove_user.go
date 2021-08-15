@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/curiosinauts/platformctl/internal/msg"
+	"github.com/curiosinauts/platformctl/pkg/crypto"
 
 	"github.com/curiosinauts/platformctl/internal/database"
 	"github.com/spf13/cobra"
@@ -21,7 +22,7 @@ var removeUserCmd = &cobra.Command{
 
 		eh := ErrorHandler{"removing user"}
 
-		user, dberr := userService.FindByEmail(email)
+		user, dberr := userService.FindUserByHashedEmail(crypto.Hashed(email))
 
 		dberr = userService.DeleteALLIDERuntimeInstallsForUser(user.ID)
 		eh.HandleError("delete user ide runtime installs", dberr)

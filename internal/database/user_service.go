@@ -166,6 +166,25 @@ func (u UserService) FindIDEReposByUserID(userID int64) ([]int64, *DBError) {
 	return userIDEIDs, nil
 }
 
+func (u UserService) FindUserIDEReroURIsByUserAndIDE(hashedEmail string, ide string) ([]string, *DBError) {
+	db := u.DB
+	repositories := []string{}
+	sql := `SELECT uri FROM ide_repo WHERE user_ide_id = (
+        SELECT 
+                id as user_ide_id 
+        FROM 
+                user_ide 
+        WHERE 
+                user_id = (SELECT id as user_id FROM curiosity.user WHERE hashed_email = $1) AND
+                ide_id = (SELECT id ide_id FROM ide WHERE name = $2)       
+    )`
+	err := db.Select(&repositories, sql, hashedEmail, ide)
+	if err != nil {
+		return []string{}, &DBError{sql, err}
+	}
+	return repositories, nil
+}
+
 func (u UserService) Delete(id int64) *DBError {
 	db := u.DB
 	sql := "DELETE FROM curiosity.user WHERE id=$1"
@@ -181,6 +200,17 @@ func (u UserService) FindByEmail(email string) (User, *DBError) {
 	user := User{}
 	sql := "SELECT * FROM curiosity.user WHERE email=$1"
 	err := db.Get(&user, sql, email)
+	if err != nil {
+		return user, &DBError{sql, err}
+	}
+	return user, nil
+}
+
+func (u UserService) FindUserByHashedEmail(hashedEmail string) (User, *DBError) {
+	db := u.DB
+	user := User{}
+	sql := "SELECT * FROM curiosity.user WHERE hashed_email=$1"
+	err := db.Get(&user, sql, hashedEmail)
 	if err != nil {
 		return user, &DBError{sql, err}
 	}

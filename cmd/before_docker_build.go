@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/curiosinauts/platformctl/internal/database"
 	"github.com/curiosinauts/platformctl/internal/msg"
+	"github.com/curiosinauts/platformctl/pkg/crypto"
 	"github.com/curiosinauts/platformctl/pkg/io"
 	"os"
 
@@ -26,6 +27,7 @@ to quickly create a Cobra application.`,
 		cobra.MinimumNArgs(1)(cmd, args)
 
 		email := args[0]
+		hashedEmail := crypto.Hashed(email)
 
 		eh := ErrorHandler{"before docker-build"}
 
@@ -36,18 +38,8 @@ to quickly create a Cobra application.`,
 
 		userService := database.NewUserService(db)
 
-		user, dberr := userService.FindByEmail(email)
+		user, dberr := userService.FindUserByHashedEmail(hashedEmail)
 		eh.HandleError("finding user by email", dberr)
-
-		username := user.Username
-		password := user.Password
-		randonemail := user.Email
-
-		if debug {
-			fmt.Printf("username = %s\n", username)
-			fmt.Printf("password = %s\n", password)
-			fmt.Printf("email    = %s\n", randonemail)
-		}
 
 		io.WriteStringTofile(user.PrivateKey, "./.ssh/id-rsa")
 		io.WriteStringTofile(user.PublicKey, "./.ssh/id-rsa.pub")
@@ -58,7 +50,7 @@ to quickly create a Cobra application.`,
 		io.WriteTemplate(`bind-addr: 0.0.0.0:9991
 auth: password
 password: {{.}}
-cert: false `, password, "./config.yml")
+cert: false `, user.Password, "./config.yml")
 
 		// .gitconfig
 		io.WriteTemplate(`[credential]
@@ -67,10 +59,11 @@ cert: false `, password, "./config.yml")
 	name = {{.Username}}
 	email = {{.Email }}"`, user, "./.gitconfig")
 
+		repositories, dberr := userService.FindUserIDEReroURIsByUserAndIDE(hashedEmail, "vscode")
 		// repositories.txt
 		io.WriteTemplate(`{{range $val := .}}
 {{$val}}
-{{end}}`, nil, "./repositories.txt")
+{{end}}`, repositories, "./repositories.txt")
 
 		msg.Success("before docker-build")
 	},
