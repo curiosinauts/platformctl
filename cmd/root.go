@@ -54,7 +54,7 @@ func init() {
 }
 
 func initDB() {
-	connStr := viper.Get("database.conn").(string)
+	connStr := viper.Get("database_conn").(string)
 	newdb, err := sqlx.Connect("postgres", connStr)
 	if err != nil {
 		log.Fatalln(err)
@@ -62,7 +62,7 @@ func initDB() {
 	db = newdb
 	db.Exec(`set search_path='curiosity'`)
 	if debug {
-		fmt.Printf("database.conn : %s\n", viper.Get("database.conn"))
+		fmt.Printf("database_conn : %s\n", viper.Get("database_conn"))
 	}
 }
 
@@ -82,6 +82,7 @@ func initConfig() {
 		viper.SetConfigName(".platformctl")
 	}
 
+	viper.SetEnvPrefix("platformctl")
 	viper.AutomaticEnv() // read in environment variables that match
 
 	// If a config file is found, read it in.
