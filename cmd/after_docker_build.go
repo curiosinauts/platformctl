@@ -11,8 +11,8 @@ import (
 // afterDockerBuildCmd represents the dockerBuild command
 var afterDockerBuildCmd = &cobra.Command{
 	Use:   "docker-build",
-	Short: "Deletes files that were generated during before docker-build cmd",
-	Long:  ``,
+	Short: "Deletes the files that were generated during before docker-build cmd",
+	Long:  `Deletes the files that were generated during before docker-build cmd`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println()
 

@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/curiosinauts/platformctl/internal/database"
+	"github.com/curiosinauts/platformctl/internal/msg"
 
 	"github.com/spf13/cobra"
 )
@@ -10,19 +11,15 @@ import (
 // dropSchemaCmd represents the schema command
 var dropSchemaCmd = &cobra.Command{
 	Use:   "schema",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Drops database schema",
+	Long:  `Drops database schema`,
 	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println()
+		eh := ErrorHandler{"Dropping database schema"}
 		_, err := db.Exec(database.DropSchema)
-		if err != nil {
-			fmt.Println("dropping schema failed")
-			fmt.Printf("  %v", err.Error())
-		}
+		eh.HandleError("dropping database schema", err)
+
+		msg.Success("dropping database schema")
 	},
 }
 

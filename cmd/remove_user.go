@@ -14,8 +14,8 @@ import (
 // removeUserCmd represents the user command
 var removeUserCmd = &cobra.Command{
 	Use:   "user",
-	Short: "Remove user from the platforms",
-	Long:  `Remove user from the platforms`,
+	Short: "Removes user from the platform",
+	Long:  `Removes user from the platform`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println()
 

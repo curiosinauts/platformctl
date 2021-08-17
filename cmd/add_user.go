@@ -20,8 +20,7 @@ import (
 var addUserCmd = &cobra.Command{
 	Use:   "user",
 	Short: "Adds user",
-	Long: `Adding user means adding user to the user database, user's own dev database, gitea, pgadmin, 
-	runtime installs, user repos.`,
+	Long:  `Adds user to the platform`,
 	Run: func(cmd *cobra.Command, args []string) {
 		email := args[0]
 

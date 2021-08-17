@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/curiosinauts/platformctl/internal/database"
+	"github.com/curiosinauts/platformctl/internal/msg"
 
 	"github.com/spf13/cobra"
 )
@@ -13,11 +14,12 @@ var createSchemaCmd = &cobra.Command{
 	Short: "Creates database schema",
 	Long:  `Creates database schema`,
 	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Println()
+		eh := ErrorHandler{"Creating database schema"}
 		_, err := db.Exec(database.CreateSchema)
-		if err != nil {
-			fmt.Println("creating schema failed")
-			fmt.Printf("  %v", err.Error())
-		}
+		eh.HandleError("creating database schema", err)
+
+		msg.Success("creating database schema")
 	},
 }
 
