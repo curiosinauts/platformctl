@@ -47,7 +47,7 @@ cert: false `, user.Password, "./config.yml")
     helper = store
 [user]
 	name = {{.Username}}
-	email = {{.Email }}"`, user, "./.gitconfig")
+	email = {{.Email }}`, user, "./.gitconfig")
 
 		repositories, dberr := userService.FindUserIDEReroURIsByUserAndIDE(username, "vscode")
 		// repositories.txt
