@@ -7,3 +7,4 @@ repositories.txt
 runtime_install.sh
 .ssh
 vscode-*.yml
+dist/*

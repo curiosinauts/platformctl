@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/curiosinauts/platformctl/pkg/giteautil"
+	"github.com/curiosinauts/platformctl/pkg/jenkinsutil"
 
 	haikunator "github.com/atrox/haikunatorgo/v2"
 	"github.com/curiosinauts/platformctl/internal/database"
@@ -12,6 +13,7 @@ import (
 	"github.com/curiosinauts/platformctl/pkg/crypto"
 	"github.com/sethvargo/go-password/password"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // addUserCmd represents the user command
@@ -112,6 +114,17 @@ var addUserCmd = &cobra.Command{
 		user.PublicKeyID = publicKeyID
 		result, dberr = userService.UpdateProfile(user)
 		eh.HandleError("updating user profile", dberr)
+
+		option := map[string]string{
+			"USERNAME": user.Username,
+		}
+
+		jenkinsAPIKey := viper.Get("jenkins_api_key").(string)
+		jenkins, err := jenkinsutil.NewJenkins("https://jenkins.int.curiosityworks.org/", "admin", jenkinsAPIKey)
+		eh.HandleError("accessing Jenkins job", err)
+
+		_, err = jenkins.BuildJob("codeserver", option)
+		eh.HandleError("calling Jenkins job to build codeserver instance", err)
 
 		msg.Success("adding user")
 
