@@ -11,6 +11,7 @@ CREATE TABLE curiosity.user (
      is_active    BOOLEAN NOT NULL,
      private_key  CHARACTER VARYING(4000),
      public_key   CHARACTER VARYING(1000),
+     public_key_id INTEGER, 
      PRIMARY KEY (id),
      UNIQUE (username),
 	 UNIQUE (hashed_email)

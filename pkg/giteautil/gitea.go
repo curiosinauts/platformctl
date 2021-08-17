@@ -2,19 +2,27 @@ package giteautil
 
 import (
 	"code.gitea.io/sdk/gitea"
-	"fmt"
 	"github.com/curiosinauts/platformctl/internal/database"
+	"github.com/spf13/viper"
 )
 
+func NewGiteaClient() (*gitea.Client, error) {
+	accessToken := viper.Get("gitea_access_token").(string)
+	giteaURL := viper.Get("gitea_url").(string)
+	return gitea.NewClient(giteaURL, gitea.SetToken(accessToken))
+}
+
 func AddUser(user database.User) error {
-	api, err := gitea.NewClient("https://git-web.curiosityworks.org", gitea.SetToken(""))
+	api, err := NewGiteaClient()
 	if err != nil {
 		return err
 	}
+	mustChangePassword := false
 	option := gitea.CreateUserOption{
-		Username: user.Username,
-		Password: user.Password,
-		Email:    user.Email,
+		Username:           user.Username,
+		Password:           user.Password,
+		Email:              user.Email,
+		MustChangePassword: &mustChangePassword,
 	}
 	_, _, err = api.AdminCreateUser(option)
 	if err != nil {
@@ -24,7 +32,7 @@ func AddUser(user database.User) error {
 }
 
 func RemoveUser(username string) error {
-	api, err := gitea.NewClient("https://git-web.curiosityworks.org", gitea.SetToken(""))
+	api, err := NewGiteaClient()
 	if err != nil {
 		return err
 	}
@@ -36,7 +44,7 @@ func RemoveUser(username string) error {
 }
 
 func CreateUserRepo(username string) error {
-	api, err := gitea.NewClient("https://git-web.curiosityworks.org", gitea.SetToken(""))
+	api, err := NewGiteaClient()
 	if err != nil {
 		return err
 	}
@@ -54,7 +62,7 @@ func CreateUserRepo(username string) error {
 }
 
 func DeleteUserRepo(username string) error {
-	api, err := gitea.NewClient("https://git-web.curiosityworks.org", gitea.SetToken(""))
+	api, err := NewGiteaClient()
 	if err != nil {
 		return err
 	}
@@ -66,10 +74,10 @@ func DeleteUserRepo(username string) error {
 	return nil
 }
 
-func CreateUserPublicKey(user database.User) error {
-	api, err := gitea.NewClient("https://git-web.curiosityworks.org", gitea.SetToken(""))
+func CreateUserPublicKey(user database.User) (int64, error) {
+	api, err := NewGiteaClient()
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	option := gitea.CreateKeyOption{
@@ -80,20 +88,19 @@ func CreateUserPublicKey(user database.User) error {
 
 	publicKey, _, err := api.AdminCreateUserPublicKey(user.Username, option)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	fmt.Println(publicKey.ID)
-	return nil
+	return publicKey.ID, nil
 }
 
-func DeleteUserPublicKey(user database.User, keyID int) error {
-	api, err := gitea.NewClient("https://git-web.curiosityworks.org", gitea.SetToken(""))
+func DeleteUserPublicKey(user database.User, keyID int64) error {
+	api, err := NewGiteaClient()
 	if err != nil {
 		return err
 	}
 
-	_, err = api.AdminDeleteUserPublicKey(user.Username, keyID)
+	_, err = api.AdminDeleteUserPublicKey(user.Username, int(keyID))
 	if err != nil {
 		return err
 	}

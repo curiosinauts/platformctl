@@ -2,8 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/curiosinauts/platformctl/pkg/giteautil"
 	"log"
+
+	"github.com/curiosinauts/platformctl/pkg/giteautil"
 
 	haikunator "github.com/atrox/haikunatorgo/v2"
 	"github.com/curiosinauts/platformctl/internal/database"
@@ -65,6 +66,7 @@ var addUserCmd = &cobra.Command{
 		repoURI := fmt.Sprintf("ssh://gitea@git-ssh.curiosityworks.org:2222/%s/project.git", randomUsername)
 		userID, err := result.LastInsertId()
 		eh.HandleError("user id", err)
+		user.ID = userID
 
 		_, dberr = userService.AddUserRepo(database.UserRepo{
 			URI:    repoURI,
@@ -104,8 +106,12 @@ var addUserCmd = &cobra.Command{
 		err = giteautil.CreateUserRepo(user.Username)
 		eh.HandleError("create user repo", err)
 
-		err = giteautil.CreateUserPublicKey(user)
+		publicKeyID, err := giteautil.CreateUserPublicKey(user)
 		eh.HandleError("create user public key", err)
+
+		user.PublicKeyID = publicKeyID
+		result, dberr = userService.UpdateProfile(user)
+		eh.HandleError("updating user profile", dberr)
 
 		msg.Success("adding user")
 

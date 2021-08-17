@@ -263,16 +263,11 @@ func (u UserService) List() ([]User, *DBError) {
 func (u UserService) UpdateProfile(user User) (sql.Result, *DBError) {
 	sql := `
 		UPDATE 
-			users 
+			curiosity.user 
 		SET 
-			firstname        = :firstname,  
-		    lastname         = :lastname,
-			email            = :email,
-			passhash         = :passhash,
-			totp_enabled     = :totp_enabled,
-            webauthn_enabled = :webauthn_enabled
+			public_key_id = :public_key_id
 		WHERE 
-			user_id = :user_id 
+			id = :id 
 	`
 	return u.NamedExec(sql, &user)
 }

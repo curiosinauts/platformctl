@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/curiosinauts/platformctl/pkg/crypto"
 	"github.com/curiosinauts/platformctl/pkg/giteautil"
@@ -43,7 +44,7 @@ var removeUserCmd = &cobra.Command{
 		err := giteautil.DeleteUserRepo(user.Username)
 		eh.HandleError("deleting user repos from gitea", err)
 
-		err = giteautil.DeleteUserPublicKey(user, 2)
+		err = giteautil.DeleteUserPublicKey(user, user.PublicKeyID)
 		eh.HandleError("deleting user public key from gitea", err)
 
 		err = giteautil.RemoveUser(user.Username)
