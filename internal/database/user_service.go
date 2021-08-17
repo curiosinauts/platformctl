@@ -75,11 +75,6 @@ func (u UserService) AddIDERuntimeInstall(ideRuntimeInstall IDERuntimeInstall) (
 	return u.PrepareNamed(sql, &ideRuntimeInstall)
 }
 
-func (u UserService) DeleteIDERuntimeInstall(id int64) *DBError {
-	sql := `DELETE FROM ide_runtime_install WHERE id = $1`
-	return u.DBService.Delete(sql, id)
-}
-
 func (u UserService) DeleteALLUserIDEsForUser(userID int64) *DBError {
 	sql := `DELETE FROM user_ide WHERE id IN (SELECT id FROM user_ide WHERE user_id = $1)`
 	return u.DBService.Delete(sql, userID)
@@ -100,10 +95,10 @@ func (u UserService) DeleteALLIDEReposForUser(userID int64) *DBError {
 	return u.DBService.Delete(sql, userID)
 }
 
-func (u UserService) Get(id string) (User, *DBError) {
+func (u UserService) Get(id int64) (User, *DBError) {
 	db := u.DB
 	user := User{}
-	sql := "SELECT * FROM curiosity.user WHERE user_id=$1"
+	sql := "SELECT * FROM curiosity.user WHERE id=$1"
 	err := db.Get(&user, sql, id)
 	if err != nil {
 		return user, &DBError{sql, err}
@@ -216,7 +211,7 @@ func (u UserService) Delete(id int64) *DBError {
 	return nil
 }
 
-func (u UserService) FindByEmail(email string) (User, *DBError) {
+func (u UserService) FindUserByEmail(email string) (User, *DBError) {
 	db := u.DB
 	user := User{}
 	sql := "SELECT * FROM curiosity.user WHERE email=$1"
@@ -252,7 +247,7 @@ func (u UserService) FindUserByUsername(username string) (User, *DBError) {
 func (u UserService) List() ([]User, *DBError) {
 	db := u.DB
 	users := []User{}
-	sql := "SELECT * FROM users"
+	sql := "SELECT * FROM curiosity.user"
 	err := db.Select(&users, sql)
 	if err != nil {
 		return users, &DBError{sql, err}
