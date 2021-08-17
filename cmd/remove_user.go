@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/spf13/viper"
 
 	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/curiosinauts/platformctl/pkg/crypto"
@@ -41,13 +42,18 @@ var removeUserCmd = &cobra.Command{
 		dberr = userService.Delete(user.ID)
 		eh.HandleError("delete user", dberr)
 
-		err := giteautil.DeleteUserRepo(user.Username)
+		accessToken := viper.Get("gitea_access_token").(string)
+		giteaURL := viper.Get("gitea_url").(string)
+		gitClient, err := giteautil.NewGitClient(accessToken, giteaURL)
+		eh.HandleError("instantiating git client", err)
+
+		err = gitClient.DeleteUserRepo(user.Username)
 		eh.HandleError("deleting user repos from gitea", err)
 
-		err = giteautil.DeleteUserPublicKey(user, user.PublicKeyID)
+		err = gitClient.DeleteUserPublicKey(user, user.PublicKeyID)
 		eh.HandleError("deleting user public key from gitea", err)
 
-		err = giteautil.RemoveUser(user.Username)
+		err = gitClient.RemoveUser(user.Username)
 		eh.HandleError("removing user from gitea", err)
 
 		msg.Success("removing user")

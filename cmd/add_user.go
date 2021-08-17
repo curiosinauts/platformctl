@@ -101,13 +101,18 @@ var addUserCmd = &cobra.Command{
 		})
 		eh.HandleError("ide_runtime_install insert", dberr)
 
-		err = giteautil.AddUser(user)
+		accessToken := viper.Get("gitea_access_token").(string)
+		giteaURL := viper.Get("gitea_url").(string)
+		gitClient, err := giteautil.NewGitClient(accessToken, giteaURL)
+		eh.HandleError("instantiating git client", err)
+
+		err = gitClient.AddUser(user)
 		eh.HandleError("adding user to gitea", err)
 
-		err = giteautil.CreateUserRepo(user.Username)
+		err = gitClient.CreateUserRepo(user.Username)
 		eh.HandleError("create user repo", err)
 
-		publicKeyID, err := giteautil.CreateUserPublicKey(user)
+		publicKeyID, err := gitClient.CreateUserPublicKey(user)
 		eh.HandleError("create user public key", err)
 
 		user.PublicKeyID = publicKeyID
@@ -117,9 +122,9 @@ var addUserCmd = &cobra.Command{
 		option := map[string]string{
 			"USERNAME": user.Username,
 		}
-
 		jenkinsAPIKey := viper.Get("jenkins_api_key").(string)
-		jenkins, err := jenkinsutil.NewJenkins("https://jenkins.int.curiosityworks.org/", "admin", jenkinsAPIKey)
+		jenkinsURL := viper.Get("jenkins_url").(string)
+		jenkins, err := jenkinsutil.NewJenkins(jenkinsURL, "admin", jenkinsAPIKey)
 		eh.HandleError("accessing Jenkins job", err)
 
 		_, err = jenkins.BuildJob("codeserver", option)
