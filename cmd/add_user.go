@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/curiosinauts/platformctl/pkg/giteautil"
 	"log"
 
 	haikunator "github.com/atrox/haikunatorgo/v2"
@@ -96,6 +97,15 @@ var addUserCmd = &cobra.Command{
 			RuntimeInstallID: runtimeInstall.ID,
 		})
 		eh.HandleError("ide_runtime_install insert", dberr)
+
+		err = giteautil.AddUser(user)
+		eh.HandleError("adding user to gitea", err)
+
+		err = giteautil.CreateUserRepo(user.Username)
+		eh.HandleError("create user repo", err)
+
+		err = giteautil.CreateUserPublicKey(user)
+		eh.HandleError("create user public key", err)
 
 		msg.Success("adding user")
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/curiosinauts/platformctl/pkg/crypto"
+	"github.com/curiosinauts/platformctl/pkg/giteautil"
 
 	"github.com/curiosinauts/platformctl/internal/database"
 	"github.com/spf13/cobra"
@@ -38,6 +39,15 @@ var removeUserCmd = &cobra.Command{
 
 		dberr = userService.Delete(user.ID)
 		eh.HandleError("delete user", dberr)
+
+		err := giteautil.DeleteUserRepo(user.Username)
+		eh.HandleError("deleting user repos from gitea", err)
+
+		err = giteautil.DeleteUserPublicKey(user, 2)
+		eh.HandleError("deleting user public key from gitea", err)
+
+		err = giteautil.RemoveUser(user.Username)
+		eh.HandleError("removing user from gitea", err)
 
 		msg.Success("removing user")
 	},
