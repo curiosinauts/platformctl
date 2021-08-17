@@ -16,7 +16,7 @@ var afterDockerBuildCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println()
 
-		os.Remove("./.ssh/id-rsa")
+		os.Remove("./.ssh/id_rsa")
 
 		os.Remove(".gitconfig")
 

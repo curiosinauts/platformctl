@@ -34,7 +34,7 @@ var beforeDockerBuildCmd = &cobra.Command{
 		user, dberr := userService.FindUserByUsername(username)
 		eh.HandleError("finding user by email", dberr)
 
-		io.WriteStringTofile(user.PrivateKey, "./.ssh/id-rsa")
+		io.WriteStringTofile(user.PrivateKey, "./.ssh/id_rsa")
 
 		// codeserver .config.yml
 		io.WriteTemplate(`bind-addr: 0.0.0.0:9991
