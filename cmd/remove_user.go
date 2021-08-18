@@ -2,15 +2,19 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/spf13/viper"
 
 	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/curiosinauts/platformctl/pkg/crypto"
+	"github.com/curiosinauts/platformctl/pkg/executil"
 	"github.com/curiosinauts/platformctl/pkg/giteautil"
 
 	"github.com/curiosinauts/platformctl/internal/database"
 	"github.com/spf13/cobra"
 )
+
+var removeUserCmdDebug bool
 
 // removeUserCmd represents the user command
 var removeUserCmd = &cobra.Command{
@@ -56,10 +60,15 @@ var removeUserCmd = &cobra.Command{
 		err = gitClient.RemoveUser(user.Username)
 		eh.HandleError("removing user from gitea", err)
 
+		executil.Execute("kubectl delete ingress vscode-"+user.Username, removeUserCmdDebug)
+		executil.Execute("kubectl delete service vscode-"+user.Username, removeUserCmdDebug)
+		executil.Execute("kubectl delete deployment vscode-"+user.Username, removeUserCmdDebug)
+
 		msg.Success("removing user")
 	},
 }
 
 func init() {
 	removeCmd.AddCommand(removeUserCmd)
+	removeCmd.Flags().BoolVarP(&removeUserCmdDebug, "debug", "d", false, "Debug this command")
 }
