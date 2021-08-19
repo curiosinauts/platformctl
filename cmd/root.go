@@ -3,11 +3,12 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"github.com/curiosinauts/platformctl/internal/database"
-	"github.com/curiosinauts/platformctl/internal/msg"
-	"github.com/jmoiron/sqlx"
 	"log"
 	"os"
+
+	"github.com/curiosinauts/platformctl/internal/msg"
+	"github.com/curiosinauts/platformctl/pkg/database"
+	"github.com/jmoiron/sqlx"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

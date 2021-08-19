@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/curiosinauts/platformctl/internal/database"
 	"github.com/curiosinauts/platformctl/internal/msg"
+	"github.com/curiosinauts/platformctl/pkg/database"
 	"github.com/curiosinauts/platformctl/pkg/io"
 
 	"github.com/spf13/cobra"

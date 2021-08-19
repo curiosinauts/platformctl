@@ -8,9 +8,9 @@ import (
 	"github.com/curiosinauts/platformctl/pkg/jenkinsutil"
 
 	haikunator "github.com/atrox/haikunatorgo/v2"
-	"github.com/curiosinauts/platformctl/internal/database"
 	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/curiosinauts/platformctl/pkg/crypto"
+	"github.com/curiosinauts/platformctl/pkg/database"
 	"github.com/sethvargo/go-password/password"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

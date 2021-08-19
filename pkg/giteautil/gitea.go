@@ -2,7 +2,7 @@ package giteautil
 
 import (
 	"code.gitea.io/sdk/gitea"
-	"github.com/curiosinauts/platformctl/internal/database"
+	"github.com/curiosinauts/platformctl/pkg/database"
 )
 
 type GitClient struct {
