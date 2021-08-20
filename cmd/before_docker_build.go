@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/curiosinauts/platformctl/internal/database"
@@ -17,7 +16,6 @@ var beforeDockerBuildCmd = &cobra.Command{
 	Short: "Generates files needed by code server docker build",
 	Long:  `Generate files for docker build. Generated files are used to customize code server`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println()
 
 		username := args[0]
 		dockertag := args[1]

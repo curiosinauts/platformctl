@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/curiosinauts/platformctl/internal/database"
 	"github.com/curiosinauts/platformctl/internal/msg"
 
@@ -14,7 +13,7 @@ var dropSchemaCmd = &cobra.Command{
 	Short: "Drops database schema",
 	Long:  `Drops database schema`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println()
+
 		eh := ErrorHandler{"Dropping database schema"}
 		_, err := db.Exec(database.DropSchema)
 		eh.HandleError("dropping database schema", err)

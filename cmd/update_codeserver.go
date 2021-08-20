@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/curiosinauts/platformctl/internal/database"
 	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/curiosinauts/platformctl/pkg/crypto"
@@ -17,7 +15,6 @@ var codeserverCmd = &cobra.Command{
 	Short: "Updates code server for given user",
 	Long:  `Updates code server for given user`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println()
 
 		eh := ErrorHandler{"updating code server"}
 

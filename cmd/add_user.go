@@ -22,9 +22,8 @@ var addUserCmd = &cobra.Command{
 	Short: "Adds user",
 	Long:  `Adds user to the platform`,
 	Run: func(cmd *cobra.Command, args []string) {
-		email := args[0]
 
-		fmt.Println()
+		email := args[0]
 
 		hashedEmail := crypto.Hashed(email)
 

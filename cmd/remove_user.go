@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/viper"
 
 	"github.com/curiosinauts/platformctl/internal/msg"
@@ -22,7 +20,6 @@ var removeUserCmd = &cobra.Command{
 	Short: "Removes user from the platform",
 	Long:  `Removes user from the platform`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println()
 
 		email := args[0]
 		userService := database.NewUserService(db)

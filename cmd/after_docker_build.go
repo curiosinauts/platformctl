@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/curiosinauts/platformctl/internal/msg"
@@ -14,7 +13,6 @@ var afterDockerBuildCmd = &cobra.Command{
 	Short: "Deletes the files that were generated during before docker-build cmd",
 	Long:  `Deletes the files that were generated during before docker-build cmd`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println()
 
 		os.Remove("./.ssh/id_rsa")
 
