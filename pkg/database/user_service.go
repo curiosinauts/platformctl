@@ -244,6 +244,17 @@ func (u UserService) FindUserByUsername(username string) (User, *DBError) {
 	return user, nil
 }
 
+func (u UserService) FindUserByGoogleID(googleIDHashed string) (User, *DBError) {
+	db := u.DB
+	user := User{}
+	sql := "SELECT * FROM curiosity.user WHERE google_id=$1"
+	err := db.Get(&user, sql, googleIDHashed)
+	if err != nil {
+		return user, &DBError{sql, err}
+	}
+	return user, nil
+}
+
 func (u UserService) List() ([]User, *DBError) {
 	db := u.DB
 	users := []User{}
@@ -261,6 +272,18 @@ func (u UserService) UpdateProfile(user User) (sql.Result, *DBError) {
 			curiosity.user 
 		SET 
 			public_key_id = :public_key_id
+		WHERE 
+			id = :id 
+	`
+	return u.NamedExec(sql, &user)
+}
+
+func (u UserService) UpdateGoogleID(user User) (sql.Result, *DBError) {
+	sql := `
+		UPDATE 
+			curiosity.user 
+		SET 
+			google_id = :google_id
 		WHERE 
 			id = :id 
 	`

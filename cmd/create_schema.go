@@ -1,8 +1,10 @@
 package cmd
 
 import (
-	"github.com/curiosinauts/platformctl/internal/database"
+	"fmt"
+
 	"github.com/curiosinauts/platformctl/internal/msg"
+	"github.com/curiosinauts/platformctl/pkg/database"
 
 	"github.com/spf13/cobra"
 )

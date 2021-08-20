@@ -8,7 +8,7 @@ import (
 	"github.com/curiosinauts/platformctl/pkg/executil"
 	"github.com/curiosinauts/platformctl/pkg/giteautil"
 
-	"github.com/curiosinauts/platformctl/internal/database"
+	"github.com/curiosinauts/platformctl/pkg/database"
 	"github.com/spf13/cobra"
 )
 

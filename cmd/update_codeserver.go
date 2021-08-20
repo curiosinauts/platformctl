@@ -1,9 +1,11 @@
 package cmd
 
 import (
-	"github.com/curiosinauts/platformctl/internal/database"
+	"fmt"
+
 	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/curiosinauts/platformctl/pkg/crypto"
+	"github.com/curiosinauts/platformctl/pkg/database"
 	"github.com/curiosinauts/platformctl/pkg/jenkinsutil"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
