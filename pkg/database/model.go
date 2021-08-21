@@ -1,5 +1,7 @@
 package database
 
+import "fmt"
+
 type User struct {
 	ID          int64  `db:"id"`
 	GoogleID    string `db:"google_id"`
@@ -12,6 +14,10 @@ type User struct {
 	PublicKey   string `db:"public_key"`
 	PublicKeyID int64  `db:"public_key_id"`
 	DockerTag   string
+}
+
+func (s User) String() string {
+	return fmt.Sprintf("%d: %s", s.ID, s.Username)
 }
 
 type UserRepo struct {
