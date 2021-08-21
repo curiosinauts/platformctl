@@ -1,49 +1,143 @@
 package cmd
 
 import (
+	"errors"
+	"fmt"
+	"github.com/curiosinauts/platformctl/internal/msg"
+	"github.com/heroku/docker-registry-client/registry"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"log"
+	"net/http"
+	"sort"
+	"strconv"
+	"strings"
 )
 
-// tagCmd represents the tag command
-var tagCmd = &cobra.Command{
+var nextTagCmdDebug bool
+
+// nextTagCmd represents the tag command
+var nextTagCmd = &cobra.Command{
 	Use:   "tag",
 	Short: "Generates next docker tag",
 	Long:  `Generates next docker tag`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// r = requests.get(f'https://docker-registry.int.curiosityworks.org/v2/{image}/tags/list' )
 
-		// if r.status_code != 200:
-		// print('1.0.0')
-		// sys.exit(0)
+		repository := args[0]
 
-		// repo = json.loads(r.text)
+		url, ok := viper.Get("docker_registry_url").(string)
+		if !ok {
+			msg.Failure("getting tag list: PLATFORM_DOCKER_REGISTRY_URL env is required")
+		}
+		eh := ErrorHandler{"getting next docker tag"}
+		hub := NewRegistryClient(url, nextTagCmdDebug)
 
-		// if not repo['tags']:
-		// print('1.0.0')
-		// sys.exit(0)
+		tags, err := hub.Tags(repository)
+		eh.HandleError("tags", err)
 
-		// tags = repo['tags']
-		// # tags = ['30.0.12', '30.0.13', '1.0.10', '1.0.11', 'latest']
+		//tags = []string{"30.0.12", "30.0.13", "1.0.10", "1.0.11", "latest"}
 
-		// tt = []
-		// for tag in tags:
-		// if tag == "latest":
-		// 	continue
-		// tag_list = tag.split('.')
-		// tag_int_list = [int(i) for i in tag_list]
-		// tag_tuple = tuple(tag_int_list)
-		// tt.append(tag_tuple)
+		if nextTagCmdDebug {
+			fmt.Println(tags)
+		}
 
-		// tt = sorted(tt, key = lambda x: (x[0], x[1], x[2]))
+		versions := []SemanticVersion{}
+		for _, versionStr := range tags {
+			sv, err := NewSemanticVersion(versionStr)
+			if err != nil {
+				continue
+			}
+			versions = append(versions, sv)
+		}
 
-		// current_tag_tuple = tt[-1]
+		sort.Slice(versions, func(i, j int) bool {
+			lessMajor := versions[i].Major < versions[j].Major
+			if lessMajor {
+				return true
+			}
+			if versions[i].Major == versions[j].Major {
+				lessMinor := versions[i].Minor < versions[j].Minor
+				if lessMinor {
+					return true
+				}
+				if versions[i].Minor == versions[j].Minor {
+					lessPatch := versions[i].Patch < versions[j].Patch
+					if lessPatch {
+						return true
+					}
+				}
+			}
+			return false
+		})
 
-		// next_tag = f'{current_tag_tuple[0]}.{current_tag_tuple[1]}.{current_tag_tuple[2]+1}'
+		if nextTagCmdDebug {
+			fmt.Println(versions)
+		}
 
-		// print(next_tag)%
+		var nextTag SemanticVersion
+		if len(versions) > 0 {
+			lastTag := versions[len(versions)-1]
+			nextTag = lastTag
+			nextTag.Patch = nextTag.Patch + 1
+		}
+
+		fmt.Println(nextTag.String())
 	},
 }
 
 func init() {
-	addCmd.AddCommand(tagCmd)
+	nextCmd.AddCommand(nextTagCmd)
+	nextTagCmd.Flags().BoolVarP(&nextTagCmdDebug, "debug", "d", false, "Debug this command")
+}
+
+func NewRegistryClient(url string, debug bool) registry.Registry {
+	return registry.Registry{
+		Logf: func(format string, args ...interface{}) {
+			if debug {
+				log.Printf(format, args)
+			}
+		},
+		URL: url,
+		Client: &http.Client{
+			Transport: http.DefaultTransport,
+		},
+	}
+}
+
+type SemanticVersion struct {
+	Major int
+	Minor int
+	Patch int
+}
+
+func NewSemanticVersion(version string) (SemanticVersion, error) {
+	if strings.HasSuffix(version, "v") {
+		version = version[1:]
+	}
+	terms := strings.Split(version, ".")
+	sv := SemanticVersion{}
+	if len(terms) != 3 {
+		return sv, errors.New("invalid semantic versioning schema")
+	}
+	major, err := strconv.Atoi(terms[0])
+	if err != nil {
+		return sv, errors.New("invalid semantic versioning schema")
+	}
+	minor, err := strconv.Atoi(terms[1])
+	if err != nil {
+		return sv, errors.New("invalid semantic versioning schema")
+	}
+	patch, err := strconv.Atoi(terms[2])
+	if err != nil {
+		return sv, errors.New("invalid semantic versioning schema")
+	}
+	sv.Major = major
+	sv.Minor = minor
+	sv.Patch = patch
+
+	return sv, nil
+}
+
+func (sv SemanticVersion) String() string {
+	return fmt.Sprintf("%d.%d.%d", sv.Major, sv.Minor, sv.Patch)
 }
