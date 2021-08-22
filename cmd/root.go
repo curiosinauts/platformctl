@@ -88,10 +88,12 @@ func initConfig() {
 	initDB()
 }
 
+// ErrorHandler handles errors
 type ErrorHandler struct {
 	message string
 }
 
+// HandleError handles the given error
 func (eh ErrorHandler) HandleError(step string, err error) {
 	var e *database.DBError
 	if errors.As(err, &e) {
@@ -108,5 +110,21 @@ func (eh ErrorHandler) HandleError(step string, err error) {
 		msg.Info("step = [" + step + "]" + " error = [" + err.Error() + "]")
 		msg.Failure(eh.message)
 		os.Exit(1)
+	}
+}
+
+// PrintError prints the error, no exit
+func (eh ErrorHandler) PrintError(step string, err error) {
+	var e *database.DBError
+	if errors.As(err, &e) {
+		if e != nil {
+			msg.Info("step = [" + step + "]" + " error = [" + e.Err.Error() + "]")
+		} else {
+			return
+		}
+	}
+
+	if err != nil {
+		msg.Info("step = [" + step + "]" + " error = [" + err.Error() + "]")
 	}
 }

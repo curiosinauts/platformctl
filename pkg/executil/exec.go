@@ -7,7 +7,7 @@ import (
 )
 
 // Execute parses out command and executes it
-func Execute(message string, debug bool) string {
+func Execute(message string, debug bool) (string, error) {
 	cmd, args := GetCommandAndArgs(message)
 
 	if debug {
@@ -17,16 +17,12 @@ func Execute(message string, debug bool) string {
 	}
 
 	output, err := Exec(cmd, args)
-	if err != nil && debug {
-		fmt.Println("Error     : " + err.Error())
-		fmt.Println()
-	}
-	return output
+	return output, err
 }
 
 // Exec executes commands
 func Exec(cmd string, args []string) (string, error) {
-	output, err := exec.Command(cmd, args...).Output()
+	output, err := exec.Command(cmd, args...).CombinedOutput()
 	if err != nil {
 		return string(output), err
 	}

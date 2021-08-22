@@ -3,15 +3,12 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"github.com/curiosinauts/platformctl/internal/msg"
-	"github.com/heroku/docker-registry-client/registry"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-	"log"
-	"net/http"
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/curiosinauts/platformctl/pkg/regutil"
+	"github.com/spf13/cobra"
 )
 
 var nextTagCmdDebug bool
@@ -25,15 +22,9 @@ var nextTagCmd = &cobra.Command{
 
 		repository := args[0]
 
-		url, ok := viper.Get("docker_registry_url").(string)
-		if !ok {
-			msg.Failure("getting tag list: PLATFORM_DOCKER_REGISTRY_URL env is required")
-		}
-		eh := ErrorHandler{"getting next docker tag"}
-		hub := NewRegistryClient(url, nextTagCmdDebug)
-
-		tags, err := hub.Tags(repository)
-		eh.HandleError("tags", err)
+		eh := ErrorHandler{"listing tags"}
+		tags, err := regutil.ListTags(repository, nextTagCmdDebug)
+		eh.HandleError("listing tags", err)
 
 		//tags = []string{"30.0.12", "30.0.13", "1.0.10", "1.0.11", "latest"}
 
@@ -88,20 +79,6 @@ var nextTagCmd = &cobra.Command{
 func init() {
 	nextCmd.AddCommand(nextTagCmd)
 	nextTagCmd.Flags().BoolVarP(&nextTagCmdDebug, "debug", "d", false, "Debug this command")
-}
-
-func NewRegistryClient(url string, debug bool) registry.Registry {
-	return registry.Registry{
-		Logf: func(format string, args ...interface{}) {
-			if debug {
-				log.Printf(format, args)
-			}
-		},
-		URL: url,
-		Client: &http.Client{
-			Transport: http.DefaultTransport,
-		},
-	}
 }
 
 type SemanticVersion struct {
