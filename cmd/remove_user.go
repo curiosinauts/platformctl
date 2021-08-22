@@ -67,13 +67,13 @@ var removeUserCmd = &cobra.Command{
 		_, err = executil.Execute("kubectl delete deployment vscode-"+user.Username, removeUserCmdDebug)
 		eh.PrintError("deleting deployment", err)
 
-		repository := "7onetella/vscode-yellow-glade-3518"
-		tags, err := regutil.ListTags(repository, true)
+		repository := "7onetella/vscode-" + user.Username
+		tags, err := regutil.ListTags(repository, false)
 		eh.PrintError("listing tags", err)
 
 		for _, tag := range tags {
 			msg.Info("deleting tag " + tag)
-			err = regutil.DeleteImage(repository, tag, true)
+			err = regutil.DeleteImage(repository, tag, false)
 			eh.PrintError("deleting image", err)
 		}
 

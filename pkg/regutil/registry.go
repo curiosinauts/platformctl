@@ -1,7 +1,6 @@
 package regutil
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -27,8 +26,8 @@ func DeleteImage(repository, tag string, debug bool) error {
 	}
 	hub := NewRegistryClient(url, debug)
 
-	digest, err := hub.ManifestDigest(repository, tag)
-	fmt.Println(digest)
+	manifest, err := hub.ManifestV2(repository, tag)
+	digest := manifest.Config.Digest
 	if err != nil {
 		return err
 	}

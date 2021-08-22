@@ -4,8 +4,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// imageCmd represents the image command
-var imageCmd = &cobra.Command{
+// listImageCmd represents the image command
+var listImageCmd = &cobra.Command{
 	Use:   "image",
 	Short: "Lists images",
 	Long:  `List images`,
@@ -26,5 +26,5 @@ var imageCmd = &cobra.Command{
 }
 
 func init() {
-	listCmd.AddCommand(imageCmd)
+	listCmd.AddCommand(listImageCmd)
 }
