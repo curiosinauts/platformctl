@@ -9,9 +9,10 @@ import (
 
 // afterDockerBuildCmd represents the dockerBuild command
 var afterDockerBuildCmd = &cobra.Command{
-	Use:   "docker-build",
-	Short: "Deletes the files that were generated during before docker-build cmd",
-	Long:  `Deletes the files that were generated during before docker-build cmd`,
+	Use:     "docker-build",
+	Short:   "Deletes the files that were generated during before docker-build cmd",
+	Long:    `Deletes the files that were generated during before docker-build cmd`,
+	PreRunE: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		os.Remove("./.ssh/id_rsa")

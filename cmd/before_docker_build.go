@@ -12,9 +12,10 @@ import (
 
 // beforeDockerBuildCmd represents the dockerBuild command
 var beforeDockerBuildCmd = &cobra.Command{
-	Use:   "docker-build",
-	Short: "Generates files needed by code server docker build",
-	Long:  `Generate files for docker build. Generated files are used to customize code server`,
+	Use:     "docker-build",
+	Short:   "Generates files needed by code server docker build",
+	Long:    `Generate files for docker build. Generated files are used to customize code server`,
+	PreRunE: cobra.MinimumNArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		username := args[0]

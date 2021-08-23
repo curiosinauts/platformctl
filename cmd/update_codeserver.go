@@ -11,9 +11,10 @@ import (
 
 // codeserverCmd represents the codeserver command
 var codeserverCmd = &cobra.Command{
-	Use:   "codeserver",
-	Short: "Updates code server for given user",
-	Long:  `Updates code server for given user`,
+	Use:     "codeserver",
+	Short:   "Updates code server for given user",
+	Long:    `Updates code server for given user`,
+	PreRunE: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		eh := ErrorHandler{"updating code server"}

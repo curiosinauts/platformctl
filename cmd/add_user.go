@@ -18,9 +18,10 @@ import (
 
 // addUserCmd represents the user command
 var addUserCmd = &cobra.Command{
-	Use:   "user",
-	Short: "Adds user",
-	Long:  `Adds user to the platform`,
+	Use:     "user",
+	Short:   "Adds user",
+	Long:    `Adds user to the platform`,
+	PreRunE: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		email := args[0]

@@ -17,9 +17,10 @@ var removeUserCmdDebug bool
 
 // removeUserCmd represents the user command
 var removeUserCmd = &cobra.Command{
-	Use:   "user",
-	Short: "Removes user from the platform",
-	Long:  `Removes user from the platform`,
+	Use:     "user",
+	Short:   "Removes user from the platform",
+	Long:    `Removes user from the platform`,
+	PreRunE: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		email := args[0]

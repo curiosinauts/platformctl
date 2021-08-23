@@ -15,9 +15,10 @@ var nextTagCmdDebug bool
 
 // nextTagCmd represents the tag command
 var nextTagCmd = &cobra.Command{
-	Use:   "tag",
-	Short: "Generates next docker tag",
-	Long:  `Generates next docker tag`,
+	Use:     "tag",
+	Short:   "Generates next docker tag",
+	Long:    `Generates next docker tag`,
+	PreRunE: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		repository := args[0]

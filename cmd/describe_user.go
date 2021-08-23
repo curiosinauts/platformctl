@@ -10,9 +10,10 @@ import (
 
 // describeUserCmd represents the user command
 var describeUserCmd = &cobra.Command{
-	Use:   "user",
-	Short: "Describes the given user",
-	Long:  `Desribes the given user`,
+	Use:     "user",
+	Short:   "Describes the given user",
+	Long:    `Describes the given user`,
+	PreRunE: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println()
 
