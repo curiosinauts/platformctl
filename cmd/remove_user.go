@@ -13,8 +13,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var removeUserCmdDebug bool
-
 // removeUserCmd represents the user command
 var removeUserCmd = &cobra.Command{
 	Use:     "user",
@@ -59,13 +57,13 @@ var removeUserCmd = &cobra.Command{
 		err = gitClient.RemoveUser(user.Username)
 		eh.PrintError("removing user from gitea", err)
 
-		_, err = executil.Execute("kubectl delete ingress vscode-"+user.Username, removeUserCmdDebug)
+		_, err = executil.Execute("kubectl delete ingress vscode-"+user.Username, debug)
 		eh.PrintError("deleting ingress", err)
 
-		_, err = executil.Execute("kubectl delete service vscode-"+user.Username, removeUserCmdDebug)
+		_, err = executil.Execute("kubectl delete service vscode-"+user.Username, debug)
 		eh.PrintError("deleting service", err)
 
-		_, err = executil.Execute("kubectl delete deployment vscode-"+user.Username, removeUserCmdDebug)
+		_, err = executil.Execute("kubectl delete deployment vscode-"+user.Username, debug)
 		eh.PrintError("deleting deployment", err)
 
 		repository := "7onetella/vscode-" + user.Username
@@ -84,5 +82,4 @@ var removeUserCmd = &cobra.Command{
 
 func init() {
 	removeCmd.AddCommand(removeUserCmd)
-	removeCmd.Flags().BoolVarP(&removeUserCmdDebug, "debug", "d", false, "Debug this command")
 }

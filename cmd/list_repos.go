@@ -22,7 +22,7 @@ var listReposCmd = &cobra.Command{
 			msg.Failure("getting tag list: PLATFORMCTL_DOCKER_REGISTRY_URL env is required")
 		}
 		eh := ErrorHandler{"getting next docker tag"}
-		hub := regutil.NewRegistryClient(url, nextTagCmdDebug)
+		hub := regutil.NewRegistryClient(url, debug)
 
 		repositories, err := hub.Repositories()
 		eh.HandleError("checking manifest", err)

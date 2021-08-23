@@ -13,6 +13,20 @@ import (
 	"github.com/spf13/viper"
 )
 
+func NewRegistryClient(url string, debug bool) registry.Registry {
+	return registry.Registry{
+		Logf: func(format string, args ...interface{}) {
+			if debug {
+				log.Printf(format, args...)
+			}
+		},
+		URL: url,
+		Client: &http.Client{
+			Transport: http.DefaultTransport,
+		},
+	}
+}
+
 func ListTags(repository string, debug bool) ([]string, error) {
 	url, ok := viper.Get("docker_registry_url").(string)
 	if !ok {
@@ -37,20 +51,6 @@ func DeleteImage(repository, tag string, debug bool) error {
 
 	digest := digest.Digest(s)
 	return hub.DeleteManifest(repository, digest)
-}
-
-func NewRegistryClient(url string, debug bool) registry.Registry {
-	return registry.Registry{
-		Logf: func(format string, args ...interface{}) {
-			if debug {
-				log.Printf(format, args...)
-			}
-		},
-		URL: url,
-		Client: &http.Client{
-			Transport: http.DefaultTransport,
-		},
-	}
 }
 
 func DigestV2(repository, reference string) (string, error) {

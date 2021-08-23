@@ -11,8 +11,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var nextTagCmdDebug bool
-
 // nextTagCmd represents the tag command
 var nextTagCmd = &cobra.Command{
 	Use:     "tag",
@@ -24,12 +22,12 @@ var nextTagCmd = &cobra.Command{
 		repository := args[0]
 
 		eh := ErrorHandler{"listing tags"}
-		tags, err := regutil.ListTags(repository, nextTagCmdDebug)
+		tags, err := regutil.ListTags(repository, debug)
 		eh.HandleError("listing tags", err)
 
 		//tags = []string{"30.0.12", "30.0.13", "1.0.10", "1.0.11", "latest"}
 
-		if nextTagCmdDebug {
+		if debug {
 			fmt.Println(tags)
 		}
 
@@ -62,7 +60,7 @@ var nextTagCmd = &cobra.Command{
 			return false
 		})
 
-		if nextTagCmdDebug {
+		if debug {
 			fmt.Println(versions)
 		}
 
@@ -79,7 +77,6 @@ var nextTagCmd = &cobra.Command{
 
 func init() {
 	nextCmd.AddCommand(nextTagCmd)
-	nextTagCmd.Flags().BoolVarP(&nextTagCmdDebug, "debug", "d", false, "Debug this command")
 }
 
 // SemanticVersion is a struct for semantic version
