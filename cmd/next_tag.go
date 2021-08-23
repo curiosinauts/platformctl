@@ -81,12 +81,14 @@ func init() {
 	nextTagCmd.Flags().BoolVarP(&nextTagCmdDebug, "debug", "d", false, "Debug this command")
 }
 
+// SemanticVersion is a struct for semantic version
 type SemanticVersion struct {
 	Major int
 	Minor int
 	Patch int
 }
 
+// NewSemanticVersion creates a new instance of semantic version
 func NewSemanticVersion(version string) (SemanticVersion, error) {
 	if strings.HasSuffix(version, "v") {
 		version = version[1:]

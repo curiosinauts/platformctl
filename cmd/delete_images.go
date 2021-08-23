@@ -7,10 +7,13 @@ import (
 )
 
 // deleteImageCmd represents the image command
-var deleteImageCmd = &cobra.Command{
-	Use:   "image",
-	Short: "Deletes docker image from private registry",
-	Long:  `Deletes docker image from private registry`,
+var deleteImagesCmd = &cobra.Command{
+	Use:        "images",
+	Short:      "Deletes docker image from private registry",
+	Long:       `Deletes docker image from private registry`,
+	ArgAliases: []string{"repository"},
+	PreRunE:    cobra.MinimumNArgs(1),
+	ValidArgs:  []string{"repository"},
 	Run: func(cmd *cobra.Command, args []string) {
 		repository := args[0]
 
@@ -27,5 +30,5 @@ var deleteImageCmd = &cobra.Command{
 }
 
 func init() {
-	deleteCmd.AddCommand(deleteImageCmd)
+	deleteCmd.AddCommand(deleteImagesCmd)
 }
