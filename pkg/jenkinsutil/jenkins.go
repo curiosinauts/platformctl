@@ -3,7 +3,6 @@ package jenkinsutil
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/spf13/viper"
 	"time"
 
@@ -68,7 +67,6 @@ func (j Jenkins) BuildJob(jobName string, option map[string]string) (bool, error
 	}
 
 	for build.IsRunning(ctx) {
-		fmt.Print(".")
 		time.Sleep(1 * time.Second)
 	}
 
