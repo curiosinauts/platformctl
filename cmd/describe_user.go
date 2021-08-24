@@ -20,7 +20,7 @@ var describeUserCmd = &cobra.Command{
 		email := args[0]
 		userService := database.NewUserService(db)
 
-		eh := ErrorHandler{"removing user"}
+		eh := ErrorHandler{"describing user"}
 
 		user, dberr := userService.FindUserByHashedEmail(crypto.Hashed(email))
 		eh.HandleError("retrieving user by email", dberr)

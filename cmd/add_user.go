@@ -13,7 +13,6 @@ import (
 	"github.com/curiosinauts/platformctl/pkg/database"
 	"github.com/sethvargo/go-password/password"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // addUserCmd represents the user command
@@ -117,20 +116,16 @@ var addUserCmd = &cobra.Command{
 		result, dberr = userService.UpdateProfile(user)
 		eh.HandleError("updating user profile", dberr)
 
+		jenkins, err := jenkinsutil.NewJenkins()
+		eh.HandleError("accessing Jenkins job", err)
+
 		option := map[string]string{
 			"USERNAME": user.Username,
 		}
-		jenkinsAPIKey := viper.Get("jenkins_api_key").(string)
-		jenkinsURL := viper.Get("jenkins_url").(string)
-		jenkins, err := jenkinsutil.NewJenkins(jenkinsURL, "admin", jenkinsAPIKey)
-		eh.HandleError("accessing Jenkins job", err)
-
 		_, err = jenkins.BuildJob("codeserver", option)
 		eh.HandleError("calling Jenkins job to build codeserver instance", err)
 
 		msg.Success("adding user")
-
-		msg.Info("username: " + randomUsername)
 	},
 }
 

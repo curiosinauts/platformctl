@@ -55,7 +55,6 @@ var removeUserCmd = &cobra.Command{
 		eh.PrintError("listing tags", err)
 
 		for _, tag := range tags {
-			msg.Info("deleting tag " + tag)
 			err = registryClient.DeleteImage(repository, tag, debug)
 			eh.PrintError("deleting image", err)
 		}
