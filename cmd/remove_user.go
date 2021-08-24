@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"github.com/spf13/viper"
-
 	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/curiosinauts/platformctl/pkg/crypto"
 	"github.com/curiosinauts/platformctl/pkg/executil"
@@ -28,9 +26,7 @@ var removeUserCmd = &cobra.Command{
 
 		user, dberr := userService.FindUserByHashedEmail(crypto.Hashed(email))
 
-		accessToken := viper.Get("gitea_access_token").(string)
-		giteaURL := viper.Get("gitea_url").(string)
-		gitClient, err := giteautil.NewGitClient(accessToken, giteaURL)
+		gitClient, err := giteautil.NewGitClient()
 		eh.PrintError("instantiating git client", err)
 
 		err = gitClient.DeleteUserRepo(user.Username)
@@ -51,13 +47,16 @@ var removeUserCmd = &cobra.Command{
 		output, err = executil.Execute("kubectl delete deployment vscode-"+user.Username, debug)
 		eh.PrintErrorWithOutput("deleting deployment", err, output)
 
+		registryClient, err := regutil.NewRegistryClient(debug)
+		eh.PrintError("getting registry client", err)
+
 		repository := "7onetella/vscode-" + user.Username
-		tags, err := regutil.ListTags(repository, false)
+		tags, err := registryClient.ListTags(repository, debug)
 		eh.PrintError("listing tags", err)
 
 		for _, tag := range tags {
 			msg.Info("deleting tag " + tag)
-			err = regutil.DeleteImage(repository, tag, false)
+			err = registryClient.DeleteImage(repository, tag, debug)
 			eh.PrintError("deleting image", err)
 		}
 

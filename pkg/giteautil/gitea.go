@@ -3,13 +3,16 @@ package giteautil
 import (
 	"code.gitea.io/sdk/gitea"
 	"github.com/curiosinauts/platformctl/pkg/database"
+	"github.com/spf13/viper"
 )
 
 type GitClient struct {
 	api *gitea.Client
 }
 
-func NewGitClient(accessToken, giteaURL string) (*GitClient, error) {
+func NewGitClient() (*GitClient, error) {
+	accessToken := viper.Get("gitea_access_token").(string)
+	giteaURL := viper.Get("gitea_url").(string)
 	api, err := gitea.NewClient(giteaURL, gitea.SetToken(accessToken))
 	if err != nil {
 		return nil, err

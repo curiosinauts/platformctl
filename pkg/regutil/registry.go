@@ -6,15 +6,23 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/docker/distribution/manifest/schema2"
 	"github.com/heroku/docker-registry-client/registry"
 	"github.com/opencontainers/go-digest"
 	"github.com/spf13/viper"
 )
 
-func NewRegistryClient(url string, debug bool) registry.Registry {
-	return registry.Registry{
+type RegistryClient struct {
+	api *registry.Registry
+}
+
+func NewRegistryClient(debug bool) (*RegistryClient, error) {
+	url, ok := viper.Get("docker_registry_url").(string)
+	if !ok {
+		return nil, errors.New("error while getting PLATFORMCTL_DOCKER_REGISTRY_URL env value")
+	}
+
+	registry := &registry.Registry{
 		Logf: func(format string, args ...interface{}) {
 			if debug {
 				log.Printf(format, args...)
@@ -25,34 +33,30 @@ func NewRegistryClient(url string, debug bool) registry.Registry {
 			Transport: http.DefaultTransport,
 		},
 	}
+
+	return &RegistryClient{api: registry}, nil
 }
 
-func ListTags(repository string, debug bool) ([]string, error) {
-	url, ok := viper.Get("docker_registry_url").(string)
-	if !ok {
-		msg.Failure("getting tag list: PLATFORM_DOCKER_REGISTRY_URL env is required")
-	}
-	hub := NewRegistryClient(url, debug)
-
-	return hub.Tags(repository)
+func (r *RegistryClient) ListTags(repository string, debug bool) ([]string, error) {
+	return r.api.Tags(repository)
 }
 
-func DeleteImage(repository, tag string, debug bool) error {
-	url, ok := viper.Get("docker_registry_url").(string)
-	if !ok {
-		msg.Failure("getting tag list: PLATFORM_DOCKER_REGISTRY_URL env is required")
-	}
-	hub := NewRegistryClient(url, debug)
-
+func (r *RegistryClient) DeleteImage(repository, tag string, debug bool) error {
 	s, err := DigestV2(repository, tag)
 	if err != nil {
 		return err
 	}
 
 	digest := digest.Digest(s)
-	return hub.DeleteManifest(repository, digest)
+	return r.api.DeleteManifest(repository, digest)
 }
 
+func (r *RegistryClient) Repositories() ([]string, error) {
+	return r.api.Repositories()
+}
+
+// DigestV2 is needed to handling missing functionality from registry.Registry. This client library repo is inactive and
+// fails to return correct digest v2.
 func DigestV2(repository, reference string) (string, error) {
 	base, ok := viper.Get("docker_registry_url").(string)
 	if !ok {

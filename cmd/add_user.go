@@ -101,9 +101,7 @@ var addUserCmd = &cobra.Command{
 		})
 		eh.HandleError("ide_runtime_install insert", dberr)
 
-		accessToken := viper.Get("gitea_access_token").(string)
-		giteaURL := viper.Get("gitea_url").(string)
-		gitClient, err := giteautil.NewGitClient(accessToken, giteaURL)
+		gitClient, err := giteautil.NewGitClient()
 		eh.HandleError("instantiating git client", err)
 
 		err = gitClient.AddUser(user)

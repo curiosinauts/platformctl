@@ -18,12 +18,15 @@ var deleteImagesCmd = &cobra.Command{
 		repository := args[0]
 
 		eh := ErrorHandler{"deleting docker image from private repository"}
-		tags, err := regutil.ListTags(repository, false)
+
+		registryClient, err := regutil.NewRegistryClient(debug)
+		eh.PrintError("getting registry client", err)
+		tags, err := registryClient.ListTags(repository, debug)
 		eh.PrintError("listing tags", err)
 
 		for _, tag := range tags {
 			msg.Info("deleting tag " + tag)
-			err = regutil.DeleteImage(repository, tag, false)
+			err = registryClient.DeleteImage(repository, tag, debug)
 			eh.PrintError("deleting image", err)
 		}
 	},

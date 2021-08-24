@@ -22,7 +22,10 @@ var nextTagCmd = &cobra.Command{
 		repository := args[0]
 
 		eh := ErrorHandler{"listing tags"}
-		tags, err := regutil.ListTags(repository, debug)
+		registryClient, err := regutil.NewRegistryClient(debug)
+		eh.HandleError("getting registry client", err)
+
+		tags, err := registryClient.ListTags(repository, debug)
 		eh.HandleError("listing tags", err)
 
 		//tags = []string{"30.0.12", "30.0.13", "1.0.10", "1.0.11", "latest"}
