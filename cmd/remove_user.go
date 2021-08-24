@@ -28,21 +28,6 @@ var removeUserCmd = &cobra.Command{
 
 		user, dberr := userService.FindUserByHashedEmail(crypto.Hashed(email))
 
-		dberr = userService.DeleteALLIDERuntimeInstallsForUser(user.ID)
-		eh.PrintError("delete user ide runtime installs", dberr)
-
-		dberr = userService.DeleteALLIDEReposForUser(user.ID)
-		eh.PrintError("delete user ide repos", dberr)
-
-		dberr = userService.DeleteALLUserIDEsForUser(user.ID)
-		eh.PrintError("delete user ides", dberr)
-
-		dberr = userService.DeleteALLUserReposForUser(user.ID)
-		eh.PrintError("delete user repos", dberr)
-
-		dberr = userService.Delete(user.ID)
-		eh.PrintError("delete user", dberr)
-
 		accessToken := viper.Get("gitea_access_token").(string)
 		giteaURL := viper.Get("gitea_url").(string)
 		gitClient, err := giteautil.NewGitClient(accessToken, giteaURL)
@@ -76,7 +61,22 @@ var removeUserCmd = &cobra.Command{
 			eh.PrintError("deleting image", err)
 		}
 
-		// msg.Success("removing user")
+		dberr = userService.DeleteALLIDERuntimeInstallsForUser(user.ID)
+		eh.PrintError("delete user ide runtime installs", dberr)
+
+		dberr = userService.DeleteALLIDEReposForUser(user.ID)
+		eh.PrintError("delete user ide repos", dberr)
+
+		dberr = userService.DeleteALLUserIDEsForUser(user.ID)
+		eh.PrintError("delete user ides", dberr)
+
+		dberr = userService.DeleteALLUserReposForUser(user.ID)
+		eh.PrintError("delete user repos", dberr)
+
+		dberr = userService.Delete(user.ID)
+		eh.PrintError("delete user", dberr)
+
+		msg.Success("removing user")
 	},
 }
 
