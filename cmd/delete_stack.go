@@ -17,14 +17,14 @@ var deleteStackCmd = &cobra.Command{
 		username := args[0]
 
 		eh := ErrorHandler{"deleting stack"}
-		_, err := executil.Execute("kubectl delete ingress vscode-"+username, debug)
-		eh.HandleError("deleting ingress", err)
+		output, err := executil.Execute("kubectl delete ingress vscode-"+username, debug)
+		eh.HandleErrorWithOutput("deleting ingress", err, output)
 
-		_, err = executil.Execute("kubectl delete service vscode-"+username, debug)
-		eh.HandleError("deleting service", err)
+		output, err = executil.Execute("kubectl delete service vscode-"+username, debug)
+		eh.HandleErrorWithOutput("deleting service", err, output)
 
-		_, err = executil.Execute("kubectl delete deployment vscode-"+username, debug)
-		eh.HandleError("deleting deployment", err)
+		output, err = executil.Execute("kubectl delete deployment vscode-"+username, debug)
+		eh.HandleErrorWithOutput("deleting deployment", err, output)
 
 		msg.Success("deleting stack")
 	},

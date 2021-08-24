@@ -113,6 +113,44 @@ func (eh ErrorHandler) HandleError(step string, err error) {
 	}
 }
 
+// HandleErrorWithOutput handles the given error and prints output
+func (eh ErrorHandler) HandleErrorWithOutput(step string, err error, output string) {
+	var e *database.DBError
+	if errors.As(err, &e) {
+		if e != nil {
+			msg.Info("step = [" + step + "]" + " error = [" + e.Err.Error() + "] output = [" + output + "]")
+			msg.Failure(eh.message)
+			os.Exit(1)
+		} else {
+			return
+		}
+	}
+
+	if err != nil {
+		msg.Info("step = [" + step + "]" + " error = [" + err.Error() + "] output = [" + output + "]")
+		msg.Failure(eh.message)
+		os.Exit(1)
+	}
+}
+
+// PrintErrorWithOutput prints the given error and output
+func (eh ErrorHandler) PrintErrorWithOutput(step string, err error, output string) {
+	var e *database.DBError
+	if errors.As(err, &e) {
+		if e != nil {
+			msg.Info("step = [" + step + "]" + " error = [" + e.Err.Error() + "] output = [" + output + "]")
+			msg.Failure(eh.message)
+		} else {
+			return
+		}
+	}
+
+	if err != nil {
+		msg.Info("step = [" + step + "]" + " error = [" + err.Error() + "] output = [" + output + "]")
+		msg.Failure(eh.message)
+	}
+}
+
 // PrintError prints the error, no exit
 func (eh ErrorHandler) PrintError(step string, err error) {
 	var e *database.DBError

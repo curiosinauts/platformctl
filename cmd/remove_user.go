@@ -42,14 +42,14 @@ var removeUserCmd = &cobra.Command{
 		err = gitClient.RemoveUser(user.Username)
 		eh.PrintError("removing user from gitea", err)
 
-		_, err = executil.Execute("kubectl delete ingress vscode-"+user.Username, debug)
-		eh.PrintError("deleting ingress", err)
+		output, err := executil.Execute("kubectl delete ingress vscode-"+user.Username, debug)
+		eh.PrintErrorWithOutput("deleting ingress", err, output)
 
-		_, err = executil.Execute("kubectl delete service vscode-"+user.Username, debug)
-		eh.PrintError("deleting service", err)
+		output, err = executil.Execute("kubectl delete service vscode-"+user.Username, debug)
+		eh.PrintErrorWithOutput("deleting service", err, output)
 
-		_, err = executil.Execute("kubectl delete deployment vscode-"+user.Username, debug)
-		eh.PrintError("deleting deployment", err)
+		output, err = executil.Execute("kubectl delete deployment vscode-"+user.Username, debug)
+		eh.PrintErrorWithOutput("deleting deployment", err, output)
 
 		repository := "7onetella/vscode-" + user.Username
 		tags, err := regutil.ListTags(repository, false)
