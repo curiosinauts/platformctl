@@ -6,6 +6,7 @@ import (
 	"github.com/curiosinauts/platformctl/pkg/executil"
 	"github.com/curiosinauts/platformctl/pkg/giteautil"
 	"github.com/curiosinauts/platformctl/pkg/regutil"
+	"github.com/curiosinauts/platformctl/pkg/sshutil"
 
 	"github.com/curiosinauts/platformctl/pkg/database"
 	"github.com/spf13/cobra"
@@ -58,6 +59,10 @@ var removeUserCmd = &cobra.Command{
 			err = registryClient.DeleteImage(repository, tag, debug)
 			eh.PrintError("deleting image", err)
 		}
+
+		output, err = sshutil.RemoteSSHExec("vm-docker-registry", "22", "debian",
+			"sudo rm -rf /var/lib/registry/docker/registry/v2/repositories/7onetella/vscode-"+user.Username)
+		eh.PrintErrorWithOutput("deleting docker repo folder", err, output)
 
 		dberr = userService.DeleteALLIDERuntimeInstallsForUser(user.ID)
 		eh.PrintError("delete user ide runtime installs", dberr)
