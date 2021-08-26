@@ -74,26 +74,25 @@ INSERT INTO ide (id, name) VALUES (4, 'goland');
 
 
 INSERT INTO runtime_install (id, name, script_body) VALUES (1, 'emberjs', '# ember
-  sudo sudo npm install -g ember-cli
+ sudo sudo npm install -g ember-cli
 ');
 INSERT INTO runtime_install (id, name, script_body) VALUES (2, 'tmux', '# tmux
-  sudo apt-get install -y tmux
-  echo -e "
-  alias s=''tmux new -A -s shared''" >> /home/coder/.zshrc
+sudo apt-get install -y tmux
+echo -e "\nalias s=''tmux new -A -s shared''" >> /home/coder/.zshrc
 ');
 INSERT INTO runtime_install (id, name, script_body) VALUES (3, 'github cli', '# github cli gh install
-  curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
-  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-  sudo apt-get update
-  sudo apt-get install gh
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt-get update
+sudo apt-get install gh
 ');
 INSERT INTO runtime_install (id, name, script_body) VALUES (4, 'poetry', '# poetry
-  curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
-  echo -e "export PATH="\$HOME/.poetry/bin:\$PATH"" >> ~/.zshrc
+curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
+echo -e "\nexport PATH="\$HOME/.poetry/bin:\$PATH"" >> ~/.zshrc
 ');
 INSERT INTO runtime_install (id, name, script_body) VALUES (5, 'postgres', '# vag dependencies
-  sudo apt-get install -y postgresql
-  sudo apt-get install -y libpq-dev
+sudo apt-get install -y postgresql
+sudo apt-get install -y libpq-dev
 ');
 
 `
