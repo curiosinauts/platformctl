@@ -128,15 +128,17 @@ func (u UserService) FindRuntimeInstallByName(name string) (RuntimeInstall, *DBE
 	return runtimeInstall, nil
 }
 
-func (u UserService) FindUserIDEsByUserID(userID int64) ([]int64, *DBError) {
+func (u UserService) FindUserIDEsByUserID(userID int64) ([]string, *DBError) {
 	db := u.DB
-	userIDEIDs := make([]int64, 0, 10)
-	sql := "SELECT id FROM user_ide WHERE user_id=$1"
-	err := db.Select(&userIDEIDs, sql, userID)
+	userIDEs := make([]string, 0, 10)
+	sql := `SELECT name FROM ide WHERE id in ( 
+		SELECT ide_id FROM user_ide WHERE user_id=$1
+	)`
+	err := db.Select(&userIDEs, sql, userID)
 	if err != nil {
-		return userIDEIDs, &DBError{sql, err}
+		return userIDEs, &DBError{sql, err}
 	}
-	return userIDEIDs, nil
+	return userIDEs, nil
 }
 
 func (u UserService) FindUserReposUserID(userID int64) ([]int64, *DBError) {
@@ -184,6 +186,27 @@ func (u UserService) FindUserIDERuntimeInstallsByUserAndIDE(username string, ide
 	db := u.DB
 	runtimeInstalls := []string{}
 	sql := `SELECT script_body FROM runtime_install WHERE id in (
+        SELECT runtime_install_id FROM ide_runtime_install WHERE user_ide_id = (
+                SELECT 
+                        id as user_ide_id 
+                FROM 
+                        user_ide 
+                WHERE 
+                        user_id = (SELECT id as user_id FROM curiosity.user WHERE username = $1) AND
+                        ide_id = (SELECT id ide_id FROM ide WHERE name = $2)       
+        )
+)`
+	err := db.Select(&runtimeInstalls, sql, username, ide)
+	if err != nil {
+		return []string{}, &DBError{sql, err}
+	}
+	return runtimeInstalls, nil
+}
+
+func (u UserService) FindUserIDERuntimeInstallNamesByUserAndIDE(username string, ide string) ([]string, *DBError) {
+	db := u.DB
+	runtimeInstalls := []string{}
+	sql := `SELECT name FROM runtime_install WHERE id in (
         SELECT runtime_install_id FROM ide_runtime_install WHERE user_ide_id = (
                 SELECT 
                         id as user_ide_id 
