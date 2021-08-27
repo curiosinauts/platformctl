@@ -53,8 +53,6 @@ var addUserCmd = &cobra.Command{
 			fmt.Printf("public key         : \n%s", publicKey)
 		}
 
-		userService := database.NewUserService(db)
-
 		user := database.User{
 			Username:    randomUsername,
 			Password:    randomPassword,
@@ -80,12 +78,7 @@ var addUserCmd = &cobra.Command{
 		})
 
 		if len(addUserCmdRepos) > 0 {
-			for _, repo := range addUserCmdRepos {
-				_, dberr = userService.AddUserRepo(database.UserRepo{
-					URI:    repo,
-					UserID: userID,
-				})
-			}
+			AddUserRepos(user.ID, addUserCmdRepos)
 		}
 
 		ide, dberr := userService.FindIDEByName("vscode")
@@ -100,17 +93,13 @@ var addUserCmd = &cobra.Command{
 		userIDEID, err := result.LastInsertId()
 		eh.HandleError("user_ide new id", err)
 
+		_, dberr = userService.AddIDERepo(database.IDERepo{
+			UserIDEID: userIDEID,
+			URI:       repoURI,
+		})
+
 		if len(addUserCmdRepos) > 0 {
-			_, dberr = userService.AddIDERepo(database.IDERepo{
-				UserIDEID: userIDEID,
-				URI:       repoURI,
-			})
-			for _, repo := range addUserCmdRepos {
-				_, dberr = userService.AddIDERepo(database.IDERepo{
-					UserIDEID: userIDEID,
-					URI:       repo,
-				})
-			}
+			AddIDERepos(ide.ID, addUserCmdRepos)
 		}
 
 		eh.HandleError("ide_repo insert", dberr)
@@ -151,6 +140,32 @@ var addUserCmd = &cobra.Command{
 
 		msg.Success("adding user")
 	},
+}
+
+func AddUserRepos(userID int64, repos []string) *database.DBError {
+	for _, repo := range repos {
+		_, dberr := userService.AddUserRepo(database.UserRepo{
+			URI:    repo,
+			UserID: userID,
+		})
+		if dberr != nil {
+			return dberr
+		}
+	}
+	return nil
+}
+
+func AddIDERepos(userIDEID int64, repos []string) *database.DBError {
+	for _, repo := range repos {
+		_, dberr := userService.AddIDERepo(database.IDERepo{
+			UserIDEID: userIDEID,
+			URI:       repo,
+		})
+		if dberr != nil {
+			return dberr
+		}
+	}
+	return nil
 }
 
 func init() {

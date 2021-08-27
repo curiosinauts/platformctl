@@ -17,6 +17,7 @@ import (
 var cfgFile string
 var debug bool
 var db *sqlx.DB
+var userService database.UserService
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -60,6 +61,7 @@ func initDB() {
 	if debug {
 		fmt.Printf("database_conn : %s\n", viper.Get("database_conn"))
 	}
+	userService = database.NewUserService(db)
 }
 
 // initConfig reads in config file and ENV variables if set.
