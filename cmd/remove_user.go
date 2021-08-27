@@ -60,7 +60,7 @@ var removeUserCmd = &cobra.Command{
 			eh.PrintError("deleting image", err)
 		}
 
-		output, err = sshutil.RemoteSSHExec("vm-docker-registry", "22", "debian",
+		output, err = sshutil.RemoteSSHExec("vm-docker-registry.curiosityworks.org", "22", "debian",
 			"sudo rm -rf /var/lib/registry/docker/registry/v2/repositories/7onetella/vscode-"+user.Username)
 		eh.PrintErrorWithOutput("deleting docker repo folder", err, output)
 

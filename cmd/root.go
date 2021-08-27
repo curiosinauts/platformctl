@@ -140,7 +140,6 @@ func (eh ErrorHandler) PrintErrorWithOutput(step string, err error, output strin
 	if errors.As(err, &e) {
 		if e != nil {
 			msg.Info("step = [" + step + "]" + " error = [" + e.Err.Error() + "] output = [" + output + "]")
-			msg.Failure(eh.message)
 		} else {
 			return
 		}
@@ -148,7 +147,6 @@ func (eh ErrorHandler) PrintErrorWithOutput(step string, err error, output strin
 
 	if err != nil {
 		msg.Info("step = [" + step + "]" + " error = [" + err.Error() + "] output = [" + output + "]")
-		msg.Failure(eh.message)
 	}
 }
 

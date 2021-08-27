@@ -19,6 +19,14 @@ func WriteBytesToFile(bytes []byte, path string) error {
 	return nil
 }
 
+func ReadFileToBytes(path string) ([]byte, error) {
+	bytes, err := ioutil.ReadFile(path)
+	if err != nil {
+		return bytes, err
+	}
+	return bytes, nil
+}
+
 func DoesPathExists(path string) bool {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		// path/to/whatever does not exist

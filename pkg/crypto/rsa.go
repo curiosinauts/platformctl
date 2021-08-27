@@ -6,8 +6,11 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
+	"fmt"
+	"github.com/curiosinauts/platformctl/pkg/io"
 	"golang.org/x/crypto/ssh"
 	"log"
+	"os"
 )
 
 // CREDIT: https://www.systutorials.com/how-to-generate-rsa-private-and-public-key-pair-in-go-lang/
@@ -115,4 +118,22 @@ func generatePublicKey(privatekey *rsa.PublicKey) ([]byte, error) {
 	pubKeyBytes := ssh.MarshalAuthorizedKey(publicRsaKey)
 
 	return pubKeyBytes, nil
+}
+
+func ReadExistingRSASSHKeys() ([]byte, []byte) {
+	var privateKeys, publicKeys []byte
+	home, err := os.UserHomeDir()
+	privateKeys, err = io.ReadFileToBytes(fmt.Sprintf("%s/.ssh/id_rsa", home))
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	publicKeys, err = io.ReadFileToBytes(fmt.Sprintf("%s/.ssh/id_rsa.pub", home))
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	return privateKeys, publicKeys
 }

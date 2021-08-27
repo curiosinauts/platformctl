@@ -15,6 +15,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var addUserCmdUseExistingKeys bool
+var addUserCmdRepos []string
+
 // addUserCmd represents the user command
 var addUserCmd = &cobra.Command{
 	Use:     "user",
@@ -37,6 +40,9 @@ var addUserCmd = &cobra.Command{
 		randomEmail := fmt.Sprintf("%s@example.com", randomUsername)
 
 		privateKey, publicKey := crypto.GenerateRSASSHKeys()
+		if addUserCmdUseExistingKeys {
+			privateKey, publicKey = crypto.ReadExistingRSASSHKeys()
+		}
 
 		if debug {
 			fmt.Printf("hashed email       : %s\n", hashedEmail)
@@ -73,6 +79,15 @@ var addUserCmd = &cobra.Command{
 			UserID: userID,
 		})
 
+		if len(addUserCmdRepos) > 0 {
+			for _, repo := range addUserCmdRepos {
+				_, dberr = userService.AddUserRepo(database.UserRepo{
+					URI:    repo,
+					UserID: userID,
+				})
+			}
+		}
+
 		ide, dberr := userService.FindIDEByName("vscode")
 		eh.HandleError("finding ide", dberr)
 
@@ -85,10 +100,19 @@ var addUserCmd = &cobra.Command{
 		userIDEID, err := result.LastInsertId()
 		eh.HandleError("user_ide new id", err)
 
-		_, dberr = userService.AddIDERepo(database.IDERepo{
-			UserIDEID: userIDEID,
-			URI:       repoURI,
-		})
+		if len(addUserCmdRepos) > 0 {
+			_, dberr = userService.AddIDERepo(database.IDERepo{
+				UserIDEID: userIDEID,
+				URI:       repoURI,
+			})
+			for _, repo := range addUserCmdRepos {
+				_, dberr = userService.AddIDERepo(database.IDERepo{
+					UserIDEID: userIDEID,
+					URI:       repo,
+				})
+			}
+		}
+
 		eh.HandleError("ide_repo insert", dberr)
 
 		runtimeInstall, dberr := userService.FindRuntimeInstallByName("tmux")
@@ -131,4 +155,6 @@ var addUserCmd = &cobra.Command{
 
 func init() {
 	addCmd.AddCommand(addUserCmd)
+	addUserCmd.Flags().BoolVarP(&addUserCmdUseExistingKeys, "using-existing-keys", "u", false, "use existing PKI")
+	addUserCmd.Flags().StringArrayVarP(&addUserCmdRepos, "repo", "r", []string{}, "-r https://example-repo.com/foo")
 }
