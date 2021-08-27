@@ -106,6 +106,17 @@ func (u UserService) Get(id int64) (User, *DBError) {
 	return user, nil
 }
 
+func (u UserService) FindIDEByID(id int64) (IDE, *DBError) {
+	db := u.DB
+	ide := IDE{}
+	sql := "SELECT * FROM ide WHERE id=$1"
+	err := db.Get(&ide, sql, id)
+	if err != nil {
+		return ide, &DBError{sql, err}
+	}
+	return ide, nil
+}
+
 func (u UserService) FindIDEByName(name string) (IDE, *DBError) {
 	db := u.DB
 	ide := IDE{}
@@ -117,6 +128,17 @@ func (u UserService) FindIDEByName(name string) (IDE, *DBError) {
 	return ide, nil
 }
 
+func (u UserService) FindRuntimeInstallByID(id int64) (RuntimeInstall, *DBError) {
+	db := u.DB
+	runtimeInstall := RuntimeInstall{}
+	sql := "SELECT * FROM runtime_install WHERE id=$1"
+	err := db.Get(&runtimeInstall, sql, id)
+	if err != nil {
+		return runtimeInstall, &DBError{sql, err}
+	}
+	return runtimeInstall, nil
+}
+
 func (u UserService) FindRuntimeInstallByName(name string) (RuntimeInstall, *DBError) {
 	db := u.DB
 	runtimeInstall := RuntimeInstall{}
@@ -126,6 +148,18 @@ func (u UserService) FindRuntimeInstallByName(name string) (RuntimeInstall, *DBE
 		return runtimeInstall, &DBError{sql, err}
 	}
 	return runtimeInstall, nil
+}
+
+// FindUserIDEsByUser finds UserIDE by user
+func (u UserService) FindUserIDEsByUser(user User) ([]UserIDE, *DBError) {
+	db := u.DB
+	userIDEs := []UserIDE{}
+	sql := `SELECT * FROM user_ide WHERE user_id=$1`
+	err := db.Select(&userIDEs, sql, user.ID)
+	if err != nil {
+		return userIDEs, &DBError{sql, err}
+	}
+	return userIDEs, nil
 }
 
 func (u UserService) FindUserIDEsByUserID(userID int64) ([]string, *DBError) {
@@ -222,6 +256,17 @@ func (u UserService) FindUserIDERuntimeInstallNamesByUserAndIDE(username string,
 		return []string{}, &DBError{sql, err}
 	}
 	return runtimeInstalls, nil
+}
+
+func (u UserService) FindIDERuntimeInstallsByUserIDE(userIDE UserIDE) ([]IDERuntimeInstall, *DBError) {
+	db := u.DB
+	ideRuntimeInstalls := []IDERuntimeInstall{}
+	sql := `SELECT * FROM ide_runtime_install WHERE user_ide_id = $1`
+	err := db.Select(&ideRuntimeInstalls, sql, userIDE.ID)
+	if err != nil {
+		return ideRuntimeInstalls, &DBError{sql, err}
+	}
+	return ideRuntimeInstalls, nil
 }
 
 func (u UserService) Delete(id int64) *DBError {

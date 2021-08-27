@@ -99,6 +99,7 @@ func (eh ErrorHandler) HandleError(step string, err error) {
 	if errors.As(err, &e) {
 		if e != nil {
 			msg.Info("step = [" + step + "]" + " error = [" + e.Err.Error() + "]")
+			msg.Info("sql = [" + e.Query + "]")
 			msg.Failure(eh.message)
 			os.Exit(1)
 		} else {
