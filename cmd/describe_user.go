@@ -16,7 +16,6 @@ var describeUserCmd = &cobra.Command{
 	Long:    `Describes the given user`,
 	PreRunE: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println()
 
 		email := args[0]
 		userService := database.NewUserService(db)
