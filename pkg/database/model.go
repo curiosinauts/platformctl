@@ -3,17 +3,19 @@ package database
 import "fmt"
 
 type User struct {
-	ID          int64  `db:"id"`
-	GoogleID    string `db:"google_id"`
-	Username    string `db:"username"`
-	Password    string `db:"password"`
-	Email       string `db:"email"`
-	HashedEmail string `db:"hashed_email"`
-	IsActive    bool   `db:"is_active"`
-	PrivateKey  string `db:"private_key"`
-	PublicKey   string `db:"public_key"`
-	PublicKeyID int64  `db:"public_key_id"`
-	DockerTag   string
+	ID              int64  `db:"id"`
+	GoogleID        string `db:"google_id"`
+	Username        string `db:"username"`
+	Password        string `db:"password"`
+	Email           string `db:"email"`
+	HashedEmail     string `db:"hashed_email"`
+	IsActive        bool   `db:"is_active"`
+	PrivateKey      string `db:"private_key"`
+	PublicKey       string `db:"public_key"`
+	PublicKeyID     int64  `db:"public_key_id"`
+	DockerTag       string
+	RuntimeInstalls []string
+	Repos           []string
 }
 
 func (s User) String() string {
