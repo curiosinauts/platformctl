@@ -17,6 +17,8 @@ import (
 
 var addUserCmdUseExistingKeys bool
 var addUserCmdRepos []string
+var addUserCmdUsername string
+var addUserCmdEmail string
 
 // addUserCmd represents the user command
 var addUserCmd = &cobra.Command{
@@ -26,18 +28,24 @@ var addUserCmd = &cobra.Command{
 	PreRunE: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		email := args[0]
+		originalEmail := args[0]
 
-		hashedEmail := crypto.Hashed(email)
+		hashedEmail := crypto.Hashed(originalEmail)
 
-		randomUsername := haikunator.New().Haikunate()
+		username := haikunator.New().Haikunate()
+		if len(addUserCmdUsername) > 0 {
+			username = addUserCmdUsername
+		}
 
 		randomPassword, err := password.Generate(32, 10, 0, false, false)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		randomEmail := fmt.Sprintf("%s@example.com", randomUsername)
+		email := fmt.Sprintf("%s@curiosityworks.org", username)
+		if len(addUserCmdEmail) > 0 {
+			email = addUserCmdEmail
+		}
 
 		privateKey, publicKey := crypto.GenerateRSASSHKeys()
 		if addUserCmdUseExistingKeys {
@@ -46,17 +54,17 @@ var addUserCmd = &cobra.Command{
 
 		if debug {
 			fmt.Printf("hashed email       : %s\n", hashedEmail)
-			fmt.Printf("random_username    : %s\n", randomUsername)
+			fmt.Printf("random_username    : %s\n", username)
 			fmt.Printf("generated password : %s\n", randomPassword)
-			fmt.Printf("random_email       : %s\n", randomEmail)
+			fmt.Printf("random_email       : %s\n", email)
 			fmt.Printf("private key        : \n%s", privateKey)
 			fmt.Printf("public key         : \n%s", publicKey)
 		}
 
 		user := database.User{
-			Username:    randomUsername,
+			Username:    username,
 			Password:    randomPassword,
-			Email:       randomEmail,
+			Email:       email,
 			HashedEmail: hashedEmail,
 			PrivateKey:  string(privateKey),
 			PublicKey:   string(publicKey),
@@ -67,7 +75,7 @@ var addUserCmd = &cobra.Command{
 
 		result, dberr := userService.Add(user)
 		eh.HandleError("user insert", dberr)
-		repoURI := fmt.Sprintf("ssh://gitea@git-ssh.curiosityworks.org:2222/%s/project.git", randomUsername)
+		repoURI := fmt.Sprintf("ssh://gitea@git-ssh.curiosityworks.org:2222/%s/project.git", username)
 		userID, err := result.LastInsertId()
 		eh.HandleError("user id", err)
 		user.ID = userID
@@ -99,7 +107,7 @@ var addUserCmd = &cobra.Command{
 		})
 
 		if len(addUserCmdRepos) > 0 {
-			AddIDERepos(ide.ID, addUserCmdRepos)
+			AddIDERepos(userIDEID, addUserCmdRepos)
 		}
 
 		eh.HandleError("ide_repo insert", dberr)
@@ -172,4 +180,6 @@ func init() {
 	addCmd.AddCommand(addUserCmd)
 	addUserCmd.Flags().BoolVarP(&addUserCmdUseExistingKeys, "using-existing-keys", "u", false, "use existing PKI")
 	addUserCmd.Flags().StringArrayVarP(&addUserCmdRepos, "repo", "r", []string{}, "-r https://example-repo.com/foo")
+	addUserCmd.Flags().StringVar(&addUserCmdUsername, "username", "", "specify username instead of auto generated")
+	addUserCmd.Flags().StringVar(&addUserCmdEmail, "email", "", "specify email instead of auto generated")
 }

@@ -8,7 +8,6 @@ import (
 	"github.com/curiosinauts/platformctl/pkg/regutil"
 	"github.com/curiosinauts/platformctl/pkg/sshutil"
 
-	"github.com/curiosinauts/platformctl/pkg/database"
 	"github.com/spf13/cobra"
 )
 
@@ -21,7 +20,6 @@ var removeUserCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		email := args[0]
-		userService := database.NewUserService(db)
 
 		eh := ErrorHandler{"removing user"}
 
