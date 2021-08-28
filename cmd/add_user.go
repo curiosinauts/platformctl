@@ -6,6 +6,7 @@ import (
 
 	"github.com/curiosinauts/platformctl/pkg/giteautil"
 	"github.com/curiosinauts/platformctl/pkg/jenkinsutil"
+	"github.com/google/uuid"
 
 	haikunator "github.com/atrox/haikunatorgo/v2"
 	"github.com/curiosinauts/platformctl/internal/msg"
@@ -18,7 +19,7 @@ import (
 var addUserCmdUseExistingKeys bool
 var addUserCmdRepos []string
 var addUserCmdUsername string
-var addUserCmdEmail string
+var addUserCmdUseEmail bool
 
 // addUserCmd represents the user command
 var addUserCmd = &cobra.Command{
@@ -43,8 +44,8 @@ var addUserCmd = &cobra.Command{
 		}
 
 		email := fmt.Sprintf("%s@curiosityworks.org", username)
-		if len(addUserCmdEmail) > 0 {
-			email = addUserCmdEmail
+		if addUserCmdUseEmail {
+			email = originalEmail
 		}
 
 		privateKey, publicKey := crypto.GenerateRSASSHKeys()
@@ -142,6 +143,7 @@ var addUserCmd = &cobra.Command{
 
 		option := map[string]string{
 			"USERNAME": user.Username,
+			"VERSION":  uuid.NewString(),
 		}
 		_, err = jenkins.BuildJob("codeserver", option)
 		eh.HandleError("calling Jenkins job to build codeserver instance", err)
@@ -178,8 +180,8 @@ func AddIDERepos(userIDEID int64, repos []string) *database.DBError {
 
 func init() {
 	addCmd.AddCommand(addUserCmd)
-	addUserCmd.Flags().BoolVarP(&addUserCmdUseExistingKeys, "using-existing-keys", "u", false, "use existing PKI")
+	addUserCmd.Flags().BoolVar(&addUserCmdUseExistingKeys, "pki", false, "use existing PKI")
 	addUserCmd.Flags().StringArrayVarP(&addUserCmdRepos, "repo", "r", []string{}, "-r https://example-repo.com/foo")
 	addUserCmd.Flags().StringVar(&addUserCmdUsername, "username", "", "specify username instead of auto generated")
-	addUserCmd.Flags().StringVar(&addUserCmdEmail, "email", "", "specify email instead of auto generated")
+	addUserCmd.Flags().BoolVarP(&addUserCmdUseEmail, "real-email", "e", false, "use real email instead of auto generated")
 }

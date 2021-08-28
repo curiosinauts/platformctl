@@ -8,6 +8,7 @@ require (
 	github.com/bndr/gojenkins v1.1.0
 	github.com/docker/distribution v2.7.1+incompatible // indirect
 	github.com/docker/libtrust v0.0.0-20160708172513-aabc10ec26b7 // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/heroku/docker-registry-client v0.0.0-20190909225348-afc9e1acc3d5
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/lib/pq v1.2.0
