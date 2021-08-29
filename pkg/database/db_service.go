@@ -2,6 +2,11 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
+	"strings"
+
+	"github.com/curiosinauts/platformctl/pkg/reflectutil"
+
 	"github.com/jmoiron/sqlx"
 )
 
@@ -82,6 +87,22 @@ func (u DBService) PrepareNamed(sql string, arg interface{}) (sql.Result, *DBErr
 	}
 
 	return result, nil
+}
+
+func (u DBService) Insert(tableName string, i interface{}) (sql.Result, *DBError) {
+	dbTags := reflectutil.ListDBTagsFor(i)
+
+	insertStatement := "INSERT INTO %s (%s) VALUES (%s) RETURNING id"
+
+	columns := strings.Join(dbTags, ",")
+	var dbTagsWithColon []string
+	for _, tag := range dbTags {
+		dbTagsWithColon = append(dbTagsWithColon, ":"+tag)
+	}
+	values := strings.Join(dbTagsWithColon, ",")
+
+	insertStatement = fmt.Sprintf(insertStatement, tableName, columns, values)
+	return u.PrepareNamed(insertStatement, i)
 }
 
 func (u DBService) Delete(sql string, id int64) *DBError {

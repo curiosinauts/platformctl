@@ -74,7 +74,7 @@ var addUserCmd = &cobra.Command{
 
 		eh := ErrorHandler{"adding user"}
 
-		result, dberr := userService.Add(user)
+		result, dberr := userService.AddUser(user)
 		eh.HandleError("user insert", dberr)
 		repoURI := fmt.Sprintf("ssh://gitea@git-ssh.curiosityworks.org:2222/%s/project.git", username)
 		userID, err := result.LastInsertId()

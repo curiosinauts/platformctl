@@ -15,84 +15,44 @@ func NewUserService(db *sqlx.DB) UserService {
 	return UserService{&dbService}
 }
 
-func (u UserService) Add(user User) (sql.Result, *DBError) {
-	sql := `
-		INSERT INTO curiosity.user
-			  (google_id, username, password, email, hashed_email, is_active, private_key, public_key) 
-		VALUES 
-			  (:google_id, :username, :password, :email, :hashed_email, :is_active, :private_key, :public_key)
-		RETURNING
-			  id
-	`
-	return u.PrepareNamed(sql, &user)
+func (u UserService) AddUser(user User) (sql.Result, *DBError) {
+	return u.Insert("curiosity.user", &user)
 }
 
 func (u UserService) AddUserRepo(userRepo UserRepo) (sql.Result, *DBError) {
-	sql := `
-		INSERT INTO user_repo
-			  (uri, user_id) 
-		VALUES 
-			  (:uri, :user_id)
-		RETURNING
-			  id
-	`
-	return u.PrepareNamed(sql, &userRepo)
+	return u.Insert("user_repo", &userRepo)
 }
 
 func (u UserService) AddIDERepo(ideRepo IDERepo) (sql.Result, *DBError) {
-	sql := `
-		INSERT INTO ide_repo
-			  (user_ide_id, uri) 
-		VALUES 
-			  (:user_ide_id, :uri)
-		RETURNING
-			  id
-	`
-	return u.PrepareNamed(sql, &ideRepo)
+	return u.Insert("ide_repo", &ideRepo)
 }
 
 func (u UserService) AddUserIDE(userIDE UserIDE) (sql.Result, *DBError) {
-	sql := `
-		INSERT INTO user_ide
-			  (user_id, ide_id) 
-		VALUES 
-			  (:user_id, :ide_id)
-		RETURNING
-			  id
-	`
-	return u.PrepareNamed(sql, &userIDE)
+	return u.Insert("user_ide", &userIDE)
 }
 
 func (u UserService) AddIDERuntimeInstall(ideRuntimeInstall IDERuntimeInstall) (sql.Result, *DBError) {
-	sql := `
-		INSERT INTO ide_runtime_install
-			  (user_ide_id, runtime_install_id) 
-		VALUES 
-			  (:user_ide_id, :runtime_install_id)
-		RETURNING
-			  id
-	`
-	return u.PrepareNamed(sql, &ideRuntimeInstall)
+	return u.Insert("ide_runtime_install", &ideRuntimeInstall)
 }
 
 func (u UserService) DeleteALLUserIDEsForUser(userID int64) *DBError {
-	sql := `DELETE FROM user_ide WHERE id IN (SELECT id FROM user_ide WHERE user_id = $1)`
-	return u.DBService.Delete(sql, userID)
+	query := `DELETE FROM user_ide WHERE id IN (SELECT id FROM user_ide WHERE user_id = $1)`
+	return u.DBService.Delete(query, userID)
 }
 
 func (u UserService) DeleteALLUserReposForUser(userID int64) *DBError {
-	sql := `DELETE FROM user_repo WHERE id IN (SELECT id FROM user_repo WHERE user_id = $1)`
-	return u.DBService.Delete(sql, userID)
+	query := `DELETE FROM user_repo WHERE id IN (SELECT id FROM user_repo WHERE user_id = $1)`
+	return u.DBService.Delete(query, userID)
 }
 
 func (u UserService) DeleteALLIDERuntimeInstallsForUser(userID int64) *DBError {
-	sql := `DELETE FROM ide_runtime_install WHERE id IN (SELECT id FROM ide_runtime_install WHERE user_ide_id in (SELECT id FROM user_ide WHERE user_id = $1))`
-	return u.DBService.Delete(sql, userID)
+	query := `DELETE FROM ide_runtime_install WHERE id IN (SELECT id FROM ide_runtime_install WHERE user_ide_id in (SELECT id FROM user_ide WHERE user_id = $1))`
+	return u.DBService.Delete(query, userID)
 }
 
 func (u UserService) DeleteALLIDEReposForUser(userID int64) *DBError {
-	sql := `DELETE FROM ide_repo WHERE id IN (SELECT id FROM ide_repo WHERE user_ide_id in (SELECT id FROM user_ide WHERE user_id = $1))`
-	return u.DBService.Delete(sql, userID)
+	query := `DELETE FROM ide_repo WHERE id IN (SELECT id FROM ide_repo WHERE user_ide_id in (SELECT id FROM user_ide WHERE user_id = $1))`
+	return u.DBService.Delete(query, userID)
 }
 
 func (u UserService) Get(id int64) (User, *DBError) {
