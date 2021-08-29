@@ -168,6 +168,7 @@ func (u UserService) FindUserIDERuntimeInstallNamesByUserAndIDE(username string,
 	return i.(*[]string), dberr
 }
 
+// FindIDERuntimeInstallsByUserIDE finds ide runtime install by user ide
 func (u UserService) FindIDERuntimeInstallsByUserIDE(userIDE UserIDE) ([]IDERuntimeInstall, *DBError) {
 	db := u.DB
 	ideRuntimeInstalls := []IDERuntimeInstall{}
@@ -179,6 +180,7 @@ func (u UserService) FindIDERuntimeInstallsByUserIDE(userIDE UserIDE) ([]IDERunt
 	return ideRuntimeInstalls, nil
 }
 
+// DeleteUser deletes user
 func (u UserService) DeleteUser(id int64) *DBError {
 	db := u.DB
 	sql := "DELETE FROM curiosity.user WHERE id=$1"
@@ -189,6 +191,7 @@ func (u UserService) DeleteUser(id int64) *DBError {
 	return nil
 }
 
+// FindUserByHashedEmail finds user by hashed email
 func (u UserService) FindUserByHashedEmail(hashedEmail string) (User, *DBError) {
 	db := u.DB
 	user := User{}
@@ -200,6 +203,7 @@ func (u UserService) FindUserByHashedEmail(hashedEmail string) (User, *DBError) 
 	return user, nil
 }
 
+// FindUserByUsername finds user by username
 func (u UserService) FindUserByUsername(username string) (User, *DBError) {
 	db := u.DB
 	user := User{}
@@ -211,6 +215,7 @@ func (u UserService) FindUserByUsername(username string) (User, *DBError) {
 	return user, nil
 }
 
+// FindUserByGoogleID finds user by google id
 func (u UserService) FindUserByGoogleID(googleIDHashed string) (User, *DBError) {
 	db := u.DB
 	user := User{}
@@ -222,6 +227,7 @@ func (u UserService) FindUserByGoogleID(googleIDHashed string) (User, *DBError) 
 	return user, nil
 }
 
+// List lists all users
 func (u UserService) List() ([]User, *DBError) {
 	db := u.DB
 	users := []User{}
@@ -233,6 +239,7 @@ func (u UserService) List() ([]User, *DBError) {
 	return users, nil
 }
 
+// UpdateProfile updates user profile
 func (u UserService) UpdateProfile(user User) (sql.Result, *DBError) {
 	sql := `
 		UPDATE 
@@ -245,6 +252,7 @@ func (u UserService) UpdateProfile(user User) (sql.Result, *DBError) {
 	return u.NamedExec(sql, &user)
 }
 
+// UpdateGoogleID updates user google id
 func (u UserService) UpdateGoogleID(user User) (sql.Result, *DBError) {
 	sql := `
 		UPDATE 

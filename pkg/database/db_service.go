@@ -10,28 +10,34 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// DBService db service
 type DBService struct {
 	*sqlx.DB
 }
 
+// NewDBService instantiates new db service
 func NewDBService(db *sqlx.DB) DBService {
 	return DBService{db}
 }
 
+// DBResult for capturing result information for inserts
 type DBResult struct {
 	id       int64
 	affected int64
 	err      error
 }
 
+// LastInsertId last inserted id
 func (dbr DBResult) LastInsertId() (int64, error) {
 	return dbr.id, dbr.err
 }
 
+// RowsAffected number of rows affected
 func (dbr DBResult) RowsAffected() (int64, error) {
 	return dbr.affected, dbr.err
 }
 
+// NamedExec wrapper for sqls.NamedExec.
 func (u DBService) NamedExec(sql string, obj interface{}) (sql.Result, *DBError) {
 	db := u.DB
 	tx := db.MustBegin()
@@ -50,6 +56,7 @@ func (u DBService) NamedExec(sql string, obj interface{}) (sql.Result, *DBError)
 	return result, nil
 }
 
+// MustExec wrapper for sqlx.MustExec
 func (u DBService) MustExec(sql string, args ...interface{}) *DBError {
 	db := u.DB
 	tx := db.MustBegin()
@@ -64,6 +71,7 @@ func (u DBService) MustExec(sql string, args ...interface{}) *DBError {
 	return nil
 }
 
+// PrepareNamed wrapper for sqlx.PrepareNamed. However, it handles retrieval of new id
 func (u DBService) PrepareNamed(sql string, arg interface{}) (sql.Result, *DBError) {
 	db := u.DB
 	result := DBResult{}
@@ -89,6 +97,7 @@ func (u DBService) PrepareNamed(sql string, arg interface{}) (sql.Result, *DBErr
 	return result, nil
 }
 
+// Insert convenience function for insert statement
 func (u DBService) Insert(tableName string, i interface{}) (sql.Result, *DBError) {
 	dbTags := reflectutil.ListDBTagsFor(i)
 
@@ -105,6 +114,7 @@ func (u DBService) Insert(tableName string, i interface{}) (sql.Result, *DBError
 	return u.PrepareNamed(insertStatement, i)
 }
 
+// Delete convenience function for delete statement
 func (u DBService) Delete(sql string, id int64) *DBError {
 	db := u.DB
 	_, err := db.Exec(sql, id)
@@ -114,6 +124,7 @@ func (u DBService) Delete(sql string, id int64) *DBError {
 	return nil
 }
 
+// FindByID finds by id
 func (u DBService) FindByID(tableName string, id int64, i interface{}) (interface{}, *DBError) {
 	db := u.DB
 	sql := fmt.Sprintf("SELECT * FROM %s WHERE id=$1", tableName)
@@ -124,6 +135,7 @@ func (u DBService) FindByID(tableName string, id int64, i interface{}) (interfac
 	return i, nil
 }
 
+// FindByName finds by name
 func (u DBService) FindByName(tableName string, name string, i interface{}) (interface{}, *DBError) {
 	db := u.DB
 	sql := fmt.Sprintf("SELECT * FROM %s WHERE name=$1", tableName)
