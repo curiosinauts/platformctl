@@ -113,3 +113,23 @@ func (u DBService) Delete(sql string, id int64) *DBError {
 	}
 	return nil
 }
+
+func (u DBService) FindByID(tableName string, id int64, i interface{}) (interface{}, *DBError) {
+	db := u.DB
+	sql := fmt.Sprintf("SELECT * FROM %s WHERE id=$1", tableName)
+	err := db.Get(i, sql, id)
+	if err != nil {
+		return nil, &DBError{sql, err}
+	}
+	return i, nil
+}
+
+func (u DBService) FindByName(tableName string, name string, i interface{}) (interface{}, *DBError) {
+	db := u.DB
+	sql := fmt.Sprintf("SELECT * FROM %s WHERE name=$1", tableName)
+	err := db.Get(i, sql, name)
+	if err != nil {
+		return nil, &DBError{sql, err}
+	}
+	return i, nil
+}

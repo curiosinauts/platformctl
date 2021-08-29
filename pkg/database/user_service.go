@@ -6,6 +6,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// UserService manages user data
 type UserService struct {
 	*DBService
 }
@@ -23,12 +24,12 @@ func (u UserService) AddUserRepo(userRepo UserRepo) (sql.Result, *DBError) {
 	return u.Insert("user_repo", &userRepo)
 }
 
-func (u UserService) AddIDERepo(ideRepo IDERepo) (sql.Result, *DBError) {
-	return u.Insert("ide_repo", &ideRepo)
-}
-
 func (u UserService) AddUserIDE(userIDE UserIDE) (sql.Result, *DBError) {
 	return u.Insert("user_ide", &userIDE)
+}
+
+func (u UserService) AddIDERepo(ideRepo IDERepo) (sql.Result, *DBError) {
+	return u.Insert("ide_repo", &ideRepo)
 }
 
 func (u UserService) AddIDERuntimeInstall(ideRuntimeInstall IDERuntimeInstall) (sql.Result, *DBError) {
@@ -55,59 +56,27 @@ func (u UserService) DeleteALLIDEReposForUser(userID int64) *DBError {
 	return u.DBService.Delete(query, userID)
 }
 
-func (u UserService) Get(id int64) (User, *DBError) {
-	db := u.DB
-	user := User{}
-	sql := "SELECT * FROM curiosity.user WHERE id=$1"
-	err := db.Get(&user, sql, id)
-	if err != nil {
-		return user, &DBError{sql, err}
-	}
-	return user, nil
+func (u UserService) FindByIDIDE(id int64) (*IDE, *DBError) {
+	i, dberr := u.FindByID("ide", id, new(IDE))
+	return i.(*IDE), dberr
 }
 
-func (u UserService) FindIDEByID(id int64) (IDE, *DBError) {
-	db := u.DB
-	ide := IDE{}
-	sql := "SELECT * FROM ide WHERE id=$1"
-	err := db.Get(&ide, sql, id)
-	if err != nil {
-		return ide, &DBError{sql, err}
-	}
-	return ide, nil
+// FindByNameIDE finds ide by name
+func (u UserService) FindByNameIDE(name string) (*IDE, *DBError) {
+	i, dberr := u.FindByName("ide", name, new(IDE))
+	return i.(*IDE), dberr
 }
 
-func (u UserService) FindIDEByName(name string) (IDE, *DBError) {
-	db := u.DB
-	ide := IDE{}
-	sql := "SELECT * FROM ide WHERE name=$1"
-	err := db.Get(&ide, sql, name)
-	if err != nil {
-		return ide, &DBError{sql, err}
-	}
-	return ide, nil
+// FindByIDRuntimeInstall finds runtime install by id
+func (u UserService) FindByIDRuntimeInstall(id int64) (*RuntimeInstall, *DBError) {
+	i, dberr := u.FindByID("runtime_install", id, new(RuntimeInstall))
+	return i.(*RuntimeInstall), dberr
 }
 
-func (u UserService) FindRuntimeInstallByID(id int64) (RuntimeInstall, *DBError) {
-	db := u.DB
-	runtimeInstall := RuntimeInstall{}
-	sql := "SELECT * FROM runtime_install WHERE id=$1"
-	err := db.Get(&runtimeInstall, sql, id)
-	if err != nil {
-		return runtimeInstall, &DBError{sql, err}
-	}
-	return runtimeInstall, nil
-}
-
-func (u UserService) FindRuntimeInstallByName(name string) (RuntimeInstall, *DBError) {
-	db := u.DB
-	runtimeInstall := RuntimeInstall{}
-	sql := "SELECT * FROM runtime_install WHERE name=$1"
-	err := db.Get(&runtimeInstall, sql, name)
-	if err != nil {
-		return runtimeInstall, &DBError{sql, err}
-	}
-	return runtimeInstall, nil
+// FindByNameRuntimeInstall finds runtime install by name
+func (u UserService) FindByNameRuntimeInstall(name string) (*RuntimeInstall, *DBError) {
+	i, dberr := u.FindByName("runtime_install", name, new(RuntimeInstall))
+	return i.(*RuntimeInstall), dberr
 }
 
 // FindUserIDEsByUser finds UserIDE by user
@@ -229,7 +198,7 @@ func (u UserService) FindIDERuntimeInstallsByUserIDE(userIDE UserIDE) ([]IDERunt
 	return ideRuntimeInstalls, nil
 }
 
-func (u UserService) Delete(id int64) *DBError {
+func (u UserService) DeleteUser(id int64) *DBError {
 	db := u.DB
 	sql := "DELETE FROM curiosity.user WHERE id=$1"
 	_, err := db.Exec(sql, id)

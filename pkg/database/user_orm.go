@@ -25,11 +25,11 @@ func (uo *UserObject) IDEs() ([]IDE, *DBError) {
 		return ides, dberr
 	}
 	for _, userIDE := range userIDEs {
-		ide, dberr := uo.UserService.FindIDEByID(userIDE.IDEID)
+		ide, dberr := uo.UserService.FindByIDIDE(userIDE.IDEID)
 		if dberr != nil {
 			return ides, dberr
 		}
-		ides = append(ides, ide)
+		ides = append(ides, *ide)
 	}
 	return ides, nil
 }
@@ -77,12 +77,12 @@ func (uo *UserObject) RuntimeInstallsFor(ide IDE) ([]RuntimeInstall, *DBError) {
 				return runtimeInstalls, dberr
 			}
 			for _, ideRuntimeInstall := range ideRuntimeInstalls {
-				runtimeInstall, dberr := uo.UserService.FindRuntimeInstallByID(ideRuntimeInstall.ID)
+				runtimeInstall, dberr := uo.UserService.FindByIDRuntimeInstall(ideRuntimeInstall.ID)
 				if dberr != nil {
 					// most likely not found
 					continue
 				}
-				runtimeInstalls = append(runtimeInstalls, runtimeInstall)
+				runtimeInstalls = append(runtimeInstalls, *runtimeInstall)
 			}
 		}
 	}

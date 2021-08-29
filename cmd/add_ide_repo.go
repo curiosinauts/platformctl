@@ -27,10 +27,10 @@ var addIDERepoCmd = &cobra.Command{
 		eh.HandleError("does user object have ide", dberr)
 
 		if hasIDE && dberr == nil {
-			ide, dberr := userService.FindIDEByName(targetIDEName)
+			ide, dberr := userService.FindByNameIDE(targetIDEName)
 			eh.HandleError("finding ide by name", dberr)
 
-			userIDE, _ := userObject.UserIDE(ide)
+			userIDE, _ := userObject.UserIDE(*ide)
 			if len(addIDERepoCmdRepos) > 0 {
 				AddUserRepos(userObject.ID, addIDERepoCmdRepos)
 				AddIDERepos(userIDE.ID, addIDERepoCmdRepos)

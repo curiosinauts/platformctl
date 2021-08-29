@@ -90,7 +90,7 @@ var addUserCmd = &cobra.Command{
 			AddUserRepos(user.ID, addUserCmdRepos)
 		}
 
-		ide, dberr := userService.FindIDEByName("vscode")
+		ide, dberr := userService.FindByNameIDE("vscode")
 		eh.HandleError("finding ide", dberr)
 
 		result, dberr = userService.AddUserIDE(database.UserIDE{
@@ -113,7 +113,7 @@ var addUserCmd = &cobra.Command{
 
 		eh.HandleError("ide_repo insert", dberr)
 
-		runtimeInstall, dberr := userService.FindRuntimeInstallByName("tmux")
+		runtimeInstall, dberr := userService.FindByNameRuntimeInstall("tmux")
 		eh.HandleError("finding runtime install", dberr)
 
 		_, dberr = userService.AddIDERuntimeInstall(database.IDERuntimeInstall{
