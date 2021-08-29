@@ -14,12 +14,17 @@ type User struct {
 	PublicKey       string `db:"public_key"`
 	PublicKeyID     int64  `db:"public_key_id"`
 	DockerTag       string
+	IDEs            []IDE
 	RuntimeInstalls []string
 	Repos           []string
 }
 
 func (s User) String() string {
 	return fmt.Sprintf("%d: %s", s.ID, s.Username)
+}
+
+func (s User) AddIDE(ide IDE) {
+
 }
 
 type UserRepo struct {

@@ -104,17 +104,6 @@ func (u UserService) FindUserIDEsByUserID(userID int64) ([]string, *DBError) {
 	return userIDEs, nil
 }
 
-func (u UserService) FindUserReposUserID(userID int64) ([]int64, *DBError) {
-	db := u.DB
-	userIDEIDs := make([]int64, 0, 10)
-	sql := "SELECT id FROM user_ide WHERE user_id=$1"
-	err := db.Select(&userIDEIDs, sql, userID)
-	if err != nil {
-		return userIDEIDs, &DBError{sql, err}
-	}
-	return userIDEIDs, nil
-}
-
 func (u UserService) FindIDEReposByUserID(userID int64) ([]int64, *DBError) {
 	db := u.DB
 	userIDEIDs := make([]int64, 0, 10)
