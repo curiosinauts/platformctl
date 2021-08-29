@@ -19,12 +19,8 @@ type User struct {
 	Repos           []string
 }
 
-func (s User) String() string {
-	return fmt.Sprintf("%d: %s", s.ID, s.Username)
-}
-
-func (s User) AddIDE(ide IDE) {
-
+func (u User) String() string {
+	return fmt.Sprintf("%d: %s", u.ID, u.Username)
 }
 
 type UserRepo struct {

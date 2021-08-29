@@ -24,7 +24,7 @@ func (uo *UserObject) IDEs() ([]IDE, *DBError) {
 	if dberr != nil {
 		return ides, dberr
 	}
-	for _, userIDE := range userIDEs {
+	for _, userIDE := range *userIDEs {
 		ide, dberr := uo.UserService.FindByIDIDE(userIDE.IDEID)
 		if dberr != nil {
 			return ides, dberr
@@ -70,7 +70,7 @@ func (uo *UserObject) RuntimeInstallsFor(ide IDE) ([]RuntimeInstall, *DBError) {
 		return runtimeInstalls, dberr
 	}
 
-	for _, userIDE := range userIDEs {
+	for _, userIDE := range *userIDEs {
 		if userIDE.IDEID == ide.ID {
 			ideRuntimeInstalls, dberr := uo.UserService.FindIDERuntimeInstallsByUserIDE(userIDE)
 			if dberr != nil {
@@ -98,7 +98,7 @@ func (uo *UserObject) UserIDE(ide IDE) (UserIDE, *DBError) {
 		return userIDE, dberr
 	}
 
-	for _, userIDE := range userIDEs {
+	for _, userIDE := range *userIDEs {
 		if userIDE.IDEID == ide.ID {
 			return userIDE, nil
 		}

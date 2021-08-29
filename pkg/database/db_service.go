@@ -133,3 +133,13 @@ func (u DBService) FindByName(tableName string, name string, i interface{}) (int
 	}
 	return i, nil
 }
+
+// Select executes sqlx.Select
+func (u DBService) Select(dest interface{}, query string, args ...interface{}) (interface{}, *DBError) {
+	db := u.DB
+	err := db.Select(dest, query, args...)
+	if err != nil {
+		return nil, &DBError{query, err}
+	}
+	return dest, nil
+}

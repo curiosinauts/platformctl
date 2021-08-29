@@ -26,11 +26,11 @@ var listUserCmd = &cobra.Command{
 			username := user.Username
 			ides, dberr := userService.FindUserIDEsByUserID(user.ID)
 			eh.HandleError("finding ides for user "+username, dberr)
-			runtimeInstallNames := []string{}
-			for _, ide := range ides {
+			runtimeInstallNames := &[]string{}
+			for _, ide := range *ides {
 				runtimeInstallNames, dberr = userService.FindUserIDERuntimeInstallNamesByUserAndIDE(username, ide)
 				eh.HandleError("finding runtime installs for ide "+ide, dberr)
-				data = append(data, []string{username, ide, strings.Join(runtimeInstallNames, ",")})
+				data = append(data, []string{username, ide, strings.Join(*runtimeInstallNames, ",")})
 			}
 		}
 
