@@ -5,6 +5,7 @@ import (
 	"log"
 )
 
+// DBError database error
 type DBError struct {
 	Query string `json:"query"`
 	Err   error  `json:"error"`
@@ -23,6 +24,7 @@ func (e *DBError) Error() string {
 	return string(marshaled)
 }
 
+// Log logs the database transaction with query and error
 func (e *DBError) Log(tx string) {
 	log.Printf("%s sql.excute.errored: %#v, sql: %s", tx, e.Err, e.Query)
 }

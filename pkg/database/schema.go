@@ -1,5 +1,6 @@
 package database
 
+// CreateSchema SQL script for creating the schema
 var CreateSchema = `
 CREATE TABLE curiosity.user (
      id           SERIAL NOT NULL,
@@ -97,6 +98,7 @@ sudo apt-get install -y libpq-dev
 
 `
 
+// DropSchema SQL script for dropping the schema
 var DropSchema = `
 DROP TABLE IF EXISTS curiosity.user CASCADE;
 
