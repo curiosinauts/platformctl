@@ -94,6 +94,21 @@ type IDE struct {
 	Name string `db:"name"`
 }
 
+// Meta provides mapping config specific to user
+func (ur *IDE) Meta() MappingConfig {
+	return MappingConfig{TableName: "ide"}
+}
+
+// PrimaryKey returns primary key
+func (ur *IDE) PrimaryKey() int64 {
+	return ur.ID
+}
+
+// SetPrimaryKey updates the primary key value after insert
+func (ur *IDE) SetPrimaryKey(id int64) {
+	ur.ID = id
+}
+
 // IDERepo ide repo
 type IDERepo struct {
 	ID        int64  `db:"id"`

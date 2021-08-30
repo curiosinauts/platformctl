@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -138,6 +139,22 @@ func (u DBService) Delete(sql string, id int64) *DBError {
 		return &DBError{sql, err}
 	}
 
+	return nil
+}
+
+// FindBy finds ide by given where clause
+func (u UserService) FindBy(i interface{}, where string, args ...interface{}) *DBError {
+	o, ok := i.(Mappable)
+	if !ok {
+		return &DBError{Query: "", Err: errors.New("object to save must implement Mappable")}
+	}
+
+	db := u.DB
+	sql := fmt.Sprintf("SELECT * FROM %s WHERE %s", o.Meta().TableName, where)
+	err := db.Get(i, sql, args...)
+	if err != nil {
+		return &DBError{sql, err}
+	}
 	return nil
 }
 

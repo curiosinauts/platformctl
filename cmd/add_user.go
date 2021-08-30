@@ -88,7 +88,8 @@ var addUserCmd = &cobra.Command{
 			AddUserRepos(dbs, user.ID, addUserCmdRepos)
 		}
 
-		ide, dberr := dbs.FindByNameIDE("vscode")
+		ide := new(database.IDE)
+		dberr = dbs.FindBy(ide, "name=$1", "vscode")
 		eh.HandleError("finding ide", dberr)
 
 		userIDE := database.UserIDE{
@@ -120,11 +121,6 @@ var addUserCmd = &cobra.Command{
 			RuntimeInstallID: runtimeInstall.ID,
 		})
 		eh.HandleError("ide_runtime_install insert", dberr)
-
-		if true {
-			msg.Info("adding database record")
-			return
-		}
 
 		gitClient, err := giteautil.NewGitClient()
 		eh.HandleError("instantiating git client", err)
