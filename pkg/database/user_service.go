@@ -49,11 +49,6 @@ func (u UserService) Del(i interface{}) *DBError {
 	return u.Delete(query, o.PrimaryKey())
 }
 
-// AddIDERuntimeInstall adds new ide runtime install
-func (u UserService) AddIDERuntimeInstall(ideRuntimeInstall IDERuntimeInstall) (sql.Result, *DBError) {
-	return u.Insert("ide_runtime_install", &ideRuntimeInstall)
-}
-
 // DeleteALLUserIDEsForUser deletes all user ides for given user
 func (u UserService) DeleteALLUserIDEsForUser(userID int64) *DBError {
 	query := `DELETE FROM user_ide WHERE id IN (SELECT id FROM user_ide WHERE user_id = $1)`

@@ -60,7 +60,7 @@ var addRuntimeInstallCmd = &cobra.Command{
 							UserIDEID:        userIDE.ID,
 							RuntimeInstallID: runtimeInstall.ID,
 						}
-						userService.AddIDERuntimeInstall(ideRuntimeInstall)
+						userService.Save(&ideRuntimeInstall)
 					}
 				}
 			}
