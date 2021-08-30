@@ -20,6 +20,18 @@ func NewDBService(db *sqlx.DB) DBService {
 	return DBService{db}
 }
 
+// MappingConfig provides addtional hints to DBService
+type MappingConfig struct {
+	TableName string
+}
+
+// Mappable structs returns sql specific meta data
+type Mappable interface {
+	Meta() MappingConfig
+	PrimaryKey() int64
+	SetPrimaryKey(int64)
+}
+
 // DBResult for capturing result information for inserts
 type DBResult struct {
 	id       int64
@@ -117,10 +129,15 @@ func (u DBService) Insert(tableName string, i interface{}) (sql.Result, *DBError
 // Delete convenience function for delete statement
 func (u DBService) Delete(sql string, id int64) *DBError {
 	db := u.DB
-	_, err := db.Exec(sql, id)
+	tx := db.MustBegin()
+
+	tx.MustExec(sql, id)
+
+	err := tx.Commit()
 	if err != nil {
 		return &DBError{sql, err}
 	}
+
 	return nil
 }
 
