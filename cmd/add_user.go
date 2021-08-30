@@ -85,7 +85,7 @@ var addUserCmd = &cobra.Command{
 		eh.HandleError("saving new user repo", dberr)
 
 		if len(addUserCmdRepos) > 0 {
-			AddUserRepos(user.ID, addUserCmdRepos)
+			AddUserRepos(dbs, user.ID, addUserCmdRepos)
 		}
 
 		ide, dberr := dbs.FindByNameIDE("vscode")
@@ -107,7 +107,7 @@ var addUserCmd = &cobra.Command{
 		})
 
 		if len(addUserCmdRepos) > 0 {
-			AddIDERepos(userIDE.ID, addUserCmdRepos)
+			AddIDERepos(dbs, userIDE.ID, addUserCmdRepos)
 		}
 
 		eh.HandleError("ide_repo insert", dberr)
@@ -156,9 +156,10 @@ var addUserCmd = &cobra.Command{
 	},
 }
 
-func AddUserRepos(userID int64, repos []string) *database.DBError {
+// AddUserRepos adds user repos
+func AddUserRepos(dbs database.UserService, userID int64, repos []string) *database.DBError {
 	for _, repo := range repos {
-		_, dberr := userService.AddUserRepo(database.UserRepo{
+		dberr := dbs.Save(&database.UserRepo{
 			URI:    repo,
 			UserID: userID,
 		})
@@ -169,9 +170,10 @@ func AddUserRepos(userID int64, repos []string) *database.DBError {
 	return nil
 }
 
-func AddIDERepos(userIDEID int64, repos []string) *database.DBError {
+// AddIDERepos adds ide repos
+func AddIDERepos(dbs database.UserService, userIDEID int64, repos []string) *database.DBError {
 	for _, repo := range repos {
-		_, dberr := userService.AddIDERepo(database.IDERepo{
+		dberr := dbs.Save(&database.IDERepo{
 			UserIDEID: userIDEID,
 			URI:       repo,
 		})

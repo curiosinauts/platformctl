@@ -49,26 +49,6 @@ func (u UserService) Del(i interface{}) *DBError {
 	return u.Delete(query, o.PrimaryKey())
 }
 
-// AddUser adds new user
-func (u UserService) AddUser(user User) (sql.Result, *DBError) {
-	return u.Insert("curiosity.user", &user)
-}
-
-// AddUserRepo adds new user repo
-func (u UserService) AddUserRepo(userRepo UserRepo) (sql.Result, *DBError) {
-	return u.Insert("user_repo", &userRepo)
-}
-
-// AddUserIDE adds new user ide
-func (u UserService) AddUserIDE(userIDE UserIDE) (sql.Result, *DBError) {
-	return u.Insert("user_ide", &userIDE)
-}
-
-// AddIDERepo adds new ide repo
-func (u UserService) AddIDERepo(ideRepo IDERepo) (sql.Result, *DBError) {
-	return u.Insert("ide_repo", &ideRepo)
-}
-
 // AddIDERuntimeInstall adds new ide runtime install
 func (u UserService) AddIDERuntimeInstall(ideRuntimeInstall IDERuntimeInstall) (sql.Result, *DBError) {
 	return u.Insert("ide_runtime_install", &ideRuntimeInstall)
