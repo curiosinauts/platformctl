@@ -10,11 +10,12 @@ import (
 
 // addRuntimeInstallCmd represents the runtimeInstall command
 var addRuntimeInstallCmd = &cobra.Command{
-	Use:     "runtime-install",
+	Use:     "runtime-install {email | username | all} {ide} {runtime install}...",
 	Aliases: []string{"runtime-installs"},
 	Short:   "Adds runtime install to users",
 	Long:    `Adds runtime install to users`,
 	Example: `platformctl add runtime-installs 7onetella@gmail.com vscode tmux,poetry`,
+	Args:    cobra.MinimumNArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 
 		emailOrAll := args[0]

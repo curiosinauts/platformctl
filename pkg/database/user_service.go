@@ -2,8 +2,6 @@ package database
 
 import (
 	"database/sql"
-	"errors"
-	"fmt"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -17,52 +15,6 @@ type UserService struct {
 func NewUserService(db *sqlx.DB) UserService {
 	dbService := NewDBService(db)
 	return UserService{&dbService}
-}
-
-// Save adds new data
-func (u UserService) Save(i interface{}) *DBError {
-	o, ok := i.(Mappable)
-	if !ok {
-		return &DBError{Query: "", Err: errors.New("object to save must implement Mappable")}
-	}
-	result, dberr := u.Insert(o.Meta().TableName, i)
-	if dberr != nil {
-		return dberr
-	}
-
-	id, err := result.LastInsertId()
-	if err != nil {
-		return &DBError{Query: "", Err: errors.New("error retrieving last insert id")}
-	}
-	o.SetPrimaryKey(id)
-	return nil
-}
-
-// Del deletes given data
-func (u UserService) Del(i interface{}) *DBError {
-	o, ok := i.(Mappable)
-	if !ok {
-		return &DBError{Query: "", Err: errors.New("Object to save must implement Mappable")}
-	}
-	query := fmt.Sprintf("DELETE from %s WHERE id = $1", o.Meta().TableName)
-
-	return u.Delete(query, o.PrimaryKey())
-}
-
-// ListEntities all rows of given entity
-func (u UserService) ListEntities(i interface{}, dest interface{}) *DBError {
-	o, ok := i.(Mappable)
-	if !ok {
-		return &DBError{Query: "", Err: errors.New("Object to save must implement Mappable")}
-	}
-	query := fmt.Sprintf("SELECT * FROM %s", o.Meta().TableName)
-
-	db := u.DB
-	err := db.Select(dest, query)
-	if err != nil {
-		return &DBError{query, err}
-	}
-	return nil
 }
 
 // DeleteALLUserIDEsForUser deletes all user ides for given user

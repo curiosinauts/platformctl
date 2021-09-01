@@ -189,3 +189,49 @@ func (u DBService) Select(dest interface{}, query string, args ...interface{}) (
 	}
 	return dest, nil
 }
+
+// Save adds new data
+func (u DBService) Save(i interface{}) *DBError {
+	o, ok := i.(Mappable)
+	if !ok {
+		return &DBError{Query: "", Err: errors.New("object to save must implement Mappable")}
+	}
+	result, dberr := u.Insert(o.Meta().TableName, i)
+	if dberr != nil {
+		return dberr
+	}
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return &DBError{Query: "", Err: errors.New("error retrieving last insert id")}
+	}
+	o.SetPrimaryKey(id)
+	return nil
+}
+
+// Del deletes given data
+func (u DBService) Del(i interface{}) *DBError {
+	o, ok := i.(Mappable)
+	if !ok {
+		return &DBError{Query: "", Err: errors.New("Object to save must implement Mappable")}
+	}
+	query := fmt.Sprintf("DELETE from %s WHERE id = $1", o.Meta().TableName)
+
+	return u.Delete(query, o.PrimaryKey())
+}
+
+// ListEntities all rows of given entity
+func (u DBService) ListEntities(i interface{}, dest interface{}) *DBError {
+	o, ok := i.(Mappable)
+	if !ok {
+		return &DBError{Query: "", Err: errors.New("Object to save must implement Mappable")}
+	}
+	query := fmt.Sprintf("SELECT * FROM %s", o.Meta().TableName)
+
+	db := u.DB
+	err := db.Select(dest, query)
+	if err != nil {
+		return &DBError{query, err}
+	}
+	return nil
+}
