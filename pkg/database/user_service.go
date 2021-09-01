@@ -49,6 +49,22 @@ func (u UserService) Del(i interface{}) *DBError {
 	return u.Delete(query, o.PrimaryKey())
 }
 
+// ListEntities all rows of given entity
+func (u UserService) ListEntities(i interface{}, dest interface{}) *DBError {
+	o, ok := i.(Mappable)
+	if !ok {
+		return &DBError{Query: "", Err: errors.New("Object to save must implement Mappable")}
+	}
+	query := fmt.Sprintf("SELECT * FROM %s", o.Meta().TableName)
+
+	db := u.DB
+	err := db.Select(dest, query)
+	if err != nil {
+		return &DBError{query, err}
+	}
+	return nil
+}
+
 // DeleteALLUserIDEsForUser deletes all user ides for given user
 func (u UserService) DeleteALLUserIDEsForUser(userID int64) *DBError {
 	query := `DELETE FROM user_ide WHERE id IN (SELECT id FROM user_ide WHERE user_id = $1)`

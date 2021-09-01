@@ -159,3 +159,18 @@ type RuntimeInstall struct {
 	Name       string `db:"name"`
 	ScriptBody string `db:"script_body"`
 }
+
+// Meta provides mapping config specific to runtime install
+func (ur *RuntimeInstall) Meta() MappingConfig {
+	return MappingConfig{TableName: "runtime_install"}
+}
+
+// PrimaryKey returns primary key
+func (ur *RuntimeInstall) PrimaryKey() int64 {
+	return ur.ID
+}
+
+// SetPrimaryKey updates the primary key value after insert
+func (ur *RuntimeInstall) SetPrimaryKey(id int64) {
+	ur.ID = id
+}
