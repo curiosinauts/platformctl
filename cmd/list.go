@@ -9,8 +9,6 @@ var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List",
 	Long:  `List`,
-	Run: func(cmd *cobra.Command, args []string) {
-	},
 }
 
 func init() {

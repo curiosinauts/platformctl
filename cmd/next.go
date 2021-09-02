@@ -9,8 +9,6 @@ var nextCmd = &cobra.Command{
 	Use:   "next",
 	Short: "Next",
 	Long:  `Next`,
-	Run: func(cmd *cobra.Command, args []string) {
-	},
 }
 
 func init() {

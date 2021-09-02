@@ -9,8 +9,6 @@ var beforeCmd = &cobra.Command{
 	Use:   "before",
 	Short: "Before",
 	Long:  `Before`,
-	Run: func(cmd *cobra.Command, args []string) {
-	},
 }
 
 func init() {

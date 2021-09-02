@@ -2,11 +2,12 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"strings"
+
 	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/curiosinauts/platformctl/pkg/sshutil"
 	"github.com/spf13/cobra"
-	"os"
-	"strings"
 )
 
 // sshCmd represents the remote command
@@ -15,7 +16,7 @@ var sshCmd = &cobra.Command{
 	Short:   "Executes remote script over SSH",
 	Long:    `Executes remote script over SSH`,
 	Example: `platformctl ssh debian@192.168.0.107:22 "sudo rm -rf /tmp"`,
-	//RunE:  cobra.MinimumNArgs(2),
+	Args:    cobra.MinimumNArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		s := args[0]
 		script := args[1]
@@ -53,5 +54,4 @@ var sshCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(sshCmd)
-	// platformctl ssh debian@192.168.0.107:22 "sudo rm -rf /foo"
 }

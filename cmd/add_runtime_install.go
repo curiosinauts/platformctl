@@ -3,6 +3,7 @@ package cmd
 import (
 	"strings"
 
+	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/curiosinauts/platformctl/pkg/crypto"
 	"github.com/curiosinauts/platformctl/pkg/database"
 	"github.com/spf13/cobra"
@@ -69,6 +70,8 @@ var addRuntimeInstallCmd = &cobra.Command{
 				}
 			}
 		}
+
+		msg.Success("adding runtime installs for users")
 	},
 }
 

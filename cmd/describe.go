@@ -9,8 +9,6 @@ var describeCmd = &cobra.Command{
 	Use:   "describe",
 	Short: "Describe",
 	Long:  `Describe`,
-	Run: func(cmd *cobra.Command, args []string) {
-	},
 }
 
 func init() {

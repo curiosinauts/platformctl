@@ -9,8 +9,6 @@ var createCmd = &cobra.Command{
 	Use:   "create",
 	Short: "Create",
 	Long:  `Create`,
-	Run: func(cmd *cobra.Command, args []string) {
-	},
 }
 
 func init() {

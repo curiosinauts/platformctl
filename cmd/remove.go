@@ -9,8 +9,6 @@ var removeCmd = &cobra.Command{
 	Use:   "remove",
 	Short: "Removes entity from the platfrom",
 	Long:  `Removes entity from the platfrom`,
-	Run: func(cmd *cobra.Command, args []string) {
-	},
 }
 
 func init() {

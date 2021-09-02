@@ -9,8 +9,6 @@ var afterCmd = &cobra.Command{
 	Use:   "after",
 	Short: "After",
 	Long:  `After`,
-	Run: func(cmd *cobra.Command, args []string) {
-	},
 }
 
 func init() {
