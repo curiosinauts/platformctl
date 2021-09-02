@@ -39,7 +39,8 @@ CREATE TABLE user_repo (
 	id SERIAL NOT NULL, 
 	uri CHARACTER VARYING(100), 
 	user_id INTEGER, 
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+	CONSTRAINT userrepo_fk1 FOREIGN KEY (user_id) REFERENCES "user" ("id")	
 );
 
 
@@ -47,7 +48,8 @@ CREATE TABLE ide_repo (
   id SERIAL NOT NULL, 
   user_ide_id INTEGER, 
   uri CHARACTER VARYING(100), 
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  CONSTRAINT iderepo_fk1 FOREIGN KEY (user_ide_id) REFERENCES "user_ide" ("id")  
 );
 
 
@@ -55,7 +57,9 @@ CREATE TABLE user_ide (
 	id SERIAL NOT NULL, 
 	user_id INTEGER, 
 	ide_id INTEGER, 
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+	CONSTRAINT useride_fk1 FOREIGN KEY (user_id) REFERENCES "user" ("id"),
+	CONSTRAINT useride_fk2 FOREIGN KEY (ide_id)  REFERENCES "ide"  ("id")
 );
 
 
@@ -63,7 +67,9 @@ CREATE TABLE ide_runtime_install (
 	id SERIAL NOT NULL, 
 	user_ide_id INTEGER, 
 	runtime_install_id INTEGER, 
-	PRIMARY KEY (id)
+	PRIMARY KEY (id),
+	CONSTRAINT ideruntimeinstall_fk1 FOREIGN KEY (user_ide_id)        REFERENCES "user_ide" ("id"),
+	CONSTRAINT ideruntimeinstall_fk2 FOREIGN KEY (runtime_install_id) REFERENCES "runtime_install" ("id")
 );
 
 
@@ -100,17 +106,17 @@ sudo apt-get install -y libpq-dev
 
 // DropSchema SQL script for dropping the schema
 var DropSchema = `
-DROP TABLE IF EXISTS curiosity.user CASCADE;
+DROP TABLE IF EXISTS ide_runtime_install CASCADE;
+
+DROP TABLE IF EXISTS user_repo;
+
+DROP TABLE IF EXISTS ide_repo CASCADE;
+
+DROP TABLE IF EXISTS user_ide CASCADE;
 
 DROP TABLE IF EXISTS ide CASCADE;
 
 DROP TABLE IF EXISTS runtime_install CASCADE;
 
-DROP TABLE IF EXISTS user_repo;
-
-DROP TABLE IF EXISTS user_ide CASCADE;
-
-DROP TABLE IF EXISTS ide_runtime_install CASCADE;
-
-DROP TABLE IF EXISTS ide_repo CASCADE;
+DROP TABLE IF EXISTS curiosity.user CASCADE;
 `
