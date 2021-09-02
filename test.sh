@@ -10,6 +10,10 @@ echo platformctl add ide-repo 7onetella@gmail.com vscode -r git@github.com:curio
 platformctl add ide-repo 7onetella@gmail.com vscode -r git@github.com:curiosinauts/platformctl.git 
 echo -------------------------------------------------------------------
 
+echo platformctl list ide-repo 7onetella@gmail.com vscode 
+platformctl list ide-repo 7onetella@gmail.com vscode 
+echo -------------------------------------------------------------------
+
 echo platformctl describe user 7onetella@gmail.com
 platformctl describe user 7onetella@gmail.com
 echo -------------------------------------------------------------------
@@ -37,3 +41,7 @@ echo -------------------------------------------------------------------
 echo platformctl remove user 7onetella@gmail.com
 platformctl remove user 7onetella@gmail.com
 echo -------------------------------------------------------------------
+
+echo platformctl list repos
+platformctl list repos
+echo ------------------------------------------------------------------

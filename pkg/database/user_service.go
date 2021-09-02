@@ -108,7 +108,7 @@ func (u UserService) FindUserIDERuntimeInstallNamesByUserAndIDE(username string,
 							user_id = (SELECT id as user_id FROM curiosity.user WHERE username = $1) AND
 							ide_id  = (SELECT id ide_id     FROM ide            WHERE name     = $2)       
 			)
-		)`
+		) ORDER BY name ASC`
 	i, dberr := u.Select(&[]string{}, query, username, ide)
 	return i.(*[]string), dberr
 }

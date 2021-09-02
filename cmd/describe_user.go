@@ -25,6 +25,7 @@ var describeUserCmd = &cobra.Command{
 		dberr := dbs.FindBy(&user, "hashed_email=$1", crypto.Hashed(email))
 		eh.HandleError("retrieving user by email", dberr)
 
+		fmt.Println()
 		fmt.Println("ID          : ", user.ID)
 		fmt.Println("Username    : ", user.Username)
 		fmt.Println("GoogleID    : ", user.GoogleID)
@@ -39,6 +40,23 @@ var describeUserCmd = &cobra.Command{
 			eh.HandleError("finding runtime installs for ide "+ide, dberr)
 			fmt.Println("IDE         : ", ide)
 			fmt.Println("Runtime Ins : ", strings.Join(*runtimeInstallNames, ","))
+
+			ideS := database.IDE{}
+			dberr = dbs.FindBy(&ideS, "name=$1", ide)
+			eh.HandleError("finding ide by name", dberr)
+
+			userIDE := database.UserIDE{}
+			dbs.FindBy(&userIDE, "user_id=$1 AND ide_id=$2", user.ID, ideS.ID)
+			eh.HandleError("finding user ide by user and ide", dberr)
+
+			ideRepos := []database.IDERepo{}
+			dberr = dbs.ListBy("ide_repo", &ideRepos, "user_ide_id=$1", userIDE.ID)
+			eh.HandleError("listing ide repos", dberr)
+
+			fmt.Println("IDE Repos   : ")
+			for _, ideRepo := range ideRepos {
+				fmt.Println("               " + ideRepo.URI)
+			}
 		}
 	},
 }
