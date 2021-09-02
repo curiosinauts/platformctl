@@ -45,3 +45,11 @@ echo -------------------------------------------------------------------
 echo platformctl list repos
 platformctl list repos
 echo ------------------------------------------------------------------
+
+echo platformctl before docker-build autumn-meadow-3972 vscode
+platformctl before docker-build autumn-meadow-3972 vscode
+echo ------------------------------------------------------------------
+
+echo platformctl after docker-build autumn-meadow-3972 vscode
+platformctl after docker-build autumn-meadow-3972 vscode
+echo ------------------------------------------------------------------
