@@ -235,7 +235,7 @@ func (u DBService) List(tableName string, dest interface{}) *DBError {
 
 // ListBy lists all rows of given entity with where clause
 func (u DBService) ListBy(tableName string, dest interface{}, where string, args ...interface{}) *DBError {
-	query := fmt.Sprintf("SELECT * FROM %s %s", tableName, where)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE %s", tableName, where)
 
 	db := u.DB
 	err := db.Select(dest, query, args...)

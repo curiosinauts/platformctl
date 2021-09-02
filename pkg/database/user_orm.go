@@ -79,7 +79,7 @@ func (uo *UserObject) RuntimeInstallsFor(ide IDE) ([]RuntimeInstall, *DBError) {
 	for _, userIDE := range userIDEs {
 		if userIDE.IDEID == ide.ID {
 			ideRuntimeInstalls := []IDERuntimeInstall{}
-			dberr := uo.UserService.ListBy("runtime_install", &ideRuntimeInstalls, "user_ide_id=$1", userIDE.ID)
+			dberr := uo.UserService.ListBy("ide_runtime_install", &ideRuntimeInstalls, "user_ide_id=$1", userIDE.ID)
 			if dberr != nil {
 				return runtimeInstalls, dberr
 			}

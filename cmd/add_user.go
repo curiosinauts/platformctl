@@ -182,8 +182,8 @@ func AddIDERepos(dbs database.UserService, userIDEID int64, repos []string) *dat
 
 func init() {
 	addCmd.AddCommand(addUserCmd)
-	addUserCmd.Flags().BoolVar(&addUserCmdUseExistingKeys, "pki", false, "use existing PKI")
-	addUserCmd.Flags().StringArrayVarP(&addUserCmdRepos, "repo", "r", []string{}, "-r https://example-repo.com/foo")
-	addUserCmd.Flags().StringVar(&addUserCmdUsername, "username", "", "specify username instead of auto generated")
-	addUserCmd.Flags().BoolVarP(&addUserCmdUseEmail, "real-email", "e", false, "use real email instead of auto generated")
+	addUserCmd.Flags().BoolVarP(&addUserCmdUseExistingKeys, "pki", "p", false, "use existing PKI or not")
+	addUserCmd.Flags().BoolVarP(&addUserCmdUseEmail, "email", "e", false, "use real email or not")
+	addUserCmd.Flags().StringVarP(&addUserCmdUsername, "username", "u", "", "specify username")
+	addUserCmd.Flags().StringArrayVarP(&addUserCmdRepos, "repo", "r", []string{}, "specify personal git repo")
 }

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/curiosinauts/platformctl/internal/msg"
 	. "github.com/curiosinauts/platformctl/pkg/database"
 	"github.com/spf13/cobra"
 )
@@ -9,16 +10,18 @@ var addIDERepoCmdRepos []string
 
 // addIDERepoCmd represents the add ide repo command
 var addIDERepoCmd = &cobra.Command{
-	Use:     "ide-repo",
+	Use:     "ide-repo {email} {ide}",
 	Aliases: []string{"ide-repos"},
 	Short:   "Adds ide repo to user",
 	Long:    `Adds ide repo to user`,
+	Args:    cobra.MinimumNArgs(2),
+	Example: `platformctl add ide-repo foo@example.com vscode`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		email := args[0]
 		targetIDEName := args[1]
 
-		eh := ErrorHandler{"adding runtime installs for users"}
+		eh := ErrorHandler{"adding ide-repo for user"}
 
 		userObject, dberr := NewUserObject(userService, email)
 		eh.HandleError("initializing user object", dberr)
@@ -36,6 +39,8 @@ var addIDERepoCmd = &cobra.Command{
 				AddIDERepos(dbs, userIDE.ID, addIDERepoCmdRepos)
 			}
 		}
+
+		msg.Success("adding ide-repo for user")
 	},
 }
 

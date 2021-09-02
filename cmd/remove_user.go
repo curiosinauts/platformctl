@@ -76,7 +76,7 @@ var removeUserCmd = &cobra.Command{
 		dberr = userService.DeleteALLUserReposForUser(user.ID)
 		eh.PrintError("delete user repos", dberr)
 
-		dberr = userService.Del(user)
+		dberr = userService.Del(&user)
 		eh.PrintError("delete user", dberr)
 
 		msg.Success("removing user")
