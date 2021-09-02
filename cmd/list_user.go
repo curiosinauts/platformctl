@@ -18,17 +18,19 @@ var listUserCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		eh := ErrorHandler{"listing users"}
 
-		userService := database.NewUserService(db)
-		users, _ := userService.List()
+		users := &[]database.User{}
+		dberr := dbs.List(&database.User{}, users)
+		eh.HandleError("list users", dberr)
 
-		data := [][]string{}
-		for _, user := range users {
+		var data [][]string
+
+		for _, user := range *users {
 			username := user.Username
-			ides, dberr := userService.FindUserIDEsByUserID(user.ID)
+			ides, dberr := dbs.FindUserIDEsByUserID(user.ID)
 			eh.HandleError("finding ides for user "+username, dberr)
 			runtimeInstallNames := &[]string{}
 			for _, ide := range *ides {
-				runtimeInstallNames, dberr = userService.FindUserIDERuntimeInstallNamesByUserAndIDE(username, ide)
+				runtimeInstallNames, dberr = dbs.FindUserIDERuntimeInstallNamesByUserAndIDE(username, ide)
 				eh.HandleError("finding runtime installs for ide "+ide, dberr)
 				data = append(data, []string{username, ide, strings.Join(*runtimeInstallNames, ",")})
 			}

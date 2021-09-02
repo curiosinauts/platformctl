@@ -29,7 +29,7 @@ var codeserverCmd = &cobra.Command{
 		var dberr *database.DBError
 
 		if emailOrAll == "all" {
-			users, dberr = userService.List()
+			users, dberr = userService.ListUsers()
 			eh.HandleError("retrieving all users", dberr)
 		} else {
 			user, dberr := userService.FindUserByHashedEmail(crypto.Hashed(emailOrAll))

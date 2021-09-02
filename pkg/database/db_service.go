@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"reflect"
 	"strings"
 
 	"github.com/curiosinauts/platformctl/pkg/reflectutil"
@@ -220,18 +221,44 @@ func (u DBService) Del(i interface{}) *DBError {
 	return u.Delete(query, o.PrimaryKey())
 }
 
-// ListEntities all rows of given entity
-func (u DBService) ListEntities(i interface{}, dest interface{}) *DBError {
-	o, ok := i.(Mappable)
-	if !ok {
-		return &DBError{Query: "", Err: errors.New("Object to save must implement Mappable")}
-	}
-	query := fmt.Sprintf("SELECT * FROM %s", o.Meta().TableName)
+// List all rows of given entity
+func (u DBService) List(tableName string, dest interface{}) *DBError {
+	query := fmt.Sprintf("SELECT * FROM %s", tableName)
 
 	db := u.DB
 	err := db.Select(dest, query)
 	if err != nil {
 		return &DBError{query, err}
+	}
+	return nil
+}
+
+func GetMappingConfigFromSlicePointer(dest interface{}) *MappingConfig {
+	items := reflect.ValueOf(dest)
+	if items.Kind() == reflect.Ptr && items.Elem().Kind() == reflect.Slice {
+		itemsDeref := reflect.Indirect(items)
+		for i := 0; i < itemsDeref.Len(); i++ {
+			//fmt.Println("index", i)
+			item := itemsDeref.Index(i)
+			if item.Kind() == reflect.Struct {
+				s := reflect.Indirect(item)
+				for j := 0; j < s.NumField(); j++ {
+					fmt.Println(s.Type().Field(j).Name, ":", s.Field(j).Interface())
+				}
+				for k := 0; k < s.NumMethod(); k++ {
+					m := s.Method(k)
+					fmt.Println("method: ", m, reflect.Indirect(m))
+				}
+				//val := v.MethodByName("Meta").Call([]reflect.Value{})
+				//fmt.Println(val)
+				//if !ok {
+				//	fmt.Println("Mappable type assertion failed")
+				//	return nil
+				//}
+				//meta := mappable.Meta()
+				//return nil
+			}
+		}
 	}
 	return nil
 }

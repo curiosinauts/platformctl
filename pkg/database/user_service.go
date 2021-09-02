@@ -202,8 +202,8 @@ func (u UserService) FindUserByGoogleID(googleIDHashed string) (User, *DBError) 
 	return user, nil
 }
 
-// List lists all users
-func (u UserService) List() ([]User, *DBError) {
+// ListUsers lists all users
+func (u UserService) ListUsers() ([]User, *DBError) {
 	db := u.DB
 	users := []User{}
 	sql := "SELECT * FROM curiosity.user"

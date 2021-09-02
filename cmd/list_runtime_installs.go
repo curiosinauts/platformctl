@@ -21,7 +21,7 @@ var listRuntimeInstallsCmd = &cobra.Command{
 		runtimeInstalls := &[]database.RuntimeInstall{}
 
 		eh := ErrorHandler{"listing runtime installs"}
-		dberr := dbs.ListEntities(&database.RuntimeInstall{}, runtimeInstalls)
+		dberr := dbs.List(&database.RuntimeInstall{}, runtimeInstalls)
 		eh.HandleError("listing entities", dberr)
 
 		data := [][]string{}
