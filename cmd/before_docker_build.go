@@ -30,8 +30,8 @@ var beforeDockerBuildCmd = &cobra.Command{
 
 		userService := database.NewUserService(db)
 
-		user, dberr := userService.FindUserByUsername(username)
-		eh.HandleError("finding user by email", dberr)
+		user := database.User{}
+		eh.HandleError("finding user by username", dbs.FindBy(&user, "username=$1", username))
 
 		io.WriteStringTofile(user.PrivateKey, "./.ssh/id_rsa")
 
@@ -48,13 +48,13 @@ cert: false `, user.Password, "./config.yml")
 	name = {{.Username}}
 	email = {{.Email }}`, user, "./.gitconfig")
 
-		repositories, dberr := userService.FindUserIDERepoURIsByUserAndIDE(username, "vscode")
+		repositories, _ := userService.FindUserIDERepoURIsByUserAndIDE(username, "vscode")
 		// repositories.txt
 		io.WriteTemplate(`{{range $val := .}}
 {{$val}}
 {{end}}`, repositories, "./repositories.txt")
 
-		runtimeInstalls, dberr := userService.FindUserIDERuntimeInstallsByUserAndIDE(username, "vscode")
+		runtimeInstalls, _ := userService.FindUserIDERuntimeInstallsByUserAndIDE(username, "vscode")
 		io.WriteTemplate(`#!/bin/bash -e
     
 set -x

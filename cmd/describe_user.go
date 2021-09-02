@@ -18,11 +18,11 @@ var describeUserCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		email := args[0]
-		userService := database.NewUserService(db)
 
 		eh := ErrorHandler{"describing user"}
 
-		user, dberr := userService.FindUserByHashedEmail(crypto.Hashed(email))
+		user := database.User{}
+		dberr := dbs.FindBy(&user, "hashed_email=$1", crypto.Hashed(email))
 		eh.HandleError("retrieving user by email", dberr)
 
 		fmt.Println("ID          : ", user.ID)
@@ -31,11 +31,11 @@ var describeUserCmd = &cobra.Command{
 		fmt.Println("HashedEmail : ", user.HashedEmail)
 
 		username := user.Username
-		ides, dberr := userService.FindUserIDEsByUserID(user.ID)
+		ides, dberr := dbs.FindUserIDEsByUserID(user.ID)
 		eh.HandleError("finding ides for user "+username, dberr)
 		runtimeInstallNames := &[]string{}
 		for _, ide := range *ides {
-			runtimeInstallNames, dberr = userService.FindUserIDERuntimeInstallNamesByUserAndIDE(username, ide)
+			runtimeInstallNames, dberr = dbs.FindUserIDERuntimeInstallNamesByUserAndIDE(username, ide)
 			eh.HandleError("finding runtime installs for ide "+ide, dberr)
 			fmt.Println("IDE         : ", ide)
 			fmt.Println("Runtime Ins : ", strings.Join(*runtimeInstallNames, ","))

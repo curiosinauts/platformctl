@@ -233,6 +233,18 @@ func (u DBService) List(tableName string, dest interface{}) *DBError {
 	return nil
 }
 
+// ListBy lists all rows of given entity with where clause
+func (u DBService) ListBy(tableName string, dest interface{}, where string, args ...interface{}) *DBError {
+	query := fmt.Sprintf("SELECT * FROM %s %s", tableName, where)
+
+	db := u.DB
+	err := db.Select(dest, query, args...)
+	if err != nil {
+		return &DBError{query, err}
+	}
+	return nil
+}
+
 func GetMappingConfigFromSlicePointer(dest interface{}) *MappingConfig {
 	items := reflect.ValueOf(dest)
 	if items.Kind() == reflect.Ptr && items.Elem().Kind() == reflect.Slice {

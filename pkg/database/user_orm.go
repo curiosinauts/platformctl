@@ -10,7 +10,8 @@ type UserObject struct {
 }
 
 func NewUserObject(userService UserService, email string) (*UserObject, *DBError) {
-	user, dberr := userService.FindUserByHashedEmail(crypto.Hashed(email))
+	user := User{}
+	dberr := userService.FindBy(&user, "hashed_email=$1", crypto.Hashed(email))
 	if dberr != nil {
 		return nil, dberr
 	}
@@ -22,11 +23,12 @@ func NewUserObject(userService UserService, email string) (*UserObject, *DBError
 
 func (uo *UserObject) IDEs() ([]IDE, *DBError) {
 	var ides []IDE
-	userIDEs, dberr := uo.UserService.FindUserIDEsByUser(uo.User)
+	userIDEs := []UserIDE{}
+	dberr := uo.UserService.ListBy("user_ide", &userIDEs, "user_id=$1", uo.User.ID)
 	if dberr != nil {
 		return ides, dberr
 	}
-	for _, userIDE := range *userIDEs {
+	for _, userIDE := range userIDEs {
 		ide := IDE{}
 		dberr := uo.UserService.FindBy(&ide, "id=$1", userIDE.IDEID)
 		if dberr != nil {
@@ -68,14 +70,16 @@ func (uo *UserObject) GetIDE(ideName string) (*IDE, *DBError) {
 func (uo *UserObject) RuntimeInstallsFor(ide IDE) ([]RuntimeInstall, *DBError) {
 	var runtimeInstalls []RuntimeInstall
 
-	userIDEs, dberr := uo.UserService.FindUserIDEsByUser(uo.User)
+	userIDEs := []UserIDE{}
+	dberr := uo.UserService.ListBy("user_ide", &userIDEs, "user_id=$1", uo.User.ID)
 	if dberr != nil {
 		return runtimeInstalls, dberr
 	}
 
-	for _, userIDE := range *userIDEs {
+	for _, userIDE := range userIDEs {
 		if userIDE.IDEID == ide.ID {
-			ideRuntimeInstalls, dberr := uo.UserService.FindIDERuntimeInstallsByUserIDE(userIDE)
+			ideRuntimeInstalls := []IDERuntimeInstall{}
+			dberr := uo.UserService.ListBy("runtime_install", &ideRuntimeInstalls, "user_ide_id=$1", userIDE.ID)
 			if dberr != nil {
 				return runtimeInstalls, dberr
 			}
@@ -97,12 +101,13 @@ func (uo *UserObject) RuntimeInstallsFor(ide IDE) ([]RuntimeInstall, *DBError) {
 func (uo *UserObject) UserIDE(ide IDE) (UserIDE, *DBError) {
 	var userIDE UserIDE
 
-	userIDEs, dberr := uo.UserService.FindUserIDEsByUser(uo.User)
+	userIDEs := []UserIDE{}
+	dberr := uo.UserService.ListBy("user_ide", &userIDEs, "user_id=$1", uo.User.ID)
 	if dberr != nil {
 		return userIDE, dberr
 	}
 
-	for _, userIDE := range *userIDEs {
+	for _, userIDE := range userIDEs {
 		if userIDE.IDEID == ide.ID {
 			return userIDE, nil
 		}

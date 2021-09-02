@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/curiosinauts/platformctl/pkg/crypto"
+	"github.com/curiosinauts/platformctl/pkg/database"
 	"github.com/curiosinauts/platformctl/pkg/executil"
 	"github.com/curiosinauts/platformctl/pkg/giteautil"
 	"github.com/curiosinauts/platformctl/pkg/regutil"
@@ -23,7 +24,8 @@ var removeUserCmd = &cobra.Command{
 
 		eh := ErrorHandler{"removing user"}
 
-		user, dberr := userService.FindUserByHashedEmail(crypto.Hashed(email))
+		user := database.User{}
+		dberr := dbs.FindBy(&user, "hashed_email=$1", crypto.Hashed(email))
 
 		gitClient, err := giteautil.NewGitClient()
 		eh.PrintError("instantiating git client", err)
@@ -74,7 +76,7 @@ var removeUserCmd = &cobra.Command{
 		dberr = userService.DeleteALLUserReposForUser(user.ID)
 		eh.PrintError("delete user repos", dberr)
 
-		dberr = userService.DeleteUser(user.ID)
+		dberr = userService.Del(user)
 		eh.PrintError("delete user", dberr)
 
 		msg.Success("removing user")

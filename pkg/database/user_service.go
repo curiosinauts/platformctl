@@ -20,7 +20,7 @@ func NewUserService(db *sqlx.DB) UserService {
 // DeleteALLUserIDEsForUser deletes all user ides for given user
 func (u UserService) DeleteALLUserIDEsForUser(userID int64) *DBError {
 	query := `DELETE FROM user_ide WHERE id IN (SELECT id FROM user_ide WHERE user_id = $1)`
-	return u.DBService.Delete(query, userID)
+	return u.Delete(query, userID)
 }
 
 // DeleteALLUserReposForUser deletes all user repos for given user
@@ -49,12 +49,6 @@ func (u UserService) DeleteALLIDEReposForUser(userID int64) *DBError {
 			)
 		)`
 	return u.DBService.Delete(query, userID)
-}
-
-// FindUserIDEsByUser finds UserIDE by user
-func (u UserService) FindUserIDEsByUser(user User) (*[]UserIDE, *DBError) {
-	i, dberr := u.Select(&[]UserIDE{}, "SELECT * FROM user_ide WHERE user_id=$1", user.ID)
-	return i.(*[]UserIDE), dberr
 }
 
 // FindUserIDEsByUserID find user ides by user id
@@ -119,53 +113,6 @@ func (u UserService) FindUserIDERuntimeInstallNamesByUserAndIDE(username string,
 	return i.(*[]string), dberr
 }
 
-// FindIDERuntimeInstallsByUserIDE finds ide runtime install by user ide
-func (u UserService) FindIDERuntimeInstallsByUserIDE(userIDE UserIDE) ([]IDERuntimeInstall, *DBError) {
-	db := u.DB
-	ideRuntimeInstalls := []IDERuntimeInstall{}
-	sql := `SELECT * FROM ide_runtime_install WHERE user_ide_id = $1`
-	err := db.Select(&ideRuntimeInstalls, sql, userIDE.ID)
-	if err != nil {
-		return ideRuntimeInstalls, &DBError{sql, err}
-	}
-	return ideRuntimeInstalls, nil
-}
-
-// DeleteUser deletes user
-func (u UserService) DeleteUser(id int64) *DBError {
-	db := u.DB
-	sql := "DELETE FROM curiosity.user WHERE id=$1"
-	_, err := db.Exec(sql, id)
-	if err != nil {
-		return &DBError{sql, err}
-	}
-	return nil
-}
-
-// FindUserByHashedEmail finds user by hashed email
-func (u UserService) FindUserByHashedEmail(hashedEmail string) (User, *DBError) {
-	db := u.DB
-	user := User{}
-	sql := "SELECT * FROM curiosity.user WHERE hashed_email=$1"
-	err := db.Get(&user, sql, hashedEmail)
-	if err != nil {
-		return user, &DBError{sql, err}
-	}
-	return user, nil
-}
-
-// FindUserByUsername finds user by username
-func (u UserService) FindUserByUsername(username string) (User, *DBError) {
-	db := u.DB
-	user := User{}
-	sql := "SELECT * FROM curiosity.user WHERE username=$1"
-	err := db.Get(&user, sql, username)
-	if err != nil {
-		return user, &DBError{sql, err}
-	}
-	return user, nil
-}
-
 // FindUserByGoogleID finds user by google id
 func (u UserService) FindUserByGoogleID(googleIDHashed string) (User, *DBError) {
 	db := u.DB
@@ -176,18 +123,6 @@ func (u UserService) FindUserByGoogleID(googleIDHashed string) (User, *DBError) 
 		return user, &DBError{sql, err}
 	}
 	return user, nil
-}
-
-// ListUsers lists all users
-func (u UserService) ListUsers() ([]User, *DBError) {
-	db := u.DB
-	users := []User{}
-	sql := "SELECT * FROM curiosity.user"
-	err := db.Select(&users, sql)
-	if err != nil {
-		return users, &DBError{sql, err}
-	}
-	return users, nil
 }
 
 // UpdateProfile updates user profile

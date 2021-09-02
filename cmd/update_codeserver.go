@@ -23,16 +23,17 @@ var codeserverCmd = &cobra.Command{
 		eh := ErrorHandler{"updating code server"}
 
 		emailOrAll := args[0]
-		userService := database.NewUserService(db)
 
 		var users []database.User
 		var dberr *database.DBError
 
 		if emailOrAll == "all" {
-			users, dberr = userService.ListUsers()
+			users := []database.User{}
+			dberr = dbs.List("curiosity.user", &users)
 			eh.HandleError("retrieving all users", dberr)
 		} else {
-			user, dberr := userService.FindUserByHashedEmail(crypto.Hashed(emailOrAll))
+			user := database.User{}
+			dberr := dbs.FindBy(&user, "hashed_email=$1", crypto.Hashed(emailOrAll))
 			eh.HandleError("finding user by hashed email", dberr)
 			users = append(users, user)
 		}
