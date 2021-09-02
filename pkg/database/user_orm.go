@@ -1,6 +1,8 @@
 package database
 
-import "github.com/curiosinauts/platformctl/pkg/crypto"
+import (
+	"github.com/curiosinauts/platformctl/pkg/crypto"
+)
 
 type UserObject struct {
 	User
@@ -25,11 +27,12 @@ func (uo *UserObject) IDEs() ([]IDE, *DBError) {
 		return ides, dberr
 	}
 	for _, userIDE := range *userIDEs {
-		ide, dberr := uo.UserService.FindByIDIDE(userIDE.IDEID)
+		ide := IDE{}
+		dberr := uo.UserService.FindBy(&ide, "id=$1", userIDE.IDEID)
 		if dberr != nil {
 			return ides, dberr
 		}
-		ides = append(ides, *ide)
+		ides = append(ides, ide)
 	}
 	return ides, nil
 }
@@ -77,12 +80,13 @@ func (uo *UserObject) RuntimeInstallsFor(ide IDE) ([]RuntimeInstall, *DBError) {
 				return runtimeInstalls, dberr
 			}
 			for _, ideRuntimeInstall := range ideRuntimeInstalls {
-				runtimeInstall, dberr := uo.UserService.FindByIDRuntimeInstall(ideRuntimeInstall.ID)
+				runtimeInstall := RuntimeInstall{}
+				dberr := uo.UserService.FindBy(&runtimeInstall, "id=$1", ideRuntimeInstall.ID)
 				if dberr != nil {
 					// most likely not found
 					continue
 				}
-				runtimeInstalls = append(runtimeInstalls, *runtimeInstall)
+				runtimeInstalls = append(runtimeInstalls, runtimeInstall)
 			}
 		}
 	}

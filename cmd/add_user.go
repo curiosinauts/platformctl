@@ -113,8 +113,8 @@ var addUserCmd = &cobra.Command{
 
 		eh.HandleError("ide_repo insert", dberr)
 
-		runtimeInstall, dberr := userService.FindByNameRuntimeInstall("tmux")
-		eh.HandleError("finding runtime install", dberr)
+		runtimeInstall := database.RuntimeInstall{}
+		eh.HandleError("finding runtime install", dbs.FindBy(&runtimeInstall, "name=$1", "tmux"))
 
 		dberr = dbs.Save(&database.IDERuntimeInstall{
 			UserIDEID:        userIDE.ID,

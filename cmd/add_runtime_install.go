@@ -48,15 +48,16 @@ var addRuntimeInstallCmd = &cobra.Command{
 			eh.HandleError("does user object have ide", dberr)
 
 			if hasIDE && dberr == nil {
-				ide, dberr := userService.FindByNameIDE(targetIDEName)
-				eh.HandleError("find ide by name", dberr)
+				ide := database.IDE{}
+				eh.HandleError("find ide by name", dbs.FindBy(&ide, "name=$1", targetIDEName))
 				for _, runtimeInstallName := range runtimeInstallNames {
-					hasRuntimeInstall, dberr := userObject.DoesUserHaveRuntimeInstallFor(*ide, runtimeInstallName)
+					hasRuntimeInstall, dberr := userObject.DoesUserHaveRuntimeInstallFor(ide, runtimeInstallName)
 					eh.HandleError("has runtime installs", dberr)
 
 					if !hasRuntimeInstall && dberr == nil {
-						userIDE, _ := userObject.UserIDE(*ide)
-						runtimeInstall, _ := userService.FindByNameRuntimeInstall(runtimeInstallName)
+						userIDE, _ := userObject.UserIDE(ide)
+						runtimeInstall := database.RuntimeInstall{}
+						userService.FindBy(&runtimeInstall, "name=$1", runtimeInstallName)
 						ideRuntimeInstall := database.IDERuntimeInstall{
 							UserIDEID:        userIDE.ID,
 							RuntimeInstallID: runtimeInstall.ID,

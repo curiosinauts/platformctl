@@ -19,7 +19,7 @@ var listUserCmd = &cobra.Command{
 		eh := ErrorHandler{"listing users"}
 
 		users := &[]database.User{}
-		dberr := dbs.List(&database.User{}, users)
+		dberr := dbs.List("curiosity.user", users)
 		eh.HandleError("list users", dberr)
 
 		var data [][]string

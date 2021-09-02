@@ -51,30 +51,6 @@ func (u UserService) DeleteALLIDEReposForUser(userID int64) *DBError {
 	return u.DBService.Delete(query, userID)
 }
 
-// FindByIDIDE finds ide by id
-func (u UserService) FindByIDIDE(id int64) (*IDE, *DBError) {
-	i, dberr := u.FindByID("ide", id, new(IDE))
-	return i.(*IDE), dberr
-}
-
-// FindByNameIDE finds ide by name
-func (u UserService) FindByNameIDE(name string) (*IDE, *DBError) {
-	i, dberr := u.FindByName("ide", name, new(IDE))
-	return i.(*IDE), dberr
-}
-
-// FindByIDRuntimeInstall finds runtime install by id
-func (u UserService) FindByIDRuntimeInstall(id int64) (*RuntimeInstall, *DBError) {
-	i, dberr := u.FindByID("runtime_install", id, new(RuntimeInstall))
-	return i.(*RuntimeInstall), dberr
-}
-
-// FindByNameRuntimeInstall finds runtime install by name
-func (u UserService) FindByNameRuntimeInstall(name string) (*RuntimeInstall, *DBError) {
-	i, dberr := u.FindByName("runtime_install", name, new(RuntimeInstall))
-	return i.(*RuntimeInstall), dberr
-}
-
 // FindUserIDEsByUser finds UserIDE by user
 func (u UserService) FindUserIDEsByUser(user User) (*[]UserIDE, *DBError) {
 	i, dberr := u.Select(&[]UserIDE{}, "SELECT * FROM user_ide WHERE user_id=$1", user.ID)
