@@ -30,7 +30,6 @@ var addRuntimeInstallCmd = &cobra.Command{
 		var dberr *database.DBError
 
 		if emailOrAll == "all" {
-			users := []database.User{}
 			dberr = dbs.List("curiosity.user", &users)
 			eh.HandleError("retrieving all users", dberr)
 		} else {
