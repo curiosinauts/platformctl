@@ -15,11 +15,12 @@ import (
 // DBService db service
 type DBService struct {
 	*sqlx.DB
+	Debug bool
 }
 
 // NewDBService instantiates new db service
 func NewDBService(db *sqlx.DB) DBService {
-	return DBService{db}
+	return DBService{db, false}
 }
 
 // MappingConfig provides addtional hints to DBService
@@ -151,12 +152,27 @@ func (u UserService) FindBy(i interface{}, where string, args ...interface{}) *D
 	}
 
 	db := u.DB
-	sql := fmt.Sprintf("SELECT * FROM %s WHERE %s", o.Meta().TableName, where)
-	err := db.Get(i, sql, args...)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE %s", o.Meta().TableName, where)
+	if u.Debug {
+		PrintQuery(query, args...)
+	}
+	err := db.Get(i, query, args...)
 	if err != nil {
-		return &DBError{sql, err}
+		return &DBError{query, err}
+	}
+	if u.Debug {
+		PrintResult(i)
 	}
 	return nil
+}
+
+func PrintQuery(query string, args ...interface{}) {
+	fmt.Println()
+	fmt.Println(query, args)
+}
+
+func PrintResult(i interface{}) {
+	fmt.Println(i)
 }
 
 // FindByID finds by id
@@ -184,9 +200,15 @@ func (u DBService) FindByName(tableName string, name string, i interface{}) (int
 // Select executes sqlx.Select
 func (u DBService) Select(dest interface{}, query string, args ...interface{}) (interface{}, *DBError) {
 	db := u.DB
+	if u.Debug {
+		PrintQuery(query, args...)
+	}
 	err := db.Select(dest, query, args...)
 	if err != nil {
 		return nil, &DBError{query, err}
+	}
+	if u.Debug {
+		PrintResult(dest)
 	}
 	return dest, nil
 }
@@ -226,9 +248,15 @@ func (u DBService) List(tableName string, dest interface{}) *DBError {
 	query := fmt.Sprintf("SELECT * FROM %s", tableName)
 
 	db := u.DB
+	if u.Debug {
+		PrintQuery(query)
+	}
 	err := db.Select(dest, query)
 	if err != nil {
 		return &DBError{query, err}
+	}
+	if u.Debug {
+		PrintResult(dest)
 	}
 	return nil
 }
@@ -238,9 +266,15 @@ func (u DBService) ListBy(tableName string, dest interface{}, where string, args
 	query := fmt.Sprintf("SELECT * FROM %s WHERE %s", tableName, where)
 
 	db := u.DB
+	if u.Debug {
+		PrintQuery(query, args...)
+	}
 	err := db.Select(dest, query, args...)
 	if err != nil {
 		return &DBError{query, err}
+	}
+	if u.Debug {
+		PrintResult(dest)
 	}
 	return nil
 }

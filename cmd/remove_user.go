@@ -64,19 +64,19 @@ var removeUserCmd = &cobra.Command{
 			"sudo rm -rf /var/lib/registry/docker/registry/v2/repositories/7onetella/vscode-"+user.Username)
 		eh.PrintErrorWithOutput("deleting docker repo folder", err, output)
 
-		dberr = userService.DeleteALLIDERuntimeInstallsForUser(user.ID)
+		dberr = dbs.DeleteALLIDERuntimeInstallsForUser(user.ID)
 		eh.PrintError("delete user ide runtime installs", dberr)
 
-		dberr = userService.DeleteALLIDEReposForUser(user.ID)
+		dberr = dbs.DeleteALLIDEReposForUser(user.ID)
 		eh.PrintError("delete user ide repos", dberr)
 
-		dberr = userService.DeleteALLUserIDEsForUser(user.ID)
+		dberr = dbs.DeleteALLUserIDEsForUser(user.ID)
 		eh.PrintError("delete user ides", dberr)
 
-		dberr = userService.DeleteALLUserReposForUser(user.ID)
+		dberr = dbs.DeleteALLUserReposForUser(user.ID)
 		eh.PrintError("delete user repos", dberr)
 
-		dberr = userService.Del(&user)
+		dberr = dbs.Del(&user)
 		eh.PrintError("delete user", dberr)
 
 		msg.Success("removing user")

@@ -21,7 +21,7 @@ type User struct {
 }
 
 func (u User) String() string {
-	return fmt.Sprintf("%d: %s", u.ID, u.Username)
+	return fmt.Sprintf("%d: %s\n", u.ID, u.Username)
 }
 
 // Meta provides mapping config specific to user
@@ -88,6 +88,10 @@ func (ur *UserIDE) SetPrimaryKey(id int64) {
 	ur.ID = id
 }
 
+func (u UserIDE) String() string {
+	return fmt.Sprintf("id: %d user_id: %d, ide_id: %d\n", u.ID, u.UserID, u.IDEID)
+}
+
 // IDE ide
 type IDE struct {
 	ID   int64  `db:"id"`
@@ -136,6 +140,10 @@ type IDERuntimeInstall struct {
 	ID               int64 `db:"id"`
 	UserIDEID        int64 `db:"user_ide_id"`
 	RuntimeInstallID int64 `db:"runtime_install_id"`
+}
+
+func (u IDERuntimeInstall) String() string {
+	return fmt.Sprintf("id: %d user_ide_id: %d runtime_install_id: %d\n", u.ID, u.UserIDEID, u.RuntimeInstallID)
 }
 
 // Meta provides mapping config specific to ide runtime install

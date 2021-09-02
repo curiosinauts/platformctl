@@ -28,8 +28,6 @@ var beforeDockerBuildCmd = &cobra.Command{
 			eh.HandleError("creating .ssh folder", err)
 		}
 
-		userService := database.NewUserService(db)
-
 		user := database.User{}
 		eh.HandleError("finding user by username", dbs.FindBy(&user, "username=$1", username))
 
@@ -48,7 +46,7 @@ cert: false `, user.Password, "./config.yml")
 	name = {{.Username}}
 	email = {{.Email }}`, user, "./.gitconfig")
 
-		repositories, _ := userService.FindUserIDERepoURIsByUserAndIDE(username, "vscode")
+		repositories, _ := dbs.FindUserIDERepoURIsByUserAndIDE(username, "vscode")
 		// repositories.txt
 		io.WriteTemplate(`{{range $val := .}}
 {{$val}}

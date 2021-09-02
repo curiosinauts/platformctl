@@ -35,8 +35,8 @@ var addIDERepoCmd = &cobra.Command{
 
 			userIDE, _ := userObject.UserIDE(*ide)
 			if len(addIDERepoCmdRepos) > 0 {
-				AddUserRepos(dbs, userObject.ID, addIDERepoCmdRepos)
-				AddIDERepos(dbs, userIDE.ID, addIDERepoCmdRepos)
+				AddUserRepos(userObject.ID, addIDERepoCmdRepos)
+				AddIDERepos(userIDE.ID, addIDERepoCmdRepos)
 			}
 		}
 

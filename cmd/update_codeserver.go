@@ -11,8 +11,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// codeserverCmd represents the codeserver command
-var codeserverCmd = &cobra.Command{
+// updateCodeserverCmd represents the codeserver command
+var updateCodeserverCmd = &cobra.Command{
 	Use:     "codeserver",
 	Aliases: []string{"code-server"},
 	Short:   "Updates code server for given user",
@@ -28,7 +28,6 @@ var codeserverCmd = &cobra.Command{
 		var dberr *database.DBError
 
 		if emailOrAll == "all" {
-			users := []database.User{}
 			dberr = dbs.List("curiosity.user", &users)
 			eh.HandleError("retrieving all users", dberr)
 		} else {
@@ -55,5 +54,5 @@ var codeserverCmd = &cobra.Command{
 }
 
 func init() {
-	updateCmd.AddCommand(codeserverCmd)
+	updateCmd.AddCommand(updateCodeserverCmd)
 }

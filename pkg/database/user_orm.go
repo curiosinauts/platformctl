@@ -85,7 +85,7 @@ func (uo *UserObject) RuntimeInstallsFor(ide IDE) ([]RuntimeInstall, *DBError) {
 			}
 			for _, ideRuntimeInstall := range ideRuntimeInstalls {
 				runtimeInstall := RuntimeInstall{}
-				dberr := uo.UserService.FindBy(&runtimeInstall, "id=$1", ideRuntimeInstall.ID)
+				dberr := uo.UserService.FindBy(&runtimeInstall, "id=$1", ideRuntimeInstall.RuntimeInstallID)
 				if dberr != nil {
 					// most likely not found
 					continue

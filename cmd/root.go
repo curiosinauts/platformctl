@@ -59,11 +59,15 @@ func initDB() {
 	}
 	db = newdb
 	db.Exec(`set search_path='curiosity'`)
-	if debug {
-		fmt.Printf("database_conn : %s\n", viper.Get("database_conn"))
-	}
+
 	userService = database.NewUserService(db)
-	dbs = database.NewUserService(db)
+	_dbs := &database.DBService{
+		DB:    db,
+		Debug: debug,
+	}
+	dbs = database.UserService{
+		_dbs,
+	}
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -99,6 +103,9 @@ type ErrorHandler struct {
 
 // HandleError handles the given error
 func (eh ErrorHandler) HandleError(step string, err error) {
+	if debug {
+		fmt.Println("step:", step+"\n")
+	}
 	var e *database.DBError
 	if errors.As(err, &e) {
 		if e != nil {

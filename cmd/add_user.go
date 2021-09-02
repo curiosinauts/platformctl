@@ -85,7 +85,7 @@ var addUserCmd = &cobra.Command{
 		eh.HandleError("saving new user repo", dberr)
 
 		if len(addUserCmdRepos) > 0 {
-			AddUserRepos(dbs, user.ID, addUserCmdRepos)
+			AddUserRepos(user.ID, addUserCmdRepos)
 		}
 
 		ide := new(database.IDE)
@@ -108,7 +108,7 @@ var addUserCmd = &cobra.Command{
 		})
 
 		if len(addUserCmdRepos) > 0 {
-			AddIDERepos(dbs, userIDE.ID, addUserCmdRepos)
+			AddIDERepos(userIDE.ID, addUserCmdRepos)
 		}
 
 		eh.HandleError("ide_repo insert", dberr)
@@ -135,7 +135,7 @@ var addUserCmd = &cobra.Command{
 		eh.HandleError("create user public key", err)
 
 		user.PublicKeyID = publicKeyID
-		_, dberr = userService.UpdateProfile(user)
+		_, dberr = dbs.UpdateProfile(user)
 		eh.HandleError("updating user profile", dberr)
 
 		jenkins, err := jenkinsutil.NewJenkins()
@@ -153,7 +153,7 @@ var addUserCmd = &cobra.Command{
 }
 
 // AddUserRepos adds user repos
-func AddUserRepos(dbs database.UserService, userID int64, repos []string) *database.DBError {
+func AddUserRepos(userID int64, repos []string) *database.DBError {
 	for _, repo := range repos {
 		dberr := dbs.Save(&database.UserRepo{
 			URI:    repo,
@@ -167,7 +167,7 @@ func AddUserRepos(dbs database.UserService, userID int64, repos []string) *datab
 }
 
 // AddIDERepos adds ide repos
-func AddIDERepos(dbs database.UserService, userIDEID int64, repos []string) *database.DBError {
+func AddIDERepos(userIDEID int64, repos []string) *database.DBError {
 	for _, repo := range repos {
 		dberr := dbs.Save(&database.IDERepo{
 			UserIDEID: userIDEID,

@@ -9,15 +9,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var addRuntimeInstallCmdUpdateNow bool
+var removeRuntimeInstallCmdUpdateNow bool
 
-// addRuntimeInstallCmd represents the runtimeInstall command
-var addRuntimeInstallCmd = &cobra.Command{
+// removeRuntimeInstallCmd represents the runtimeInstall command
+var removeRuntimeInstallCmd = &cobra.Command{
 	Use:     "runtime-install {email | username | all} {ide} {runtime install}...",
 	Aliases: []string{"runtime-installs"},
-	Short:   "Adds runtime install to users",
-	Long:    `Adds runtime install to users`,
-	Example: `platformctl add runtime-installs 7onetella@gmail.com vscode tmux,poetry`,
+	Short:   "Removes runtime installs from users",
+	Long:    `Removes runtime installs from users`,
+	Example: `platformctl remove runtime-installs 7onetella@gmail.com vscode tmux,poetry`,
 	Args:    cobra.MinimumNArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 
@@ -26,14 +26,14 @@ var addRuntimeInstallCmd = &cobra.Command{
 		runtimeInstallsStr := args[2]
 		runtimeInstallNames := strings.Split(runtimeInstallsStr, ",")
 
-		eh := ErrorHandler{"adding runtime installs for users"}
+		eh := ErrorHandler{"removing runtime installs for users"}
 
 		var users []database.User
 		var dberr *database.DBError
 
 		if emailOrAll == "all" {
 			dberr = dbs.List("curiosity.user", &users)
-			eh.HandleError("retrieving all users", dberr)
+			eh.HandleError("get all users", dberr)
 		} else {
 			user := database.User{}
 			dberr := dbs.FindBy(&user, "hashed_email=$1", crypto.Hashed(emailOrAll))
@@ -44,44 +44,47 @@ var addRuntimeInstallCmd = &cobra.Command{
 		for _, user := range users {
 			userObject := database.UserObject{
 				User:        user,
-				UserService: userService,
+				UserService: dbs,
 			}
-			eh.HandleError("initializing user object", dberr)
+			eh.HandleError("new user object", dberr)
 
 			hasIDE, dberr := userObject.DoesUserHaveIDE(targetIDEName)
-			eh.HandleError("does user object have ide", dberr)
+			eh.HandleError("does user have ide", dberr)
 
 			if hasIDE && dberr == nil {
 				ide := database.IDE{}
 				eh.HandleError("find ide by name", dbs.FindBy(&ide, "name=$1", targetIDEName))
 				for _, runtimeInstallName := range runtimeInstallNames {
 					hasRuntimeInstall, dberr := userObject.DoesUserHaveRuntimeInstallFor(ide, runtimeInstallName)
-					eh.HandleError("has runtime installs", dberr)
+					eh.HandleError("does user has runtime install", dberr)
 
-					if !hasRuntimeInstall && dberr == nil {
+					if hasRuntimeInstall && dberr == nil {
 						userIDE, _ := userObject.UserIDE(ide)
 						runtimeInstall := database.RuntimeInstall{}
-						dbs.FindBy(&runtimeInstall, "name=$1", runtimeInstallName)
-						ideRuntimeInstall := database.IDERuntimeInstall{
-							UserIDEID:        userIDE.ID,
-							RuntimeInstallID: runtimeInstall.ID,
-						}
-						dbs.Save(&ideRuntimeInstall)
+						dberr = dbs.FindBy(&runtimeInstall, "name=$1", runtimeInstallName)
+						eh.HandleError("finding runtime install by name", dberr)
+
+						ideRuntimeInstall := database.IDERuntimeInstall{}
+						dberr = dbs.FindBy(&ideRuntimeInstall, "user_ide_id=$1 AND runtime_install_id=$2", userIDE.ID, runtimeInstall.ID)
+						eh.HandleError("finding runtime install by name", dberr)
+
+						dberr = dbs.Del(&ideRuntimeInstall)
+						eh.HandleError("finding runtime install by name", dberr)
 					}
 				}
 			}
 		}
 
-		if addRuntimeInstallCmdUpdateNow {
+		if removeRuntimeInstallCmdUpdateNow {
 			msg.Info("updating users' ides")
 			updateCodeserverCmd.Run(updateCodeserverCmd, []string{emailOrAll})
 		}
 
-		msg.Success("adding runtime installs for users")
+		msg.Success("removing runtime installs for users")
 	},
 }
 
 func init() {
-	addCmd.AddCommand(addRuntimeInstallCmd)
-	addRuntimeInstallCmd.Flags().BoolVarP(&addRuntimeInstallCmdUpdateNow, "now", "n", false, "update users' ide or not")
+	removeCmd.AddCommand(removeRuntimeInstallCmd)
+	removeRuntimeInstallCmd.Flags().BoolVarP(&removeRuntimeInstallCmdUpdateNow, "now", "n", false, "update users' ide or not")
 }
