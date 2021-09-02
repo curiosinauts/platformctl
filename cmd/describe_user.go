@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/curiosinauts/platformctl/pkg/crypto"
 	"github.com/curiosinauts/platformctl/pkg/database"
@@ -34,12 +33,20 @@ var describeUserCmd = &cobra.Command{
 		username := user.Username
 		ides, dberr := dbs.FindUserIDEsByUserID(user.ID)
 		eh.HandleError("finding ides for user "+username, dberr)
-		runtimeInstallNames := &[]string{}
 		for _, ide := range *ides {
-			runtimeInstallNames, dberr = dbs.FindUserIDERuntimeInstallNamesByUserAndIDE(username, ide)
+			runtimeInstalls := []database.RuntimeInstall{}
+			dberr = dbs.FindUserIDERuntimeInstallsByUsernameAndIDE(&runtimeInstalls, username, ide)
 			eh.HandleError("finding runtime installs for ide "+ide, dberr)
 			fmt.Println("IDE         : ", ide)
-			fmt.Println("Runtime Ins : ", strings.Join(*runtimeInstallNames, ","))
+			fmt.Print("Runtime Ins :  ")
+			for i, runtimeInstall := range runtimeInstalls {
+				if i == 0 {
+					fmt.Print(runtimeInstall.Name)
+					continue
+				}
+				fmt.Print("," + runtimeInstall.Name)
+			}
+			fmt.Println()
 
 			ideS := database.IDE{}
 			dberr = dbs.FindBy(&ideS, "name=$1", ide)

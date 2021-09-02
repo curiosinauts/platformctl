@@ -77,28 +77,10 @@ func (u UserService) FindUserIDERepoURIsByUserAndIDE(username string, ide string
 	return i.(*[]string), dberr
 }
 
-// FindUserIDERuntimeInstallsByUserAndIDE finds runtime installs by user and ide
-func (u UserService) FindUserIDERuntimeInstallsByUserAndIDE(username string, ide string) (*[]string, *DBError) {
+// FindUserIDERuntimeInstallsByUsernameAndIDE finds user installs by user and ide
+func (u UserService) FindUserIDERuntimeInstallsByUsernameAndIDE(dest interface{}, username string, ide string) *DBError {
 	query := `
-		SELECT script_body FROM runtime_install WHERE id in (
-			SELECT runtime_install_id FROM ide_runtime_install WHERE user_ide_id = (
-					SELECT 
-							id as user_ide_id 
-					FROM 
-							user_ide 
-					WHERE 
-							user_id = (SELECT id as user_id FROM curiosity.user WHERE username = $1) AND
-							ide_id  = (SELECT id ide_id     FROM ide            WHERE name     = $2)       
-			)
-		)`
-	i, dberr := u.Select(&[]string{}, query, username, ide)
-	return i.(*[]string), dberr
-}
-
-// FindUserIDERuntimeInstallNamesByUserAndIDE finds user install nemas by user and ide
-func (u UserService) FindUserIDERuntimeInstallNamesByUserAndIDE(username string, ide string) (*[]string, *DBError) {
-	query := `
-		SELECT name FROM runtime_install WHERE id in (
+		SELECT * FROM runtime_install WHERE id in (
 			SELECT runtime_install_id FROM ide_runtime_install WHERE user_ide_id = (
 					SELECT 
 							id as user_ide_id 
@@ -109,8 +91,8 @@ func (u UserService) FindUserIDERuntimeInstallNamesByUserAndIDE(username string,
 							ide_id  = (SELECT id ide_id     FROM ide            WHERE name     = $2)       
 			)
 		) ORDER BY name ASC`
-	i, dberr := u.Select(&[]string{}, query, username, ide)
-	return i.(*[]string), dberr
+	_, dberr := u.Select(dest, query, username, ide)
+	return dberr
 }
 
 // FindUserByGoogleID finds user by google id

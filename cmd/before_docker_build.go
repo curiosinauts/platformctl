@@ -54,12 +54,13 @@ cert: false `, user.Password, "./config.yml")
 {{$val}}
 {{end}}`, repositories, "./repositories.txt")
 
-		runtimeInstalls, _ := userService.FindUserIDERuntimeInstallsByUserAndIDE(username, "vscode")
+		runtimeInstalls := []database.RuntimeInstall{}
+		dbs.FindUserIDERuntimeInstallsByUsernameAndIDE(&runtimeInstalls, username, "vscode")
 		io.WriteTemplate(`#!/bin/bash -e
     
 set -x
-{{range $val := .}}
-{{$val}}
+{{range $v := .}}
+{{$v.ScriptBody}}
 {{end}}`, runtimeInstalls, "./runtime_install.sh")
 
 		err := os.Chmod("./runtime_install.sh", 0755)
