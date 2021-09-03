@@ -19,7 +19,7 @@ var sshCmd = &cobra.Command{
 	Args:    cobra.MinimumNArgs(2),
 	Run: func(cmd *cobra.Command, args []string) {
 		s := args[0]
-		script := args[1]
+		script := strings.Join(args[1:], " ")
 
 		if !strings.Contains(s, "@") {
 			msg.Failure("missing user")
@@ -48,6 +48,7 @@ var sshCmd = &cobra.Command{
 			msg.Failure(err.Error())
 		}
 
+		fmt.Println()
 		fmt.Println(out)
 	},
 }
