@@ -24,4 +24,7 @@ I am comfortable in systems integration and automation. I understand not every d
 
 I will be documenting how this platform was put together. Pretty much everything is automated. However, this is much to do in terms of cleaning up the hard coded configs and documentation.
 
+# VSCode provisioning
+Chatops is used to provision new user and new user's VSCode instance.
+
 ![](/assets/vscode_provisioning.png)
