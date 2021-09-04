@@ -23,3 +23,5 @@ I am hoping other developers will pick up my tools that I have built and replica
 I am comfortable in systems integration and automation. I understand not every developers like or get to work on building systems or let alone build an entire platform.
 
 I will be documenting how this platform was put together. Pretty much everything is automated. However, this is much to do in terms of cleaning up the hard coded configs and documentation.
+
+![](/assets/vscode_provisioning.png)
