@@ -6,22 +6,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var addIDERepoCmdRepos []string
+var removeIDERepoCmdRepos []string
 
-// addIDERepoCmd represents the add ide repo command
-var addIDERepoCmd = &cobra.Command{
+// removeIDERepoCmd represents the remove ide repo command
+var removeIDERepoCmd = &cobra.Command{
 	Use:     "ide-repo {email} {ide}",
 	Aliases: []string{"ide-repos"},
-	Short:   "Adds ide repo to user",
-	Long:    `Adds ide repo to user`,
+	Short:   "Removes ide repo from user",
+	Long:    `Removes ide repo from user`,
 	Args:    cobra.MinimumNArgs(2),
-	Example: `platformctl add ide-repo foo@example.com vscode`,
+	Example: `platformctl remove ide-repo foo@example.com vscode`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		email := args[0]
 		targetIDEName := args[1]
 
-		eh := ErrorHandler{"adding ide repo for user"}
+		eh := ErrorHandler{"removing ide repo from user"}
 
 		userObject, dberr := NewUserObject(userService, email)
 		eh.HandleError("initializing user object", dberr)
@@ -34,16 +34,16 @@ var addIDERepoCmd = &cobra.Command{
 			eh.HandleError("finding ide by name", dbs.FindBy(ide, "name=$1", targetIDEName))
 
 			userIDE, _ := userObject.UserIDE(*ide)
-			if len(addIDERepoCmdRepos) > 0 {
-				AddIDERepos(userIDE.ID, addIDERepoCmdRepos)
+			if len(removeIDERepoCmdRepos) > 0 {
+				RemoveIDERepos(userIDE.ID, removeIDERepoCmdRepos)
 			}
 		}
 
-		msg.Success("adding ide repo for user")
+		msg.Success("removing ide repo for user")
 	},
 }
 
 func init() {
-	addCmd.AddCommand(addIDERepoCmd)
-	addIDERepoCmd.Flags().StringArrayVarP(&addIDERepoCmdRepos, "repo", "r", []string{}, "-r https://example-repo.com/foo")
+	removeCmd.AddCommand(removeIDERepoCmd)
+	removeIDERepoCmd.Flags().StringArrayVarP(&removeIDERepoCmdRepos, "repo", "r", []string{}, "-r https://example-repo.com/foo")
 }

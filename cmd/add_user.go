@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/curiosinauts/platformctl/pkg/giteautil"
 	"github.com/curiosinauts/platformctl/pkg/jenkinsutil"
@@ -168,7 +169,17 @@ func AddUserRepos(userID int64, repos []string) *database.DBError {
 
 // AddIDERepos adds ide repos
 func AddIDERepos(userIDEID int64, repos []string) *database.DBError {
+	ideRepos := []database.IDERepo{}
+	dbs.ListBy("ide_repo", &ideRepos, "user_ide_id=$1", userIDEID)
+
+nextRepo:
 	for _, repo := range repos {
+		for _, ideRepo := range ideRepos {
+			if strings.TrimSpace(ideRepo.URI) == strings.TrimSpace(repo) {
+				msg.Info("repo already exists. skipping. " + repo)
+				continue nextRepo
+			}
+		}
 		dberr := dbs.Save(&database.IDERepo{
 			UserIDEID: userIDEID,
 			URI:       repo,

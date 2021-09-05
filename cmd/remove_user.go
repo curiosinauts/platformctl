@@ -83,6 +83,29 @@ var removeUserCmd = &cobra.Command{
 	},
 }
 
+// RemoveIDERepos adds ide repos
+func RemoveIDERepos(userIDEID int64, repos []string) *database.DBError {
+	ideRepos := []database.IDERepo{}
+	dbs.ListBy("ide_repo", &ideRepos, "user_ide_id=$1", userIDEID)
+
+	nothingRemoved := true
+	for _, repo := range repos {
+		for _, ideRepo := range ideRepos {
+			if ideRepo.URI == repo {
+				dberr := dbs.Del(&ideRepo)
+				nothingRemoved = false
+				if dberr != nil {
+					return dberr
+				}
+			}
+		}
+	}
+	if nothingRemoved {
+		msg.Info("nothing to remove")
+	}
+	return nil
+}
+
 func init() {
 	removeCmd.AddCommand(removeUserCmd)
 }

@@ -14,6 +14,14 @@ echo platformctl list ide-repo 7onetella@gmail.com vscode
 platformctl list ide-repo 7onetella@gmail.com vscode 
 echo -------------------------------------------------------------------
 
+echo platformctl remove ide-repo 7onetella@gmail.com vscode -r git@github.com:curiosinauts/platformctl.git 
+platformctl remove ide-repo 7onetella@gmail.com vscode -r git@github.com:curiosinauts/platformctl.git 
+echo -------------------------------------------------------------------
+
+echo platformctl list ide-repo 7onetella@gmail.com vscode 
+platformctl list ide-repo 7onetella@gmail.com vscode 
+echo -------------------------------------------------------------------
+
 echo platformctl describe user 7onetella@gmail.com
 platformctl describe user 7onetella@gmail.com
 echo -------------------------------------------------------------------
@@ -22,8 +30,8 @@ echo platformctl list users
 platformctl list users
 echo -------------------------------------------------------------------
 
-echo platformctl add runtime-install 7onetella@gmail.com vscode poetry 
-platformctl add runtime-install 7onetella@gmail.com vscode poetry
+echo platformctl add runtime-install 7onetella@gmail.com vscode poetry -n 
+platformctl add runtime-install 7onetella@gmail.com vscode poetry -n
 echo -------------------------------------------------------------------
 
 echo platformctl list users

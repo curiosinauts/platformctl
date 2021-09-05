@@ -15,7 +15,7 @@ var listReposCmd = &cobra.Command{
 	Long:    `List repositories`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		eh := ErrorHandler{"getting next docker tag"}
+		eh := ErrorHandler{"listing repositories in docker registry"}
 
 		registryClient, err := regutil.NewRegistryClient(debug)
 		eh.PrintError("getting registry client", err)
