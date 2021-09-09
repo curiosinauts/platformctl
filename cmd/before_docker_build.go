@@ -104,6 +104,7 @@ spec:
         image: docker-registry.int.curiosityworks.org/7onetella/vscode-{{.Username}}:{{.DockerTag}}
         ports:
         - containerPort: 9991
+      dnsPolicy: Default 
 
 ---
 apiVersion: v1
