@@ -8,6 +8,7 @@ import (
 	"github.com/curiosinauts/platformctl/pkg/giteautil"
 	"github.com/curiosinauts/platformctl/pkg/regutil"
 	"github.com/curiosinauts/platformctl/pkg/sshutil"
+	"github.com/spf13/viper"
 
 	"github.com/spf13/cobra"
 )
@@ -60,7 +61,8 @@ var removeUserCmd = &cobra.Command{
 			eh.PrintError("deleting image", err)
 		}
 
-		output, err = sshutil.RemoteSSHExec("vm-docker-registry.curiosityworks.org", "22", "debian",
+		dockerRegistryHost := viper.Get("docker_registry_host").(string)
+		output, err = sshutil.RemoteSSHExec(dockerRegistryHost, "22", "debian",
 			"sudo rm -rf /var/lib/registry/docker/registry/v2/repositories/7onetella/vscode-"+user.Username)
 		eh.PrintErrorWithOutput("deleting docker repo folder", err, output)
 
