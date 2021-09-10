@@ -1,9 +1,11 @@
 package sshutil
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	"golang.org/x/crypto/ssh"
 )
@@ -58,7 +60,8 @@ func RemoteSSHExec(server, port, user, script string) (string, error) {
 
 	out, err := session.CombinedOutput(script)
 	if err != nil {
-		return "", err
+		err = errors.New(err.Error() + "  detail = " + strings.TrimSpace(string(out)))
+		return string(out), err
 	}
 	return string(out), nil
 }
