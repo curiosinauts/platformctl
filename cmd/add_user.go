@@ -7,6 +7,7 @@ import (
 
 	"github.com/curiosinauts/platformctl/pkg/giteautil"
 	"github.com/curiosinauts/platformctl/pkg/jenkinsutil"
+	"github.com/curiosinauts/platformctl/pkg/postgresutil"
 	"github.com/google/uuid"
 	pwd "github.com/sethvargo/go-password/password"
 
@@ -138,6 +139,13 @@ var addUserCmd = &cobra.Command{
 		user.PublicKeyID = publicKeyID
 		_, dberr = dbs.UpdateProfile(user)
 		eh.HandleError("updating user profile", dberr)
+
+		postgresUsername := strings.Replace(user.Username, "-", "", -1)
+		_, err = postgresutil.CreateUser(postgresUsername, password)
+		eh.HandleError("creating database user", err)
+
+		_, err = postgresutil.CreateUserSchema(postgresUsername)
+		eh.HandleError("creating database user schema", err)
 
 		jenkins, err := jenkinsutil.NewJenkins()
 		eh.HandleError("accessing Jenkins job", err)

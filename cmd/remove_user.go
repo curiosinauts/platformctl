@@ -1,11 +1,14 @@
 package cmd
 
 import (
+	"strings"
+
 	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/curiosinauts/platformctl/pkg/crypto"
 	"github.com/curiosinauts/platformctl/pkg/database"
 	"github.com/curiosinauts/platformctl/pkg/executil"
 	"github.com/curiosinauts/platformctl/pkg/giteautil"
+	"github.com/curiosinauts/platformctl/pkg/postgresutil"
 	"github.com/curiosinauts/platformctl/pkg/regutil"
 	"github.com/curiosinauts/platformctl/pkg/sshutil"
 	"github.com/spf13/viper"
@@ -65,6 +68,13 @@ var removeUserCmd = &cobra.Command{
 		output, err = sshutil.RemoteSSHExec(dockerRegistryHost, "22", "debian",
 			"sudo rm -rf /var/lib/registry/docker/registry/v2/repositories/7onetella/vscode-"+user.Username)
 		eh.PrintErrorWithOutput("deleting docker repo folder", err, output)
+
+		postgresUsername := strings.Replace(user.Username, "-", "", -1)
+		_, err = postgresutil.DropUserSchema(postgresUsername)
+		eh.PrintError("dropping database user schema", err)
+
+		_, err = postgresutil.DropUser(postgresUsername)
+		eh.PrintError("dropping database user", err)
 
 		dberr = dbs.DeleteALLIDERuntimeInstallsForUser(user.ID)
 		eh.PrintError("delete user ide runtime installs", dberr)
