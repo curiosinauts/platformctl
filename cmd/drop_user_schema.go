@@ -21,13 +21,14 @@ var dropUserSchemaCmd = &cobra.Command{
 		username := args[0]
 
 		eh := ErrorHandler{"Dropping database user & user schema"}
-		out, err := postgresutil.DropUserSchema(username)
+		psql := postgresutil.NewPSQLClient()
+		out, err := psql.DropUserSchema(username)
 		eh.HandleError("dropping database user schema", err)
 
 		fmt.Println()
 		fmt.Println(out)
 
-		out, err = postgresutil.DropUser(username)
+		out, err = psql.DropUser(username)
 		eh.HandleError("dropping database user", err)
 
 		fmt.Println(out)

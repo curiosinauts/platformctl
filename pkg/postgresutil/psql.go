@@ -4,12 +4,30 @@ import (
 	"fmt"
 
 	"github.com/curiosinauts/platformctl/pkg/sshutil"
+	"github.com/spf13/viper"
 )
 
+// PSQLClient psql client
+type PSQLClient struct {
+	DatabaseName string
+	DatabaseHost string
+}
+
+// NewPSQLClient returns a new instance of PSQLClient
+func NewPSQLClient() *PSQLClient {
+	sharedDatabaseName := viper.Get("shared_database_name").(string)
+	sharedDatabaseHost := viper.Get("shared_database_host").(string)
+	return &PSQLClient{
+		DatabaseName: sharedDatabaseName,
+		DatabaseHost: sharedDatabaseHost,
+	}
+}
+
 // CreateUser creates postgres user
-func CreateUser(username, password string) (string, error) {
-	script := fmt.Sprintf("psql -d curiositydb -c \"CREATE USER %s ENCRYPTED PASSWORD '%s';\"", username, password)
-	out, err := sshutil.RemoteSSHExec("192.168.0.116", "22", "postgres", script)
+func (p *PSQLClient) CreateUser(username, password string) (string, error) {
+	script := fmt.Sprintf("psql -d %s -c \"CREATE USER %s ENCRYPTED PASSWORD '%s';\"",
+		p.DatabaseName, username, password)
+	out, err := sshutil.RemoteSSHExec(p.DatabaseHost, "22", "postgres", script)
 	if err != nil {
 		return out, err
 	}
@@ -18,9 +36,9 @@ func CreateUser(username, password string) (string, error) {
 }
 
 // CreateUserSchema creates a schema for the given user
-func CreateUserSchema(username string) (string, error) {
-	script := fmt.Sprintf("psql -d curiositydb -c \"CREATE SCHEMA AUTHORIZATION %s;\"", username)
-	out, err := sshutil.RemoteSSHExec("192.168.0.116", "22", "postgres", script)
+func (p *PSQLClient) CreateUserSchema(username string) (string, error) {
+	script := fmt.Sprintf("psql -d %s -c \"CREATE SCHEMA AUTHORIZATION %s;\"", p.DatabaseName, username)
+	out, err := sshutil.RemoteSSHExec(p.DatabaseHost, "22", "postgres", script)
 	if err != nil {
 		return out, err
 	}
@@ -29,9 +47,9 @@ func CreateUserSchema(username string) (string, error) {
 }
 
 // DropUser drops postgres user
-func DropUser(username string) (string, error) {
-	script := fmt.Sprintf("psql -d curiositydb -c \"DROP USER %s;\"", username)
-	out, err := sshutil.RemoteSSHExec("192.168.0.116", "22", "postgres", script)
+func (p *PSQLClient) DropUser(username string) (string, error) {
+	script := fmt.Sprintf("psql -d %s -c \"DROP USER %s;\"", p.DatabaseName, username)
+	out, err := sshutil.RemoteSSHExec(p.DatabaseHost, "22", "postgres", script)
 	if err != nil {
 		return out, err
 	}
@@ -40,9 +58,9 @@ func DropUser(username string) (string, error) {
 }
 
 // DropUserSchema drop schema for the given user
-func DropUserSchema(username string) (string, error) {
-	script := fmt.Sprintf("psql -d curiositydb -c \"DROP SCHEMA %s;\"", username)
-	out, err := sshutil.RemoteSSHExec("192.168.0.116", "22", "postgres", script)
+func (p *PSQLClient) DropUserSchema(username string) (string, error) {
+	script := fmt.Sprintf("psql -d %s -c \"DROP SCHEMA %s;\"", p.DatabaseName, username)
+	out, err := sshutil.RemoteSSHExec(p.DatabaseHost, "22", "postgres", script)
 	if err != nil {
 		return out, err
 	}

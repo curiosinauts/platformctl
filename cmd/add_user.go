@@ -141,20 +141,21 @@ var addUserCmd = &cobra.Command{
 		eh.HandleError("updating user profile", dberr)
 
 		postgresUsername := strings.Replace(user.Username, "-", "", -1)
-		_, err = postgresutil.CreateUser(postgresUsername, password)
+		psql := postgresutil.NewPSQLClient()
+		_, err = psql.CreateUser(postgresUsername, password)
 		eh.HandleError("creating database user", err)
 
-		_, err = postgresutil.CreateUserSchema(postgresUsername)
+		_, err = psql.CreateUserSchema(postgresUsername)
 		eh.HandleError("creating database user schema", err)
 
 		jenkins, err := jenkinsutil.NewJenkins()
 		eh.HandleError("accessing Jenkins job", err)
 
-		option := map[string]string{
+		params := map[string]string{
 			"USERNAME": user.Username,
 			"VERSION":  uuid.NewString(),
 		}
-		_, err = jenkins.BuildJob("codeserver", option)
+		_, err = jenkins.BuildJob("codeserver", params)
 		eh.HandleError("calling Jenkins job to build codeserver instance", err)
 
 		msg.Success("adding user")

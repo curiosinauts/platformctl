@@ -3,16 +3,19 @@ package jenkinsutil
 import (
 	"context"
 	"errors"
-	"github.com/spf13/viper"
 	"time"
+
+	"github.com/spf13/viper"
 
 	"github.com/bndr/gojenkins"
 )
 
+// Jenkins jenkins client
 type Jenkins struct {
 	jenkins *gojenkins.Jenkins
 }
 
+// NewJenkins returns a new Jenkins client instance
 func NewJenkins() (Jenkins, error) {
 	jenkinsAPIKey := viper.Get("jenkins_api_key").(string)
 	jenkinsURL := viper.Get("jenkins_url").(string)
@@ -29,11 +32,12 @@ func NewJenkins() (Jenkins, error) {
 	return j, nil
 }
 
-func (j Jenkins) BuildJob(jobName string, option map[string]string) (bool, error) {
+// BuildJob builds job
+func (j Jenkins) BuildJob(jobName string, params map[string]string) (bool, error) {
 	jenkins := j.jenkins
 
 	ctx := context.Background()
-	number, err := jenkins.BuildJob(ctx, jobName, option)
+	number, err := jenkins.BuildJob(ctx, jobName, params)
 	if err != nil {
 		return false, err
 	}

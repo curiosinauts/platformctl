@@ -12,3 +12,5 @@ git tag -a v${version} -m "${version} release"
 git push origin --tags
 
 goreleaser release --rm-dist
+
+./platformctl run jenkins-job upgrade-platformctl -p PLATFORMCTL_VERSION="${version}"

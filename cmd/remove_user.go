@@ -70,10 +70,11 @@ var removeUserCmd = &cobra.Command{
 		eh.PrintErrorWithOutput("deleting docker repo folder", err, output)
 
 		postgresUsername := strings.Replace(user.Username, "-", "", -1)
-		_, err = postgresutil.DropUserSchema(postgresUsername)
+		psql := postgresutil.NewPSQLClient()
+		_, err = psql.DropUserSchema(postgresUsername)
 		eh.PrintError("dropping database user schema", err)
 
-		_, err = postgresutil.DropUser(postgresUsername)
+		_, err = psql.DropUser(postgresUsername)
 		eh.PrintError("dropping database user", err)
 
 		dberr = dbs.DeleteALLIDERuntimeInstallsForUser(user.ID)

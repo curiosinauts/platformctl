@@ -22,13 +22,14 @@ var createUserSchemaCmd = &cobra.Command{
 		password := args[1]
 
 		eh := ErrorHandler{"Creating database user & user schema"}
-		out, err := postgresutil.CreateUser(username, password)
+		psql := postgresutil.NewPSQLClient()
+		out, err := psql.CreateUser(username, password)
 		eh.HandleError("creating database user", err)
 
 		fmt.Println()
 		fmt.Println(out)
 
-		out, err = postgresutil.CreateUserSchema(username)
+		out, err = psql.CreateUserSchema(username)
 		eh.HandleError("creating database user schema", err)
 
 		fmt.Println(out)
