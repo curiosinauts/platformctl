@@ -32,6 +32,8 @@ var afterDockerBuildCmd = &cobra.Command{
 			os.Remove("vscode-" + username + ".yml")
 		}
 
+		os.Remove(".exports")
+
 		msg.Success("after docker-build")
 	},
 }

@@ -2,12 +2,14 @@ package cmd
 
 import (
 	"os"
+	"strings"
 
 	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/curiosinauts/platformctl/pkg/database"
 	"github.com/curiosinauts/platformctl/pkg/io"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // beforeDockerBuildCmd represents the dockerBuild command
@@ -74,6 +76,18 @@ export TERM=xterm
 
 		user.DockerTag = dockertag
 		io.WriteTemplate(deployServiceIngressTemplate, user, "./vscode-"+user.Username+".yml")
+
+		user.PostgresUsername = strings.Replace(user.Username, "-", "", -1)
+		user.PGHost = viper.Get("shared_database_host").(string)
+		user.PGDBName = viper.Get("shared_database_name").(string)
+		io.WriteTemplate(`
+export PGUSER={{.PostgresUsername}}
+export PGPASSWORD={{.Password}}
+export PGHOST={{.PGHost}}
+export PGDATABASE={{.PGDBName}}
+`, user, "./.exports")
+		err = os.Chmod("./.exports", 0755)
+		eh.HandleError("writing .exports", err)
 
 		msg.Success("before docker-build")
 	},
