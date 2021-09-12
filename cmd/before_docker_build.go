@@ -56,7 +56,7 @@ cert: false `, user.Password, "./config.yml")
 
 		runtimeInstalls := []database.RuntimeInstall{}
 		dbs.FindUserIDERuntimeInstallsByUsernameAndIDE(&runtimeInstalls, username, "vscode")
-		io.WriteTemplate(`#!/bin/bash -e
+		io.WriteTemplate(`#!/bin/zsh -e
     
 set -x
 {{range $v := .}}
