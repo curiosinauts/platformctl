@@ -22,6 +22,7 @@ var addUserCmdUseExistingKeys bool
 var addUserCmdRepos []string
 var addUserCmdUsername string
 var addUserCmdUseEmail bool
+var addUserCmdRuntimeInstalls string
 
 // addUserCmd represents the user command
 var addUserCmd = &cobra.Command{
@@ -115,7 +116,7 @@ var addUserCmd = &cobra.Command{
 
 		eh.HandleError("ide_repo insert", dberr)
 
-		runtimeInstallNames := []string{"tmux", "psqlrc"}
+		runtimeInstallNames := strings.Split(addUserCmdRuntimeInstalls, ",")
 		for _, rin := range runtimeInstallNames {
 			eh.HandleError("adding ide runtime install", AddIDERuntimeInstall(userIDE.ID, rin))
 		}
@@ -217,4 +218,5 @@ func init() {
 	addUserCmd.Flags().BoolVarP(&addUserCmdUseEmail, "email", "e", false, "use real email or not")
 	addUserCmd.Flags().StringVarP(&addUserCmdUsername, "username", "u", "", "specify username")
 	addUserCmd.Flags().StringArrayVarP(&addUserCmdRepos, "repo", "r", []string{}, "specify personal git repo")
+	addUserCmd.Flags().StringVarP(&addUserCmdRuntimeInstalls, "runtime-installs", "i", "tmux,psqlrc", "runtime installs")
 }
