@@ -115,23 +115,10 @@ var addUserCmd = &cobra.Command{
 
 		eh.HandleError("ide_repo insert", dberr)
 
-		tmuxRuntimeInstall := database.RuntimeInstall{}
-		eh.HandleError("finding runtime install", dbs.FindBy(&tmuxRuntimeInstall, "name=$1", "tmux"))
-
-		dberr = dbs.Save(&database.IDERuntimeInstall{
-			UserIDEID:        userIDE.ID,
-			RuntimeInstallID: tmuxRuntimeInstall.ID,
-		})
-		eh.HandleError("ide_runtime_install insert", dberr)
-
-		psqlrcRuntimeInstall := database.RuntimeInstall{}
-		eh.HandleError("finding runtime install", dbs.FindBy(&psqlrcRuntimeInstall, "name=$1", "psqlrc"))
-
-		dberr = dbs.Save(&database.IDERuntimeInstall{
-			UserIDEID:        userIDE.ID,
-			RuntimeInstallID: psqlrcRuntimeInstall.ID,
-		})
-		eh.HandleError("ide_runtime_install insert", dberr)
+		runtimeInstallNames := []string{"tmux", "psqlrc"}
+		for _, rin := range runtimeInstallNames {
+			eh.HandleError("adding ide runtime install", AddIDERuntimeInstall(userIDE.ID, rin))
+		}
 
 		gitClient, err := giteautil.NewGitClient()
 		eh.HandleError("instantiating git client", err)
@@ -207,6 +194,21 @@ nextRepo:
 		}
 	}
 	return nil
+}
+
+// AddIDERuntimeInstall adds ide runtime install to user profile
+func AddIDERuntimeInstall(userIDEID int64, runtimeInstallName string) *database.DBError {
+	tmuxRuntimeInstall := database.RuntimeInstall{}
+	dberr := dbs.FindBy(&tmuxRuntimeInstall, "name=$1", runtimeInstallName)
+	if dberr != nil {
+		return dberr
+	}
+	dberr = dbs.Save(&database.IDERuntimeInstall{
+		UserIDEID:        userIDEID,
+		RuntimeInstallID: tmuxRuntimeInstall.ID,
+	})
+
+	return dberr
 }
 
 func init() {
