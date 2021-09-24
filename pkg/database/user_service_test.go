@@ -1,39 +1,19 @@
 package database
 
 import (
-	"fmt"
-	"os"
 	"testing"
 
+	"github.com/curiosinauts/platformctl/pkg/testutil"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-// init reads in config file and ENV variables if set.
-func Init() {
-	// Find home directory.
-	home, err := os.UserHomeDir()
-	cobra.CheckErr(err)
-
-	// Search config in home directory with name ".platformctl" (without extension).
-	viper.AddConfigPath(home)
-	viper.SetConfigType("yaml")
-	viper.SetConfigName(".platformctl")
-
-	viper.SetEnvPrefix("platformctl")
-	viper.AutomaticEnv() // read in environment variables that match
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
-	}
+func init() {
+	testutil.InitConfig()
 }
 
 func Test(t *testing.T) {
-
-	Init()
 
 	connStr := viper.Get("database_conn").(string)
 	newdb, err := sqlx.Connect("postgres", connStr)
