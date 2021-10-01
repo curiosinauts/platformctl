@@ -14,7 +14,7 @@ func init() {
 
 func TestDownload(t *testing.T) {
 	id := uuid.NewString()
-	err := DownloadPanel(15, 600, 300, 1, id)
+	err := DownloadPanel(15, 600, 300, 1, id, true)
 	if err != nil {
 		fmt.Println(err)
 	}

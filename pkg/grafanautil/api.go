@@ -6,13 +6,14 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/curiosinauts/platformctl/pkg/io"
 	"github.com/spf13/viper"
 )
 
 // DownloadPanel retrieves the resource using given URL
-func DownloadPanel(panelID, width, height, from int, uuid string) error {
+func DownloadPanel(panelID, width, height, from int, uuid string, debug bool) error {
 	url := fmt.Sprintf("https://grafana.int.curiosityworks.org/render/d-solo/7UdvG-Mnk/base-system-health?"+
 		"orgId=1&panelId=%d&width=%d&height=%d&tz=America/New_York"+
 		"&from=now-%dh&to=now", panelID, width, height, from)
@@ -40,10 +41,12 @@ func DownloadPanel(panelID, width, height, from int, uuid string) error {
 	if err != nil {
 		return err
 	}
-	// defer os.Remove(filepath)
+	defer os.Remove(filepath)
 
 	message, err := io.ByteStreamFileUpload("http://192.168.0.118:8080/stream-upload", "/var/www/fileserver.curiosityworks.org/htdocs", filepath)
-	log.Println(message)
+	if debug {
+		log.Println(message)
+	}
 
 	return err
 }
