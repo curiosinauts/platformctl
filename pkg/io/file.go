@@ -3,6 +3,7 @@ package io
 import (
 	"bytes"
 	"io/ioutil"
+	"log"
 	"os"
 	"text/template"
 )
@@ -55,4 +56,14 @@ func WriteTemplate(tpl string, data interface{}, path string) error {
 		return err
 	}
 	return WriteStringTofile(rendered, path)
+}
+
+func MustOpen(f string) (*os.File, error) {
+	r, err := os.Open(f)
+	if err != nil {
+		pwd, _ := os.Getwd()
+		log.Println("PWD: ", pwd)
+		return nil, err
+	}
+	return r, nil
 }

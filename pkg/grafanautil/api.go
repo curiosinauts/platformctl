@@ -4,8 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 
+	"github.com/curiosinauts/platformctl/pkg/io"
 	"github.com/spf13/viper"
 )
 
@@ -33,8 +35,15 @@ func DownloadPanel(panelID, width, height, from int, uuid string) error {
 		return err
 	}
 
-	filename := fmt.Sprintf("/tmp/%s.png", uuid)
-	err = ioutil.WriteFile(filename, data, 0755)
+	filepath := fmt.Sprintf("/tmp/%s.png", uuid)
+	err = ioutil.WriteFile(filepath, data, 0755)
+	if err != nil {
+		return err
+	}
+	// defer os.Remove(filepath)
+
+	message, err := io.ByteStreamFileUpload("http://192.168.0.119:8080/stream-upload", "/home/debian/upload", filepath)
+	log.Println(message)
 
 	return err
 }
