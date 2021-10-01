@@ -42,7 +42,7 @@ func DownloadPanel(panelID, width, height, from int, uuid string) error {
 	}
 	// defer os.Remove(filepath)
 
-	message, err := io.ByteStreamFileUpload("http://192.168.0.119:8080/stream-upload", "/home/debian/upload", filepath)
+	message, err := io.ByteStreamFileUpload("http://192.168.0.118:8080/stream-upload", "/var/www/fileserver.curiosityworks.org/htdocs", filepath)
 	log.Println(message)
 
 	return err

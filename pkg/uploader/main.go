@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"html/template"
 	"io"
 	"log"
 	"net/http"
@@ -12,11 +11,11 @@ import (
 // CREDIT: https://github.com/TannerGabriel/learning-go/tree/master/beginner-programs/FileUpload
 
 // // Compile templates on start of the application
-var templates = template.Must(template.ParseFiles("public/upload.html"))
+// var templates = template.Must(template.ParseFiles("public/upload.html"))
 
 // // Display the named template
 func display(w http.ResponseWriter, page string, data interface{}) {
-	templates.ExecuteTemplate(w, page+".html", data)
+	// templates.ExecuteTemplate(w, page+".html", data)
 }
 
 func uploadFile(w http.ResponseWriter, r *http.Request) {
