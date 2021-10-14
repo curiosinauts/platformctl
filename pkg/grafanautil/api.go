@@ -1,14 +1,17 @@
 package grafanautil
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/curiosinauts/platformctl/pkg/io"
+	"github.com/grafana-tools/sdk"
 	"github.com/spf13/viper"
 )
 
@@ -49,4 +52,35 @@ func DownloadPanel(panelID, width, height, from int, uuid string, debug bool) er
 	}
 
 	return err
+}
+
+func ListDashboards(query string) ([]sdk.FoundBoard, error) {
+	grafanaAPIKey := viper.Get("grafana_api_key").(string)
+
+	api, _ := sdk.NewClient("https://grafana.int.curiosityworks.org", grafanaAPIKey, http.DefaultClient)
+
+	ctx := context.Background()
+	foundBoards, err := api.SearchDashboards(ctx, query, false, []string{}...)
+	if err != nil {
+		return []sdk.FoundBoard{}, err
+	}
+	return foundBoards, err
+}
+
+func ListPanels(uid string, partialPanelTitle string) ([]*sdk.Panel, error) {
+	grafanaAPIKey := viper.Get("grafana_api_key").(string)
+
+	api, _ := sdk.NewClient("https://grafana.int.curiosityworks.org", grafanaAPIKey, http.DefaultClient)
+
+	ctx := context.Background()
+	board, _, _ := api.GetDashboardByUID(ctx, uid)
+
+	panelsMatched := []*sdk.Panel{}
+	for _, panel := range board.Panels {
+		if strings.Contains(strings.ToLower(panel.Title), strings.ToLower(partialPanelTitle)) {
+			panelsMatched = append(panelsMatched, panel)
+		}
+	}
+
+	return panelsMatched, nil
 }
