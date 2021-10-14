@@ -10,6 +10,7 @@ import (
 	"os"
 )
 
+// FormDataFileUpload upload file using html file upload
 func FormDataFileUpload(remoteURL string, filepath string) error {
 	client := http.DefaultClient
 	//prepare the reader instances to encode
@@ -77,6 +78,7 @@ func formDataUpload(client *http.Client, url string, values map[string]io.Reader
 	return
 }
 
+// ByteStreamFileUpload uploads file with given byte stream
 // CREDIT: https://gist.github.com/ebraminio/576fdfdff425bf3335b51a191a65dbdb
 func ByteStreamFileUpload(remoteURL, remoteFolder, filename string, datastream io.Reader) (string, error) {
 	req, err := http.NewRequest("POST", remoteURL, datastream)

@@ -17,7 +17,8 @@ func NewUserService(db *sqlx.DB) UserService {
 	return UserService{&dbService}
 }
 
-func NewUserSerivceWithOptions(db *sqlx.DB, options ...DBOption) UserService {
+// NewUserServiceWithOptions returns new user service with options
+func NewUserServiceWithOptions(db *sqlx.DB, options ...DBOption) UserService {
 	_dbs := &DBService{db, false}
 
 	for _, option := range options {

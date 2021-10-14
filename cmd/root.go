@@ -66,7 +66,7 @@ func initDB() {
 		database.DBOptionDebug(debug),
 	}
 
-	dbs = database.NewUserSerivceWithOptions(db, options...)
+	dbs = database.NewUserServiceWithOptions(db, options...)
 }
 
 // initConfig reads in config file and ENV variables if set.

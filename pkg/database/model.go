@@ -23,6 +23,7 @@ type User struct {
 	PGDBName         string
 }
 
+// String string representation of user
 func (u User) String() string {
 	return fmt.Sprintf("%d: %s\n", u.ID, u.Username)
 }
@@ -91,8 +92,9 @@ func (ur *UserIDE) SetPrimaryKey(id int64) {
 	ur.ID = id
 }
 
-func (u UserIDE) String() string {
-	return fmt.Sprintf("id: %d user_id: %d, ide_id: %d\n", u.ID, u.UserID, u.IDEID)
+// String string representation of user ide
+func (ur UserIDE) String() string {
+	return fmt.Sprintf("id: %d user_id: %d, ide_id: %d\n", ur.ID, ur.UserID, ur.IDEID)
 }
 
 // IDE ide
@@ -145,8 +147,9 @@ type IDERuntimeInstall struct {
 	RuntimeInstallID int64 `db:"runtime_install_id"`
 }
 
-func (u IDERuntimeInstall) String() string {
-	return fmt.Sprintf("id: %d user_ide_id: %d runtime_install_id: %d\n", u.ID, u.UserIDEID, u.RuntimeInstallID)
+// String string representation of ide runtime install
+func (ur IDERuntimeInstall) String() string {
+	return fmt.Sprintf("id: %d user_ide_id: %d runtime_install_id: %d\n", ur.ID, ur.UserIDEID, ur.RuntimeInstallID)
 }
 
 // Meta provides mapping config specific to ide runtime install

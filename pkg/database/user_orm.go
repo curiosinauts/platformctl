@@ -4,11 +4,13 @@ import (
 	"github.com/curiosinauts/platformctl/pkg/crypto"
 )
 
+// UserObject user object
 type UserObject struct {
 	User
 	UserService UserService
 }
 
+// NewUserObject returns new user object
 func NewUserObject(userService UserService, email string) (*UserObject, *DBError) {
 	user := User{}
 	dberr := userService.FindBy(&user, "hashed_email=$1", crypto.Hashed(email))
@@ -21,6 +23,7 @@ func NewUserObject(userService UserService, email string) (*UserObject, *DBError
 	return userObject, nil
 }
 
+// IDEs returns user ides
 func (uo *UserObject) IDEs() ([]IDE, *DBError) {
 	var ides []IDE
 	userIDEs := []UserIDE{}
@@ -39,6 +42,7 @@ func (uo *UserObject) IDEs() ([]IDE, *DBError) {
 	return ides, nil
 }
 
+// DoesUserHaveIDE checks if the user has given ide or not
 func (uo *UserObject) DoesUserHaveIDE(ideName string) (bool, *DBError) {
 	ides, dberr := uo.IDEs()
 	if dberr != nil {
@@ -54,6 +58,7 @@ func (uo *UserObject) DoesUserHaveIDE(ideName string) (bool, *DBError) {
 	return false, nil
 }
 
+// GetIDE returns IDE object for given ide name
 func (uo *UserObject) GetIDE(ideName string) (*IDE, *DBError) {
 	ides, dberr := uo.IDEs()
 	if dberr != nil {
@@ -67,6 +72,7 @@ func (uo *UserObject) GetIDE(ideName string) (*IDE, *DBError) {
 	return nil, nil
 }
 
+// RuntimeInstallsFor returns runtime install for given ide
 func (uo *UserObject) RuntimeInstallsFor(ide IDE) ([]RuntimeInstall, *DBError) {
 	var runtimeInstalls []RuntimeInstall
 
@@ -98,6 +104,7 @@ func (uo *UserObject) RuntimeInstallsFor(ide IDE) ([]RuntimeInstall, *DBError) {
 	return runtimeInstalls, nil
 }
 
+// UserIDE returns user ide for user's given ide
 func (uo *UserObject) UserIDE(ide IDE) (UserIDE, *DBError) {
 	var userIDE UserIDE
 
@@ -116,6 +123,7 @@ func (uo *UserObject) UserIDE(ide IDE) (UserIDE, *DBError) {
 	return userIDE, nil
 }
 
+// DoesUserHaveRuntimeInstallFor checks if user have runtime install for given ide and runtime install name
 func (uo *UserObject) DoesUserHaveRuntimeInstallFor(ide IDE, runtimeInstallName string) (bool, *DBError) {
 	runtimeInstalls, dberr := uo.RuntimeInstallsFor(ide)
 	if dberr != nil {

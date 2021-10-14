@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+// Hashed hashes given string
 func Hashed(s string) string {
 	hasher := sha256.New()
 	hasher.Write([]byte(s))

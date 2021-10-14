@@ -12,10 +12,12 @@ import (
 	"github.com/spf13/viper"
 )
 
+// RegistryClient docker registry client
 type RegistryClient struct {
 	api *registry.Registry
 }
 
+// NewRegistryClient returns new docker registry client
 func NewRegistryClient(debug bool) (*RegistryClient, error) {
 	url, ok := viper.Get("docker_registry_url").(string)
 	if !ok {
@@ -37,10 +39,12 @@ func NewRegistryClient(debug bool) (*RegistryClient, error) {
 	return &RegistryClient{api: registry}, nil
 }
 
+// ListTags lists docker tags
 func (r *RegistryClient) ListTags(repository string, debug bool) ([]string, error) {
 	return r.api.Tags(repository)
 }
 
+// DeleteImage deletes docker image
 func (r *RegistryClient) DeleteImage(repository, tag string, debug bool) error {
 	s, err := DigestV2(repository, tag)
 	if err != nil {
@@ -51,6 +55,7 @@ func (r *RegistryClient) DeleteImage(repository, tag string, debug bool) error {
 	return r.api.DeleteManifest(repository, digest)
 }
 
+// Repositories lists repositories
 func (r *RegistryClient) Repositories() ([]string, error) {
 	return r.api.Repositories()
 }

@@ -44,6 +44,7 @@ func DownloadPanel(panelID, width, height, from int, uuid string, debug bool) er
 	return err
 }
 
+// ListDashboards lists dashboards
 func ListDashboards(query string) ([]sdk.FoundBoard, error) {
 	grafanaAPIKey := viper.Get("grafana_api_key").(string)
 
@@ -57,6 +58,7 @@ func ListDashboards(query string) ([]sdk.FoundBoard, error) {
 	return foundBoards, err
 }
 
+// ListPanels lists panels
 func ListPanels(uid string, partialPanelTitle string) ([]*sdk.Panel, error) {
 	grafanaAPIKey := viper.Get("grafana_api_key").(string)
 
