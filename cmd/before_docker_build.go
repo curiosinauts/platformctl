@@ -73,6 +73,7 @@ export TERM=xterm
 /home/coder/go/bin/gotty --ws-origin "vscode-{{.Username}}.curiosityworks.org" -p 2222 -c "{{.Username}}:{{.Password}}" -w /usr/bin/zsh >>/dev/null 2>&1 
 `, user, "./gotty.sh")
 		err = os.Chmod("./gotty.sh", 0755)
+		eh.HandleError("writing .gotty.sh", err)
 
 		user.DockerTag = dockertag
 		io.WriteTemplate(deployServiceIngressTemplate, user, "./vscode-"+user.Username+".yml")

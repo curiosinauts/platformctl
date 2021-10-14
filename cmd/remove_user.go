@@ -30,6 +30,7 @@ var removeUserCmd = &cobra.Command{
 
 		user := database.User{}
 		dberr := dbs.FindBy(&user, "hashed_email=$1", crypto.Hashed(email))
+		eh.PrintError("finding by hashed email", dberr)
 
 		gitClient, err := giteautil.NewGitClient()
 		eh.PrintError("instantiating git client", err)

@@ -6,7 +6,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var completionCmd = &cobra.Command{
+// CompletionCmd is not really working for now. Would be nice if this actually worked.
+var CompletionCmd = &cobra.Command{
 	Use:   "completion [bash|zsh|fish|powershell]",
 	Short: "Generate completion script",
 	Long: `To load completions:
