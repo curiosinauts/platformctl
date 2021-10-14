@@ -8,7 +8,6 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
-	"strings"
 )
 
 func FormDataFileUpload(remoteURL string, filepath string) error {
@@ -79,21 +78,10 @@ func formDataUpload(client *http.Client, url string, values map[string]io.Reader
 }
 
 // CREDIT: https://gist.github.com/ebraminio/576fdfdff425bf3335b51a191a65dbdb
-func ByteStreamFileUpload(remoteURL, remoteFolder, filepath string) (string, error) {
-	file, err := MustOpen(filepath)
+func ByteStreamFileUpload(remoteURL, remoteFolder, filename string, datastream io.Reader) (string, error) {
+	req, err := http.NewRequest("POST", remoteURL, datastream)
 	if err != nil {
 		return "", err
-	}
-	defer file.Close()
-
-	req, err := http.NewRequest("POST", remoteURL, file)
-	if err != nil {
-		return "", err
-	}
-
-	filename := file.Name()
-	if strings.Contains(filename, "/") {
-		filename = filename[strings.LastIndex(file.Name(), "/")+1:]
 	}
 
 	req.Header.Set("Content-Type", "binary/octet-stream")

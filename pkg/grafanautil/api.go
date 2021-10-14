@@ -4,10 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/curiosinauts/platformctl/pkg/io"
@@ -34,19 +32,11 @@ func DownloadPanel(panelID, width, height, from int, uuid string, debug bool) er
 		return errors.New("issue with downloading")
 	}
 
-	data, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return err
-	}
+	filename := fmt.Sprintf("%s.png", uuid)
 
-	filepath := fmt.Sprintf("/tmp/%s.png", uuid)
-	err = ioutil.WriteFile(filepath, data, 0755)
-	if err != nil {
-		return err
-	}
-	defer os.Remove(filepath)
+	message, err := io.ByteStreamFileUpload("http://192.168.0.118:8080/stream-upload",
+		"/var/www/fileserver.curiosityworks.org/htdocs", filename, res.Body)
 
-	message, err := io.ByteStreamFileUpload("http://192.168.0.118:8080/stream-upload", "/var/www/fileserver.curiosityworks.org/htdocs", filepath)
 	if debug {
 		log.Println(message)
 	}
