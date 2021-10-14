@@ -17,6 +17,16 @@ func NewUserService(db *sqlx.DB) UserService {
 	return UserService{&dbService}
 }
 
+func NewUserSerivceWithOptions(db *sqlx.DB, options ...DBOption) UserService {
+	_dbs := &DBService{db, false}
+
+	for _, option := range options {
+		option(_dbs)
+	}
+
+	return UserService{_dbs}
+}
+
 // DeleteALLUserIDEsForUser deletes all user ides for given user
 func (u UserService) DeleteALLUserIDEsForUser(userID int64) *DBError {
 	query := `DELETE FROM user_ide WHERE id IN (SELECT id FROM user_ide WHERE user_id = $1)`

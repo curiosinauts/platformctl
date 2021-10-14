@@ -61,13 +61,12 @@ func initDB() {
 	db.Exec(`set search_path='curiosity'`)
 
 	userService = database.NewUserService(db)
-	_dbs := &database.DBService{
-		DB:    db,
-		Debug: debug,
+
+	options := []database.DBOption{
+		database.DBOptionDebug(debug),
 	}
-	dbs = database.UserService{
-		_dbs,
-	}
+
+	dbs = database.NewUserSerivceWithOptions(db, options...)
 }
 
 // initConfig reads in config file and ENV variables if set.

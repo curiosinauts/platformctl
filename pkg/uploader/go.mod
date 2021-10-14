@@ -1,3 +1,3 @@
-module github.com/curiosinauts/uploader
+module github.com/curiosinauts/platformctl/pkg/uploader
 
-go 1.17
+go 1.16

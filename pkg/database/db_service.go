@@ -12,6 +12,14 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+type DBOption func(*DBService)
+
+func DBOptionDebug(debug bool) DBOption {
+	return func(dbs *DBService) {
+		dbs.Debug = debug
+	}
+}
+
 // DBService db service
 type DBService struct {
 	*sqlx.DB
