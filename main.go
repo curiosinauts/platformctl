@@ -1,9 +1,10 @@
 package main
 
 import (
+	"os"
+
 	"github.com/curiosinauts/platformctl/cmd"
 	_ "github.com/lib/pq"
-	"os"
 )
 
 func init() {

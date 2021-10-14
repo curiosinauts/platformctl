@@ -8,7 +8,7 @@ require (
 	github.com/bndr/gojenkins v1.1.0
 	github.com/docker/distribution v2.7.1+incompatible
 	github.com/google/uuid v1.3.0
-	github.com/grafana-tools/sdk v0.0.0-20210921191058-888ef9d18611 // indirect
+	github.com/grafana-tools/sdk v0.0.0-20210921191058-888ef9d18611
 	github.com/heroku/docker-registry-client v0.0.0-20190909225348-afc9e1acc3d5
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/lib/pq v1.2.0
@@ -19,5 +19,6 @@ require (
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.8.1
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
-	golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c // indirect
+	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d // indirect
+	golang.org/x/sys v0.0.0-20211013075003-97ac67df715c // indirect
 )

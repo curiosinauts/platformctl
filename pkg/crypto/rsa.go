@@ -7,10 +7,11 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
-	"github.com/curiosinauts/platformctl/pkg/io"
-	"golang.org/x/crypto/ssh"
 	"log"
 	"os"
+
+	"github.com/curiosinauts/platformctl/pkg/io"
+	"golang.org/x/crypto/ssh"
 )
 
 // CREDIT: https://www.systutorials.com/how-to-generate-rsa-private-and-public-key-pair-in-go-lang/
