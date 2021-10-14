@@ -14,6 +14,7 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
+// GenerateRSAKeys generates rsa keys
 // CREDIT: https://www.systutorials.com/how-to-generate-rsa-private-and-public-key-pair-in-go-lang/
 func GenerateRSAKeys() (string, string) {
 	// generate key
@@ -54,6 +55,7 @@ func GenerateRSAKeys() (string, string) {
 	return privatePem.String(), publicPem.String()
 }
 
+// GenerateRSASSHKeys generates rsa ssh keys
 // CREDIT: https://gist.github.com/devinodaniel/8f9b8a4f31573f428f29ec0e884e6673
 func GenerateRSASSHKeys() ([]byte, []byte) {
 	bitSize := 2048
@@ -121,9 +123,14 @@ func generatePublicKey(privatekey *rsa.PublicKey) ([]byte, error) {
 	return pubKeyBytes, nil
 }
 
+// ReadExistingRSASSHKeys reads existing rsa ssh keys
 func ReadExistingRSASSHKeys() ([]byte, []byte) {
 	var privateKeys, publicKeys []byte
 	home, err := os.UserHomeDir()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
 	privateKeys, err = io.ReadFileToBytes(fmt.Sprintf("%s/.ssh/id_rsa", home))
 	if err != nil {
 		log.Fatal(err.Error())

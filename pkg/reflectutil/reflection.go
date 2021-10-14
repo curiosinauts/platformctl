@@ -5,10 +5,11 @@ import (
 	"strings"
 )
 
+// ListDBTagsFor lists go meta tags with prefix db:
 func ListDBTagsFor(i interface{}) []string {
 	var dbTags []string
 
-	tags := ListTagsFor(i)
+	tags := listTagsFor(i)
 	for _, tag := range tags {
 		if strings.Contains(tag, "db:") {
 			terms := strings.Fields(tag)
@@ -28,7 +29,7 @@ func ListDBTagsFor(i interface{}) []string {
 	return dbTags
 }
 
-func ListTagsFor(i interface{}) []string {
+func listTagsFor(i interface{}) []string {
 	var tags []string
 
 	t := reflect.TypeOf(i).Elem()

@@ -12,8 +12,10 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// DBOption db option
 type DBOption func(*DBService)
 
+// DBOptionDebug db option debug
 func DBOptionDebug(debug bool) DBOption {
 	return func(dbs *DBService) {
 		dbs.Debug = debug
@@ -174,11 +176,13 @@ func (u UserService) FindBy(i interface{}, where string, args ...interface{}) *D
 	return nil
 }
 
+// PrintQuery prints query
 func PrintQuery(query string, args ...interface{}) {
 	fmt.Println()
 	fmt.Println(query, args)
 }
 
+// PrintResult prints result
 func PrintResult(i interface{}) {
 	fmt.Println(i)
 }
@@ -287,6 +291,7 @@ func (u DBService) ListBy(tableName string, dest interface{}, where string, args
 	return nil
 }
 
+// GetMappingConfigFromSlicePointer gets mapping config from slice pointer
 func GetMappingConfigFromSlicePointer(dest interface{}) *MappingConfig {
 	items := reflect.ValueOf(dest)
 	if items.Kind() == reflect.Ptr && items.Elem().Kind() == reflect.Slice {

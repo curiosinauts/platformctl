@@ -10,6 +10,7 @@ var (
 	point = "  \u2022 "
 )
 
+// Info formats info message
 func Info(message string) {
 	fmt.Println()
 	fmt.Println(point + message)

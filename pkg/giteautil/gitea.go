@@ -6,10 +6,12 @@ import (
 	"github.com/spf13/viper"
 )
 
+// GitClient gitea api client
 type GitClient struct {
 	api *gitea.Client
 }
 
+// NewGitClient returns a new gitea api client
 func NewGitClient() (*GitClient, error) {
 	accessToken := viper.Get("gitea_access_token").(string)
 	giteaURL := viper.Get("gitea_url").(string)
@@ -20,6 +22,7 @@ func NewGitClient() (*GitClient, error) {
 	return &GitClient{api: api}, nil
 }
 
+// AddUser adds new user
 func (gc *GitClient) AddUser(user database.User) error {
 	mustChangePassword := false
 	option := gitea.CreateUserOption{
@@ -35,6 +38,7 @@ func (gc *GitClient) AddUser(user database.User) error {
 	return nil
 }
 
+// RemoveUser removes user
 func (gc *GitClient) RemoveUser(username string) error {
 	_, err := gc.api.AdminDeleteUser(username)
 	if err != nil {
@@ -43,6 +47,7 @@ func (gc *GitClient) RemoveUser(username string) error {
 	return nil
 }
 
+// CreateUserRepo creates user repo
 func (gc *GitClient) CreateUserRepo(username string) error {
 
 	option := gitea.CreateRepoOption{
@@ -57,6 +62,7 @@ func (gc *GitClient) CreateUserRepo(username string) error {
 	return nil
 }
 
+// DeleteUserRepo deletes user repo
 func (gc *GitClient) DeleteUserRepo(username string) error {
 	_, err := gc.api.DeleteRepo(username, "project")
 	if err != nil {
@@ -65,6 +71,7 @@ func (gc *GitClient) DeleteUserRepo(username string) error {
 	return nil
 }
 
+// CreateUserPublicKey creates user public key
 func (gc *GitClient) CreateUserPublicKey(user database.User) (int64, error) {
 	option := gitea.CreateKeyOption{
 		Key:      user.PublicKey,
@@ -80,6 +87,7 @@ func (gc *GitClient) CreateUserPublicKey(user database.User) (int64, error) {
 	return publicKey.ID, nil
 }
 
+// DeleteUserPublicKey deletes user public key
 func (gc *GitClient) DeleteUserPublicKey(user database.User, keyID int64) error {
 	_, err := gc.api.AdminDeleteUserPublicKey(user.Username, int(keyID))
 	if err != nil {
