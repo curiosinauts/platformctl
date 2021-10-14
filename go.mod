@@ -6,7 +6,6 @@ require (
 	code.gitea.io/sdk/gitea v0.15.0
 	github.com/atrox/haikunatorgo/v2 v2.0.1
 	github.com/bndr/gojenkins v1.1.0
-	github.com/curiosinauts/platformctl/pkg/uploader v0.0.0-20211014040754-c86117abd849 // indirect
 	github.com/docker/distribution v2.7.1+incompatible
 	github.com/google/uuid v1.3.0
 	github.com/grafana-tools/sdk v0.0.0-20210921191058-888ef9d18611
