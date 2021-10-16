@@ -26,7 +26,7 @@ func NewUserObject(userService UserService, email string) (*UserObject, *DBError
 // IDEs returns user ides
 func (uo *UserObject) IDEs() ([]IDE, *DBError) {
 	var ides []IDE
-	userIDEs := []UserIDE{}
+	var userIDEs []UserIDE
 	dberr := uo.UserService.ListBy("user_ide", &userIDEs, "user_id=$1", uo.User.ID)
 	if dberr != nil {
 		return ides, dberr
