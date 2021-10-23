@@ -29,10 +29,11 @@ I will be documenting how this platform was put together. Pretty much everything
 ![](/assets/vscode_provisioning.png)
 
 # Homelab network topology
+All of the servers are virtualized. They are all running in a single workstation.
 ![](/assets/curiosityworks_network_topology.svg)
 
-# Hardware requirement
-I am running the following workstation
+# Hardware
+I think I have spent about $900. Some of the hardware parts were bought before the pandemic so it might cost a bit more now.
 - AMD Ryzen5 2600
 - 64 gigs of ram
 - 512 gigs SSD
