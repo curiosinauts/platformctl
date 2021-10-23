@@ -40,5 +40,5 @@ I think I have spent about $900. Some of the hardware parts were bought before t
 
 PFSense and VLAN switch are optional.
 
-# Networking internset speed
+# Internet speed
 I used to have fairly slow internet connection but a user in east coast couldn't tell if the vscode was being served over internet. Gigabit internet is becoming more common these days. My guestmate is that the homelab environment such as mine can handle 10 concurrent users.
