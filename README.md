@@ -8,16 +8,16 @@ the online coding platfrom currently provides the following to each user
 - golang 1.16
 - `terminal access in a browser`
 
-# privacy law compliancy
+# Privacy law compliancy
 There are about 4 major privacy laws that govern which information is stored. I decided to be fully compliant by storing no PII. User's information is hashed and anonymized. Users will get funny aliases like `hungry-owl-5231` Just imagine calling your user by such alias on a conference call.
 
-# user provisioning
+# User provisioning
 Users are added to the platform using the following command.
 ```
 platformctl add user user1@example.com
 ```
 
-# why CLI?
+# Why CLI?
 The coding platform management could have been built as an web application. Perhaps one day I can get there. My vision is to teach young children how to code. I might have a sign up sheet at community centers, barbershops, etc. I just want to pull up my phone and tell my chatops bot to execute `platformctl` command to set up the new user right and then.
 
 # Seeking help from developer community
@@ -38,3 +38,6 @@ I am running the following workstation
 - 512 gigs SSD
 
 PFSense and VLAN switch are optional.
+
+# Networking internset speed
+I used to have fairly slow internet connection but a user in east coast couldn't tell if the vscode was being served over internet. Gigabit internet is becoming more common these days. My guestmate is that the homelab environment such as mine can handle 10 concurrent users.
