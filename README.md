@@ -18,7 +18,7 @@ platformctl add user user1@example.com
 ```
 
 # Why CLI?
-The coding platform management could have been built as an web application. Perhaps one day I can get there. My vision is to teach young children how to code. I might have a sign up sheet at community centers, barbershops, etc. I just want to pull up my phone and tell my chatops bot to execute `platformctl` command to set up the new user right and then.
+The coding platform management could have been built as an web application. Perhaps one day I can get there. My vision is to teach young children how to code. I might have a sign up sheet at community centers, barber shops, etc. I just want to pull up my phone and tell my chatops bot to execute `platformctl` command to set up a new user right and then.
 
 # Hardware
 I think I have spent about $900. Some of the hardware parts were bought before the pandemic so it might cost a bit more now.
