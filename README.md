@@ -1,5 +1,5 @@
 # platformctl
-A command line tool for managing online coding platform. The online coding platform is based around `vscode in a browser` aka code server from coder.com 
+A command line tool for managing [online coding platform](https://console.curiosityworks.org). The online coding platform is based around `vscode in a browser` aka code server from coder.com 
 
 the online coding platfrom currently provides the following to each user
 - individual PostgreSQL schema per user
@@ -31,7 +31,7 @@ PFSense and VLAN switch are optional.
 # Internet speed
 I used to have fairly slow internet connection but a user in east coast couldn't tell if the vscode was being served over internet. Gigabit internet is becoming more common these days. My guestmate is that the homelab environment such as mine can handle 10 concurrent users.
 
-# User provision flow
+# User provisioning flow
 ![](/assets/vscode_provisioning.png)
 
 # Homelab network topology
