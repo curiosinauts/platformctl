@@ -1,33 +1,40 @@
 # platformctl
-A command line tool for managing CuriosityWorks online coding platform. 
+A command line tool for managing online coding platform. The online coding platform is based around `vscode in a browser` aka code server from coder.com 
 
-VSCode in a browser aka code-server runs in a docker container. 
+the online coding platfrom currently provides the following to each user
+- individual PostgreSQL schema per user
+- online git repo through `gitea`
+- python 3
+- golang 1.16
+- `terminal access in a browser`
 
+# privacy law compliancy
+There are about 4 major privacy laws that govern which information is stored. I decided to be fully compliant by storing no PII. User's information is hashed and anonymized. Users will get funny aliases like `hungry-owl-5231` Just imagine calling your user by such alias on a conference call.
+
+# user provisioning
 Users are added to the platform using the following command.
 ```
-platformctl add user foo@example.com
+platformctl add user user1@example.com
 ```
 
-This command will add the user to a database. This will also add the new user to Gitea, kick off Jenkins job for building docker image, call kubectl to deploy the docker image and so on.
+# why CLI?
+The coding platform management could have been built as an web application. Perhaps one day I can get there. My vision is to teach young children how to code. I might have a sign up sheet at community centers, barbershops, etc. I just want to pull up my phone and tell my chatops bot to execute `platformctl` command to set up the new user right and then.
 
-The final product is VSCode running in a browser behind a reverse proxy with TLS support. 
+# Seeking help from developer community
+Small success would be me teaching handful of children how to code in my community. Bigger success would be having the online teaching platform replicated by other developers all over the world. One problem with that is some amount of familiarity with linux operating system, virtualization and automation is required. 
 
-Good folks at coder.com graciously open sourced code-server. CuriosityWorks online coding platform would not exist without code-server and the work of coder.com devs.
+I will be documenting how this platform was put together. Pretty much everything is automated. 
 
-# Why CLI?
-Building a full blown UI to manage and build code server is expensive in terms of development time. platformctl is packaged and deployed in CuriosityWorks slack channel as a bot command. This fits my development time budget.
-
-# Future
-I am hoping other developers will pick up my tools that I have built and replicate the online coding platform for teaching children how to code.
-
-I am comfortable in systems integration and automation. I understand not every developers like or get to work on building systems or let alone build an entire platform.
-
-I will be documenting how this platform was put together. Pretty much everything is automated. However, this is much to do in terms of cleaning up the hard coded configs and documentation.
-
-# VSCode provisioning
-Chatops is used to provision new user and new user's VSCode instance.
-
+# User provision flow
 ![](/assets/vscode_provisioning.png)
 
 # Homelab network topology
 ![](/assets/curiosityworks_network_topology.svg)
+
+# Hardware requirement
+I am running the following workstation
+- AMD Ryzen5 2600
+- 64 gigs of ram
+- 512 gigs SSD
+
+PFSense and VLAN switch are optional.
