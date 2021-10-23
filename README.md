@@ -28,3 +28,6 @@ I will be documenting how this platform was put together. Pretty much everything
 Chatops is used to provision new user and new user's VSCode instance.
 
 ![](/assets/vscode_provisioning.png)
+
+# Homelab network topology
+![](/assets/curiosityworks_network_topology.svg)
