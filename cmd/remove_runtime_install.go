@@ -17,7 +17,7 @@ var removeRuntimeInstallCmd = &cobra.Command{
 	Aliases: []string{"runtime-installs"},
 	Short:   "Removes runtime installs from users",
 	Long:    `Removes runtime installs from users`,
-	Example: `platformctl remove runtime-installs 7onetella@gmail.com vscode tmux,poetry`,
+	Example: `platformctl remove runtime-installs admin@curiosityworks.org vscode tmux,poetry`,
 	Args:    cobra.MinimumNArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 

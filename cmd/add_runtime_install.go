@@ -17,7 +17,7 @@ var addRuntimeInstallCmd = &cobra.Command{
 	Aliases: []string{"runtime-installs"},
 	Short:   "Adds runtime install to users",
 	Long:    `Adds runtime install to users`,
-	Example: `platformctl add runtime-installs 7onetella@gmail.com vscode tmux,poetry`,
+	Example: `platformctl add runtime-installs admin@curiosityworks.org vscode tmux,poetry`,
 	Args:    cobra.MinimumNArgs(3),
 	Run: func(cmd *cobra.Command, args []string) {
 
