@@ -9,8 +9,8 @@ import (
 // deleteStackCmd represents the stack command
 var deleteStackCmd = &cobra.Command{
 	Use:     "stack",
-	Short:   "Deletes stack",
-	Long:    `Deletes stack`,
+	Short:   "Deletes k8s application stack",
+	Long:    `Deletes k8s application stack`,
 	PreRunE: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
