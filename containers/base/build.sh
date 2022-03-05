@@ -11,6 +11,8 @@ repo=base
 
 version=$(platformctl next tag 7onetella/base)
 
-docker build -t docker-registry.int.curiosityworks.org/7onetella/${repo}:"${version}" .
+target=${1}
+
+docker build --target ${target} -t docker-registry.int.curiosityworks.org/7onetella/${repo}:"${version}" .
 
 docker push docker-registry.int.curiosityworks.org/7onetella/${repo}:"${version}"

@@ -6,13 +6,13 @@ service=vscode-${username}
 
 set -x
 
-codeserver_base=1.0.12
+base=1.0.11
 
 version=$2
 
 platformctl before docker-build ${username} ${version}
 
-docker build --no-cache --build-arg CODESERVER_BASE=${codeserver_base} -t docker-registry.int.curiosityworks.org/7onetella/${service}:${version} .
+docker build --no-cache --build-arg BASE=${base} -t docker-registry.int.curiosityworks.org/7onetella/${service}:${version} .
 
 docker push docker-registry.int.curiosityworks.org/7onetella/${service}:${version}
 

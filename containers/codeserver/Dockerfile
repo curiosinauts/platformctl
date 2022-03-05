@@ -1,5 +1,5 @@
-ARG CODESERVER_BASE
-FROM docker-registry.int.curiosityworks.org/7onetella/codeserver-base:${CODESERVER_BASE}
+ARG BASE
+FROM docker-registry.int.curiosityworks.org/7onetella/base:${BASE}
 
 RUN mkdir -p /home/coder/workspace                  && \
     mkdir -p /home/coder/.local/bin                 && \
