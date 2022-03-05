@@ -81,7 +81,7 @@ func (u UserService) FindUserIDERepoURIsByUserAndIDE(username string, ide string
 			FROM 
 					user_ide 
 			WHERE 
-					user_id = (SELECT id as user_id FROM curiosity.user WHERE username = $1) AND
+					user_id = (SELECT id as user_id FROM platformctl.user WHERE username = $1) AND
 					ide_id  = (SELECT id ide_id     FROM ide            WHERE name     = $2)       
 		)`
 	i, dberr := u.Select(&[]string{}, query, username, ide)
@@ -98,7 +98,7 @@ func (u UserService) FindUserIDERuntimeInstallsByUsernameAndIDE(dest interface{}
 					FROM 
 							user_ide 
 					WHERE 
-							user_id = (SELECT id as user_id FROM curiosity.user WHERE username = $1) AND
+							user_id = (SELECT id as user_id FROM platformctl.user WHERE username = $1) AND
 							ide_id  = (SELECT id ide_id     FROM ide            WHERE name     = $2)       
 			)
 		) ORDER BY name ASC`
@@ -110,7 +110,7 @@ func (u UserService) FindUserIDERuntimeInstallsByUsernameAndIDE(dest interface{}
 func (u UserService) FindUserByGoogleID(googleIDHashed string) (User, *DBError) {
 	db := u.DB
 	user := User{}
-	sql := "SELECT * FROM curiosity.user WHERE google_id=$1"
+	sql := "SELECT * FROM platformctl.user WHERE google_id=$1"
 	err := db.Get(&user, sql, googleIDHashed)
 	if err != nil {
 		return user, &DBError{sql, err}
@@ -122,7 +122,7 @@ func (u UserService) FindUserByGoogleID(googleIDHashed string) (User, *DBError) 
 func (u UserService) UpdateProfile(user User) (sql.Result, *DBError) {
 	sql := `
 		UPDATE 
-			curiosity.user 
+			platformctl.user 
 		SET 
 			public_key_id = :public_key_id
 		WHERE 
@@ -135,7 +135,7 @@ func (u UserService) UpdateProfile(user User) (sql.Result, *DBError) {
 func (u UserService) UpdateGoogleID(user User) (sql.Result, *DBError) {
 	sql := `
 		UPDATE 
-			curiosity.user 
+			platformctl.user 
 		SET 
 			google_id = :google_id
 		WHERE 

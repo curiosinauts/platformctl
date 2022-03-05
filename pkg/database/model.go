@@ -30,7 +30,7 @@ func (u User) String() string {
 
 // Meta provides mapping config specific to user
 func (u *User) Meta() MappingConfig {
-	return MappingConfig{TableName: "curiosity.user"}
+	return MappingConfig{TableName: "platformctl.user"}
 }
 
 // PrimaryKey returns primary key

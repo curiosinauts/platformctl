@@ -58,7 +58,8 @@ func initDB() {
 		log.Fatalln(err)
 	}
 	db = newdb
-	db.Exec(`set search_path='curiosity'`)
+	// rely on connectiont string to set the search_path instead of hard coding it here
+	// db.Exec(`set search_path='platformctl'`)
 
 	userService = database.NewUserService(db)
 

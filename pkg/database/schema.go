@@ -2,7 +2,7 @@ package database
 
 // CreateSchema SQL script for creating the schema
 var CreateSchema = `
-CREATE TABLE curiosity.user (
+CREATE TABLE platformctl.user (
      id           SERIAL NOT NULL,
      google_id    CHARACTER VARYING(64),
      username     CHARACTER VARYING(50) NOT NULL,
@@ -118,5 +118,5 @@ DROP TABLE IF EXISTS ide CASCADE;
 
 DROP TABLE IF EXISTS runtime_install CASCADE;
 
-DROP TABLE IF EXISTS curiosity.user CASCADE;
+DROP TABLE IF EXISTS platformctl.user CASCADE;
 `
