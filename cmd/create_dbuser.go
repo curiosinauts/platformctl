@@ -11,8 +11,8 @@ import (
 
 var createSchema bool
 
-// createUserSchemaCmd represents the user schema command
-var createUserSchemaCmd = &cobra.Command{
+// createDBUserCmd represents the user schema command
+var createDBUserCmd = &cobra.Command{
 	Use:     "db-user <username> <password> <host> <dbname>",
 	Aliases: []string{"dbuser"},
 	Short:   "Creates database user",
@@ -23,32 +23,28 @@ var createUserSchemaCmd = &cobra.Command{
 
 		username := args[0]
 		password := args[1]
+		hostname := args[2]
+		dbname := args[3]
 
-		psql := postgresutil.NewPSQLClientForSharedDB()
-		if len(args) == 4 {
-			hostname := args[2]
-			dbname := args[3]
-			psql = postgresutil.NewPSQLClientByHostAndDBName(hostname, dbname)
-		}
+		psql := postgresutil.NewPSQLClientByHostAndDBName(hostname, dbname)
 
-		eh := ErrorHandler{"Creating database user"}
+		eh := ErrorHandler{"creating database user"}
+		out, err := psql.CreateUser(username, password, debug)
+		eh.HandleError("creating database user", err)
+		fmt.Println()
+		fmt.Println(out)
+
 		if createSchema {
-			out, err := psql.CreateUser(username, password, debug)
-			eh.HandleError("creating database user", err)
-			fmt.Println()
+			out, err := psql.CreateUserSchema(username, debug)
+			eh.HandleError("creating database user schema", err)
 			fmt.Println(out)
 		}
-
-		out, err := psql.CreateUserSchema(username, debug)
-		eh.HandleError("creating database user schema", err)
-
-		fmt.Println(out)
 
 		msg.Success("creating database user")
 	},
 }
 
 func init() {
-	createCmd.AddCommand(createUserSchemaCmd)
-	createUserSchemaCmd.Flags().BoolVarP(&createSchema, "schema", "s", false, "create schema")
+	createCmd.AddCommand(createDBUserCmd)
+	createDBUserCmd.Flags().BoolVarP(&createSchema, "schema", "s", false, "create schema")
 }

@@ -37,6 +37,7 @@ var dropUserCmd = &cobra.Command{
 
 		out, err := psql.DropUser(username, debug)
 		eh.HandleError("dropping database user", err)
+		fmt.Println()
 		fmt.Println(out)
 
 		msg.Success("dropping database user")

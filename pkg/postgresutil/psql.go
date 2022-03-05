@@ -67,7 +67,7 @@ func (p *PSQLClient) ListDBUsers(debug bool) (string, error) {
 // ExecutePSQLScriptOverSSH executes psql script over ssh
 func (p *PSQLClient) ExecutePSQLScriptOverSSH(script string, debug bool) (string, error) {
 	if debug {
-		fmt.Println("+ " + script)
+		fmt.Println("  + " + script)
 	}
 	out, err := sshutil.RemoteSSHExec(p.DatabaseHost, "22", "postgres", script)
 	out = strings.TrimSpace(out)
@@ -90,29 +90,31 @@ func (p *PSQLClient) BackUpDBWithData(password string, username string, host str
 	return out, nil
 }
 
-// BackUpSchemaOnlyWithData backs up all tables from a schema using pg_dump
-func (p *PSQLClient) BackUpSchemaOnlyWithData(password string, username string, host string, dbname string, schemaName string, debug bool) (string, error) {
-	script := fmt.Sprintf("export PGPASSWORD=\"%s\"; pg_dump -U %s -h %s -d %s -n %s > /tmp/%s.sql",
-		password, username, p.DatabaseHost, p.DatabaseName, schemaName, schemaName)
-	if debug {
-		fmt.Println("+ " + script)
-	}
-	out, err := executil.ExecuteShell(script, debug)
-	if err != nil {
-		return out, err
-	}
-
-	return out, nil
+// BackUpSchemaWithData backs up all tables from a schema using pg_dump
+func (p *PSQLClient) BackUpSchemaWithData(password string, username string, host string, dbname string, schemaName string, debug bool) (string, string, error) {
+	sqlFilePath := fmt.Sprintf("/tmp/%s.sql", schemaName)
+	script := fmt.Sprintf("export PGPASSWORD=\"%s\"; pg_dump -U %s -h %s -d %s -n %s > "+sqlFilePath,
+		password, username, p.DatabaseHost, p.DatabaseName, schemaName)
+	out, err := p.ExecuteLocalShell(script, debug)
+	return out, sqlFilePath, err
 }
 
 // RestoreSchemaWithData backs up all tables from a schema using pg_dump
-func (p *PSQLClient) RestoreSchemaWithData(password string, username string, host string, dbname string, schemaName string, debug bool) (string, error) {
-	script := fmt.Sprintf("export PGPASSWORD=\"%s\"; psql -h %s -U %s \"dbname=%s options=--search_path=%s\" < /tmp/%s.sql",
-		password, p.DatabaseHost, username, p.DatabaseName, schemaName, schemaName)
+func (p *PSQLClient) RestoreSchemaWithData(password string, username string, host string, dbname string, schemaName string, debug bool) (string, string, error) {
+	sqlFilePath := fmt.Sprintf("/tmp/%s.sql", schemaName)
+	script := fmt.Sprintf("export PGPASSWORD=\"%s\"; psql -h %s -U %s \"dbname=%s options=--search_path=%s\" < "+sqlFilePath,
+		password, p.DatabaseHost, username, p.DatabaseName, schemaName)
+	out, err := p.ExecuteLocalShell(script, debug)
+	return out, sqlFilePath, err
+}
+
+// ExecuteLocalShell executes local shell script
+func (p *PSQLClient) ExecuteLocalShell(script string, debug bool) (string, error) {
 	if debug {
-		fmt.Println("+ " + script)
+		fmt.Println("  + " + script)
 	}
 	out, err := executil.ExecuteShell(script, debug)
+	out = strings.TrimSpace(out)
 	if err != nil {
 		return out, err
 	}
