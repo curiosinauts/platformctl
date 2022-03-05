@@ -9,9 +9,9 @@ import (
 
 // dropSchemaCmd represents the schema command
 var dropSchemaCmd = &cobra.Command{
-	Use:   "schema",
-	Short: "Drops database schema",
-	Long:  `Drops database schema`,
+	Use:   "platform-schema",
+	Short: "Drops platform database schema",
+	Long:  `Drops platform database schema`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		eh := ErrorHandler{"Dropping database schema"}

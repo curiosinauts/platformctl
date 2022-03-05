@@ -138,11 +138,11 @@ var addUserCmd = &cobra.Command{
 		eh.HandleError("updating user profile", dberr)
 
 		postgresUsername := strings.Replace(user.Username, "-", "", -1)
-		psql := postgresutil.NewPSQLClient()
-		_, err = psql.CreateUser(postgresUsername, password)
+		psql := postgresutil.NewPSQLClientForSharedDB()
+		_, err = psql.CreateUser(postgresUsername, password, debug)
 		eh.HandleError("creating database user", err)
 
-		_, err = psql.CreateUserSchema(postgresUsername)
+		_, err = psql.CreateUserSchema(postgresUsername, debug)
 		eh.HandleError("creating database user schema", err)
 
 		jenkins, err := jenkinsutil.NewJenkins()
