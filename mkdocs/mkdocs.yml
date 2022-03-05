@@ -1,0 +1,6 @@
+site_name: curiosityworks.org
+theme:
+  name: material
+nav:
+    - Home: index.md
+    - Getting Started: getting-started.md  
