@@ -9,27 +9,36 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var schemaOnly bool
+
 // createUserSchemaCmd represents the user schema command
 var createUserSchemaCmd = &cobra.Command{
-	Use:     "user-schema",
+	Use:     "dbuser <username> <password> [<host>] [<dbname>]",
 	Short:   "Creates database user and user schema",
 	Long:    `Creates database user and user schema`,
 	Args:    cobra.MinimumNArgs(2),
-	Example: "platformctl create user-schema foo-1234 pass1234",
+	Example: "platformctl create dbuser foo-1234 pass1234",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		username := args[0]
 		password := args[1]
 
-		eh := ErrorHandler{"Creating database user & user schema"}
 		psql := postgresutil.NewPSQLClient()
-		out, err := psql.CreateUser(username, password)
-		eh.HandleError("creating database user", err)
+		if len(args) == 4 {
+			hostname := args[2]
+			dbname := args[3]
+			psql = postgresutil.NewPSQLClientByHostAndDBName(hostname, dbname)
+		}
 
-		fmt.Println()
-		fmt.Println(out)
+		eh := ErrorHandler{"Creating database user & user schema"}
+		if !schemaOnly {
+			out, err := psql.CreateUser(username, password)
+			eh.HandleError("creating database user", err)
+			fmt.Println()
+			fmt.Println(out)
+		}
 
-		out, err = psql.CreateUserSchema(username)
+		out, err := psql.CreateUserSchema(username)
 		eh.HandleError("creating database user schema", err)
 
 		fmt.Println(out)
@@ -40,4 +49,5 @@ var createUserSchemaCmd = &cobra.Command{
 
 func init() {
 	createCmd.AddCommand(createUserSchemaCmd)
+	createUserSchemaCmd.Flags().BoolVarP(&schemaOnly, "schema", "s", false, "create schema only")
 }

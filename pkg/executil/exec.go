@@ -20,6 +20,12 @@ func Execute(message string, debug bool) (string, error) {
 	return output, err
 }
 
+// ExecuteShell executes bash -c
+func ExecuteShell(script string, debug bool) (string, error) {
+	output, err := Exec("bash", []string{"-c", script})
+	return output, err
+}
+
 // Exec executes commands
 func Exec(cmd string, args []string) (string, error) {
 	output, err := exec.Command(cmd, args...).CombinedOutput()
