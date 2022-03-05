@@ -1,0 +1,35 @@
+<!doctype html>
+<title>CuriosityWorks</title>
+{{ template "header" }}
+
+<body>
+  <div class="container">
+    {{ template "navbar" . }}
+
+    <section class="hero">
+      <div class="hero-body">
+        <p class="title">
+          Coder Profile
+        </p>
+        <p class="subtitle">
+          review your configuration
+        </p>
+      </div>
+    </section>
+
+    <ul>
+      <li><strong>name:</strong>{{.Username}}</li>
+      <li><strong>ide:</strong>vscode</li>
+      <li><strong>email:</strong>{{.Email}}</li>
+      <li><strong>runtime installs:</strong>{{range $element := .RuntimeInstalls}}
+        <pre>{{$element}}</pre>{{end}}
+      </li>
+      <li><strong>repos:</strong>{{range $element := .Repos}}
+        <pre>{{$element}}</pre>{{end}}
+      </li>
+    </ul>
+    {{ template "footer" }}
+  </div>
+</body>
+
+</html>
