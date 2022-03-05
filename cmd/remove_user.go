@@ -16,21 +16,38 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var removeUserCmdUsername string
+
 // removeUserCmd represents the user command
 var removeUserCmd = &cobra.Command{
-	Use:     "user",
+	Use:     "user <email>",
 	Short:   "Removes user from the platform",
 	Long:    `Removes user from the platform`,
-	PreRunE: cobra.MinimumNArgs(1),
+	PreRunE: cobra.MinimumNArgs(0),
 	Run: func(cmd *cobra.Command, args []string) {
 
-		email := args[0]
+		var email string
+		if len(args) > 0 {
+			email = args[0]
+		}
 
 		eh := ErrorHandler{"removing user"}
 
 		user := database.User{}
-		dberr := dbs.FindBy(&user, "hashed_email=$1", crypto.Hashed(email))
-		eh.PrintError("finding by hashed email", dberr)
+		hashedEmail := crypto.Hashed(email)
+		if debug {
+			msg.Info("hashed email = " + hashedEmail)
+		}
+
+		var dberr *database.DBError
+
+		if len(removeUserCmdUsername) > 0 {
+			dberr = dbs.FindBy(&user, "username=$1", removeUserCmdUsername)
+			eh.PrintError("finding by username", dberr)
+		} else {
+			dberr := dbs.FindBy(&user, "hashed_email=$1", hashedEmail)
+			eh.PrintError("finding by hashed email", dberr)
+		}
 
 		gitClient, err := giteautil.NewGitClient()
 		eh.PrintError("instantiating git client", err)
@@ -122,4 +139,5 @@ func RemoveIDERepos(userIDEID int64, repos []string) *database.DBError {
 
 func init() {
 	removeCmd.AddCommand(removeUserCmd)
+	removeUserCmd.Flags().StringVarP(&removeUserCmdUsername, "username", "u", "", "userename")
 }
