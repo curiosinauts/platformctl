@@ -12,9 +12,9 @@ version=$2
 
 platformctl before docker-build ${username} ${version}
 
-docker build --no-cache --build-arg BASE=${base} -t docker-registry.int.curiosityworks.org/7onetella/${service}:${version} .
+docker build --no-cache --build-arg BASE=${base} -t docker-registry.curiosityworks.org/curiosinauts/${service}:${version} .
 
-docker push docker-registry.int.curiosityworks.org/7onetella/${service}:${version}
+docker push docker-registry.curiosityworks.org/curiosinauts/${service}:${version}
 
 kubectl apply -f ./vscode-${username}.yml
 

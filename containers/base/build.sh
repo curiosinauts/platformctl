@@ -9,10 +9,10 @@ cd $SCRIPT_DIR
 
 repo=base
 
-version=$(platformctl next tag 7onetella/base)
+version=$(platformctl next tag curiosinauts/base)
 
 target=${1}
 
-docker build --target ${target} -t docker-registry.int.curiosityworks.org/7onetella/${repo}:"${version}" .
+docker build --target ${target} -t docker-registry.curiosityworks.org/curiosinauts/${repo}:"${version}" .
 
-docker push docker-registry.int.curiosityworks.org/7onetella/${repo}:"${version}"
+docker push docker-registry.curiosityworks.org/curiosinauts/${repo}:"${version}"

@@ -14,9 +14,9 @@ version=$(git log -1 --pretty=%h)
 
 service=console
 
-docker build --build-arg BASE_VERSION=${base_version} -t docker-registry.int.curiosityworks.org/7onetella/${service}:${version} .
+docker build --build-arg BASE_VERSION=${base_version} -t docker-registry.curiosityworks.org/curiosinauts/${service}:${version} .
 
-docker push docker-registry.int.curiosityworks.org/7onetella/${service}:${version}
+docker push docker-registry.curiosityworks.org/curiosinauts/${service}:${version}
 
 cat console.tpl | sed 's/__tag__/'"${version}"'/g' > console.yml
 

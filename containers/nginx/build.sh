@@ -12,10 +12,8 @@ cp ~/.ssh/authorized_keys .ssh/
 
 version=$(platformctl next tag 7onetella/sites)
 
-docker build -t docker-registry.int.curiosityworks.org/7onetella/${service}:"${version}" .
+docker build -t docker-registry.curiosityworks.org/curiosinauts/${service}:"${version}" .
 
-docker push docker-registry.int.curiosityworks.org/7onetella/${service}:"${version}"
+docker push docker-registry.curiosityworks.org/curiosinauts/${service}:"${version}"
 
 # nomad job stop -purge ${service}
-
-# vag docker deploy docker-registry.int.curiosityworks.org/7onetella/${service}-${group}:"${version}"

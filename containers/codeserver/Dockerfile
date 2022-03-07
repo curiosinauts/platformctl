@@ -1,5 +1,5 @@
 ARG BASE
-FROM docker-registry.int.curiosityworks.org/7onetella/base:${BASE}
+FROM docker-registry.curiosityworks.org/curiosinauts/base:${BASE}
 
 RUN mkdir -p /home/coder/workspace                  && \
     mkdir -p /home/coder/.local/bin                 && \

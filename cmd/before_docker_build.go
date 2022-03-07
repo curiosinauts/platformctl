@@ -116,7 +116,7 @@ spec:
     spec:
       containers:
       - name: vscode-{{.Username}}
-        image: docker-registry.int.curiosityworks.org/7onetella/vscode-{{.Username}}:{{.DockerTag}}
+        image: docker-registry.curiosityworks.org/curiosinauts/vscode-{{.Username}}:{{.DockerTag}}
         ports:
         - containerPort: 9991
       dnsPolicy: Default 

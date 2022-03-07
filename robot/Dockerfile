@@ -1,5 +1,5 @@
 ARG BASE_VERSION
-FROM docker-registry.int.curiosityworks.org/7onetella/base:${BASE_VERSION}
+FROM docker-registry.curiosityworks.org/curiosinauts/base:${BASE_VERSION}
 
 ARG PLATFORMCTL_VERSION
 ENV PLATFORMCTL_VERSION ${PLATFORMCTL_VERSION}

@@ -18,9 +18,9 @@ version=$(git log -1 --pretty=%h)
 
 service=robot
 
-docker build --no-cache --build-arg BASE_VERSION=${base_version} --build-arg PLATFORMCTL_VERSION=${platformctl_version} -t docker-registry.int.curiosityworks.org/7onetella/${service}:"${version}" .
+docker build --no-cache --build-arg BASE_VERSION=${base_version} --build-arg PLATFORMCTL_VERSION=${platformctl_version} -t docker-registry.curiosityworks.org/curiosinauts/${service}:"${version}" .
 
-docker push docker-registry.int.curiosityworks.org/7onetella/${service}:"${version}"
+docker push docker-registry.curiosityworks.org/curiosinauts/${service}:"${version}"
 
 cat robot.tpl | sed 's/__tag__/'"${version}"'/g' > robot.yml
 

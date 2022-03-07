@@ -82,7 +82,7 @@ spec:
                 key: platformctl-grafana-api-key
                 name: robot-secrets
           name: robot
-          image: docker-registry.int.curiosityworks.org/7onetella/robot:__tag__
+          image: docker-registry.curiosityworks.org/curiosinauts/robot:__tag__
           ports:
             - containerPort: 3000
       dnsPolicy: Default
