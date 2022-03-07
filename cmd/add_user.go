@@ -6,9 +6,7 @@ import (
 	"strings"
 
 	"github.com/curiosinauts/platformctl/pkg/giteautil"
-	"github.com/curiosinauts/platformctl/pkg/jenkinsutil"
 	"github.com/curiosinauts/platformctl/pkg/postgresutil"
-	"github.com/google/uuid"
 	pwd "github.com/sethvargo/go-password/password"
 
 	haikunator "github.com/atrox/haikunatorgo/v2"
@@ -145,15 +143,15 @@ var addUserCmd = &cobra.Command{
 		_, err = psql.CreateUserSchema(postgresUsername, debug)
 		eh.HandleError("creating database user schema", err)
 
-		jenkins, err := jenkinsutil.NewJenkins()
-		eh.HandleError("accessing Jenkins job", err)
+		// jenkins, err := jenkinsutil.NewJenkins()
+		// eh.HandleError("accessing Jenkins job", err)
 
-		params := map[string]string{
-			"USERNAME": user.Username,
-			"VERSION":  uuid.NewString(),
-		}
-		_, err = jenkins.BuildJob("codeserver", params)
-		eh.HandleError("calling Jenkins job to build codeserver instance", err)
+		// params := map[string]string{
+		// 	"USERNAME": user.Username,
+		// 	"VERSION":  uuid.NewString(),
+		// }
+		// _, err = jenkins.BuildJob("codeserver", params)
+		// eh.HandleError("calling Jenkins job to build codeserver instance", err)
 
 		msg.Success("adding user")
 	},
@@ -218,5 +216,5 @@ func init() {
 	addUserCmd.Flags().BoolVarP(&addUserCmdUseEmail, "email", "e", false, "use real email or not")
 	addUserCmd.Flags().StringVarP(&addUserCmdUsername, "username", "u", "", "specify username")
 	addUserCmd.Flags().StringArrayVarP(&addUserCmdRepos, "repo", "r", []string{}, "specify personal git repo")
-	addUserCmd.Flags().StringVarP(&addUserCmdRuntimeInstalls, "runtime-installs", "i", "tmux,psqlrc", "runtime installs")
+	addUserCmd.Flags().StringVarP(&addUserCmdRuntimeInstalls, "runtime-installs", "i", "tmux", "runtime installs")
 }
