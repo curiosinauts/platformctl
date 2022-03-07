@@ -60,7 +60,7 @@ func (p *PSQLClient) DropUserSchema(username string, debug bool) (string, error)
 
 // ListDBUsers list db users
 func (p *PSQLClient) ListDBUsers(debug bool) (string, error) {
-	script := fmt.Sprintf(`psql -d %s -c "\du"`, p.DatabaseName)
+	script := fmt.Sprintf(`psql -c "\du"`)
 	return p.ExecutePSQLScriptOverSSH(script, debug)
 }
 

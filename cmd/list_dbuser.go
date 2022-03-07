@@ -15,15 +15,14 @@ var listDBUserCmd = &cobra.Command{
 	Aliases: []string{"dbusers"},
 	Short:   "Lists database users",
 	Long:    `Lists database users`,
-	Args:    cobra.MinimumNArgs(2),
-	Example: "platformctl list db-users db.example.com devdb",
+	Args:    cobra.MinimumNArgs(1),
+	Example: "platformctl list db-users db.example.com",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		host := args[0]
-		dbname := args[1]
 
 		eh := ErrorHandler{"Dropping database user & user schema"}
-		psql := postgresutil.NewPSQLClientByHostAndDBName(host, dbname)
+		psql := postgresutil.NewPSQLClientByHostAndDBName(host, "non needed")
 		out, err := psql.ListDBUsers(debug)
 		eh.HandleError("listing database users", err)
 		fmt.Println()
