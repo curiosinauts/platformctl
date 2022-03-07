@@ -1,4 +1,4 @@
-FROM docker-registry.curiosityworks.org/curiosinauts/base:1.0.0
+FROM docker-registry.curiosityworks.org/curiosinauts/base:0.1.0
 
 ENV username=coder
 

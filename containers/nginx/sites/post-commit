@@ -5,7 +5,3 @@
 cmd=$(vag docker scp nginx-public "$(pwd)/www.curiosityworks.org/public/*" /var/www/www.curiosityworks.org/htdocs   --show)
 
 eval $cmd
-
-cmd=$(vag docker scp nginx-public "$(pwd)/www.7onetella.net/public/*"      /var/www/www.7onetella.net/htdocs        --show)
-
-eval $cmd
