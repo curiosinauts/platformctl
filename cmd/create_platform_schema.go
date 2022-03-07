@@ -9,16 +9,16 @@ import (
 
 // createSchemaCmd represents the schema command
 var createSchemaCmd = &cobra.Command{
-	Use:   "platform-schema",
-	Short: "Creates database schema",
-	Long:  `Creates database schema`,
+	Use:   "platformctl-schema",
+	Short: "Creates database platformctl schema",
+	Long:  `Creates database paltformctl schema`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		eh := ErrorHandler{"Creating database schema"}
+		eh := ErrorHandler{"Creating database platformctl schema"}
 		_, err := db.Exec(database.CreateSchema)
-		eh.HandleError("creating database schema", err)
+		eh.HandleError("creating database platformctl schema", err)
 
-		msg.Success("creating database schema")
+		msg.Success("creating database platformctl schema")
 	},
 }
 

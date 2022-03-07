@@ -44,15 +44,6 @@ CREATE TABLE user_repo (
 );
 
 
-CREATE TABLE ide_repo (
-  id SERIAL NOT NULL, 
-  user_ide_id INTEGER, 
-  uri CHARACTER VARYING(100), 
-  PRIMARY KEY (id),
-  CONSTRAINT iderepo_fk1 FOREIGN KEY (user_ide_id) REFERENCES "user_ide" ("id")  
-);
-
-
 CREATE TABLE user_ide (
 	id SERIAL NOT NULL, 
 	user_id INTEGER, 
@@ -60,6 +51,15 @@ CREATE TABLE user_ide (
 	PRIMARY KEY (id),
 	CONSTRAINT useride_fk1 FOREIGN KEY (user_id) REFERENCES "user" ("id"),
 	CONSTRAINT useride_fk2 FOREIGN KEY (ide_id)  REFERENCES "ide"  ("id")
+);
+
+
+CREATE TABLE ide_repo (
+  id SERIAL NOT NULL, 
+  user_ide_id INTEGER, 
+  uri CHARACTER VARYING(100), 
+  PRIMARY KEY (id),
+  CONSTRAINT iderepo_fk1 FOREIGN KEY (user_ide_id) REFERENCES "user_ide" ("id")  
 );
 
 
