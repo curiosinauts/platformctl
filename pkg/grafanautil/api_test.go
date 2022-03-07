@@ -29,7 +29,7 @@ func TestDownload(t *testing.T) {
 func TestSearch(t *testing.T) {
 	grafanaAPIKey := viper.Get("grafana_api_key").(string)
 
-	api, _ := sdk.NewClient("https://grafana.int.curiosityworks.org", grafanaAPIKey, http.DefaultClient)
+	api, _ := sdk.NewClient("https://grafana.curiosityworks.org", grafanaAPIKey, http.DefaultClient)
 
 	ctx := context.Background()
 	foundBoards, err := api.SearchDashboards(ctx, "", false, []string{""}...)

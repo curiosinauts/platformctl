@@ -15,7 +15,7 @@ import (
 
 // DownloadPanel retrieves the resource using given URL
 func DownloadPanel(panelID, width, height, from int, uuid string, debug bool) error {
-	url := fmt.Sprintf("https://grafana.int.curiosityworks.org/render/d-solo/7UdvG-Mnk/base-system-health?"+
+	url := fmt.Sprintf("https://grafana.curiosityworks.org/render/d-solo/7UdvG-Mnk/base-system-health?"+
 		"orgId=1&panelId=%d&width=%d&height=%d&tz=America/New_York"+
 		"&from=now-%dh&to=now", panelID, width, height, from)
 
@@ -48,7 +48,7 @@ func DownloadPanel(panelID, width, height, from int, uuid string, debug bool) er
 func ListDashboards(query string) ([]sdk.FoundBoard, error) {
 	grafanaAPIKey := viper.Get("grafana_api_key").(string)
 
-	api, _ := sdk.NewClient("https://grafana.int.curiosityworks.org", grafanaAPIKey, http.DefaultClient)
+	api, _ := sdk.NewClient("https://grafana.curiosityworks.org", grafanaAPIKey, http.DefaultClient)
 
 	ctx := context.Background()
 	foundBoards, err := api.SearchDashboards(ctx, query, false, []string{}...)
@@ -62,7 +62,7 @@ func ListDashboards(query string) ([]sdk.FoundBoard, error) {
 func ListPanels(uid string, partialPanelTitle string) ([]*sdk.Panel, error) {
 	grafanaAPIKey := viper.Get("grafana_api_key").(string)
 
-	api, _ := sdk.NewClient("https://grafana.int.curiosityworks.org", grafanaAPIKey, http.DefaultClient)
+	api, _ := sdk.NewClient("https://grafana.curiosityworks.org", grafanaAPIKey, http.DefaultClient)
 
 	ctx := context.Background()
 	board, _, _ := api.GetDashboardByUID(ctx, uid)
