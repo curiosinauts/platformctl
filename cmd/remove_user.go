@@ -73,7 +73,7 @@ var removeUserCmd = &cobra.Command{
 		registryClient, err := regutil.NewRegistryClient(debug)
 		eh.PrintError("getting registry client", err)
 
-		repository := "7onetella/vscode-" + user.Username
+		repository := "curiosinauts/vscode-" + user.Username
 		tags, err := registryClient.ListTags(repository, debug)
 		eh.PrintError("listing tags", err)
 
@@ -84,7 +84,7 @@ var removeUserCmd = &cobra.Command{
 
 		dockerRegistryHost := viper.Get("docker_registry_host").(string)
 		output, err = sshutil.RemoteSSHExec(dockerRegistryHost, "22", "debian",
-			"sudo rm -rf /var/lib/registry/docker/registry/v2/repositories/7onetella/vscode-"+user.Username)
+			"sudo rm -rf /var/lib/registry/docker/registry/v2/repositories/curiosinauts/vscode-"+user.Username)
 		eh.PrintErrorWithOutput("deleting docker repo folder", err, output)
 
 		postgresUsername := strings.Replace(user.Username, "-", "", -1)

@@ -155,7 +155,7 @@ params:
     # socialmediatitle: Follow Us
     # Social media links (GitHub, Twitter, etc.). All are optional.
     # socialmedia:
-    # - link: https://github.com/7onetella/
+    # - link: https://github.com/curiosinauts/
       # Icons are from Font Awesome
       # icon: github
     bulmalogo: true
