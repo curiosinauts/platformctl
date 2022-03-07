@@ -19,7 +19,7 @@ spec:
         image: joxit/docker-registry-ui:latest
         env:
           - name: REGISTRY_URL
-            value: "https://docker-registry.int.curiosityworks.org"
+            value: "https://docker-registry.curiosityworks.org"
           - name: DELETE_IMAGES
             value: "true"
           - name: SINGLE_REGISTRY
@@ -50,7 +50,7 @@ metadata:
     kubernetes.io/ingress.class: "traefik"
 spec:
   rules:
-  - host: webapp-hub.int.curiosityworks.org
+  - host: docker-hub.curiosityworks.org
     http:
       paths:
       - path: /
