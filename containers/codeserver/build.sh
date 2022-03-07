@@ -6,7 +6,7 @@ service=vscode-${username}
 
 set -x
 
-base=1.0.11
+base=0.1.1
 
 version=$2
 
