@@ -1,10 +1,6 @@
 #!/bin/bash
 
-cd www.7onetella.net
-
-hugo
-
-cd ../www.curiosityworks.org
+cd ../www.curiosityworks.org || true
 
 hugo
 
