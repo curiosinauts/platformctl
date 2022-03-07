@@ -11,8 +11,6 @@ repo=base
 
 version=$(platformctl next tag curiosinauts/base)
 
-target=${1}
+docker build -t docker-registry.curiosityworks.org/curiosinauts/${repo}:${version} .
 
-docker build --target ${target} -t docker-registry.curiosityworks.org/curiosinauts/${repo}:"${version}" .
-
-docker push docker-registry.curiosityworks.org/curiosinauts/${repo}:"${version}"
+docker push docker-registry.curiosityworks.org/curiosinauts/${repo}:${version}
