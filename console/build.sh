@@ -8,7 +8,7 @@ cd $SCRIPT_DIR
 
 gox -osarch="linux/amd64"
 
-base_version=0.1.0
+base_version=0.1.1
 
 version=$(git log -1 --pretty=%h)
 
