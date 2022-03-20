@@ -8,7 +8,7 @@ cd $SCRIPT_DIR
 
 gox -osarch="linux/amd64"
 
-base_version=1.0.9
+base_version=0.1.1
 
 tag=$(curl -s https://api.github.com/repos/curiosinauts/platformctl/releases/latest | jq -r ".name")
 tag=${tag:1}

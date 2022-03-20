@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: sites
-        image: docker-registry.curiosityworks.org/curiosinauts/sites:0.1.0
+        image: docker-registry.curiosityworks.org/curiosinauts/sites:0.1.1
         ports:
         - containerPort: 80
 
