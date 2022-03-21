@@ -215,17 +215,10 @@ func main() {
 
 		user, found := GetUserFromSession(session, userService)
 		runtimeInstalls := []database.RuntimeInstall{}
-		dberr := userService.FindUserIDERuntimeInstallsByUsernameAndIDE(&runtimeInstalls, user.Username, "vscode")
+		dberr := userService.FindAllRuntimeInstallsForUser(&runtimeInstalls, user.Username)
 		if dberr == nil {
-			for _, ri := range runtimeInstalls {
-				user.RuntimeInstalls = append(user.RuntimeInstalls, ri.ScriptBody)
-			}
 		}
 
-		repos, dberr := userService.FindUserIDERepoURIsByUserAndIDE(user.Username, "vscode")
-		if dberr == nil {
-			user.Repos = *repos
-		}
 		if found {
 			RenderTemplateWithData(c, t, "profile.html", user)
 			return
