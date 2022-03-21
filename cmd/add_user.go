@@ -17,7 +17,6 @@ import (
 )
 
 var addUserCmdUseExistingKeys bool
-var addUserCmdRepos []string
 var addUserCmdUsername string
 var addUserCmdUseEmail bool
 var addUserCmdRuntimeInstalls string
@@ -64,60 +63,24 @@ var addUserCmd = &cobra.Command{
 		}
 
 		user := database.User{
-			Username:    username,
-			Password:    password,
-			Email:       email,
-			HashedEmail: hashedEmail,
-			PrivateKey:  string(privateKey),
-			PublicKey:   string(publicKey),
-			IsActive:    true,
+			Username:        username,
+			Password:        password,
+			Email:           email,
+			HashedEmail:     hashedEmail,
+			PrivateKey:      string(privateKey),
+			PublicKey:       string(publicKey),
+			IsActive:        true,
+			GitRepoURI:      fmt.Sprintf("ssh://gitea@git-ssh.curiosityworks.org:2222/%s/project.git", username),
+			IDE:             "vscode",
+			RuntimeInstalls: addUserCmdRuntimeInstalls,
 		}
 
 		eh := ErrorHandler{"adding user"}
 
 		dbs := database.NewUserService(db)
-
 		dberr := dbs.Save(&user)
 		eh.HandleError("user insert", dberr)
-		repoURI := fmt.Sprintf("ssh://gitea@git-ssh.curiosityworks.org:2222/%s/project.git", username)
 		eh.HandleError("user id", err)
-
-		dberr = dbs.Save(database.NewUserRepo(repoURI, user.ID))
-		eh.HandleError("saving new user repo", dberr)
-
-		if len(addUserCmdRepos) > 0 {
-			AddUserRepos(user.ID, addUserCmdRepos)
-		}
-
-		ide := new(database.IDE)
-		dberr = dbs.FindBy(ide, "name=$1", "vscode")
-		eh.HandleError("finding ide", dberr)
-
-		userIDE := database.UserIDE{
-			UserID: user.ID,
-			IDEID:  ide.ID,
-		}
-		dberr = dbs.Save(&userIDE)
-		eh.HandleError("user_ide insert", dberr)
-
-		// userIDEID, err := result.LastInsertId()
-		eh.HandleError("user_ide new id", err)
-
-		dberr = dbs.Save(&database.IDERepo{
-			UserIDEID: userIDE.ID,
-			URI:       repoURI,
-		})
-
-		if len(addUserCmdRepos) > 0 {
-			AddIDERepos(userIDE.ID, addUserCmdRepos)
-		}
-
-		eh.HandleError("ide_repo insert", dberr)
-
-		runtimeInstallNames := strings.Split(addUserCmdRuntimeInstalls, ",")
-		for _, rin := range runtimeInstallNames {
-			eh.HandleError("adding ide runtime install", AddIDERuntimeInstall(userIDE.ID, rin))
-		}
 
 		gitClient, err := giteautil.NewGitClient()
 		eh.HandleError("instantiating git client", err)
@@ -157,64 +120,10 @@ var addUserCmd = &cobra.Command{
 	},
 }
 
-// AddUserRepos adds user repos
-func AddUserRepos(userID int64, repos []string) *database.DBError {
-	for _, repo := range repos {
-		dberr := dbs.Save(&database.UserRepo{
-			URI:    repo,
-			UserID: userID,
-		})
-		if dberr != nil {
-			return dberr
-		}
-	}
-	return nil
-}
-
-// AddIDERepos adds ide repos
-func AddIDERepos(userIDEID int64, repos []string) *database.DBError {
-	ideRepos := []database.IDERepo{}
-	dbs.ListBy("ide_repo", &ideRepos, "user_ide_id=$1", userIDEID)
-
-nextRepo:
-	for _, repo := range repos {
-		for _, ideRepo := range ideRepos {
-			if strings.TrimSpace(ideRepo.URI) == strings.TrimSpace(repo) {
-				msg.Info("repo already exists. skipping. " + repo)
-				continue nextRepo
-			}
-		}
-		dberr := dbs.Save(&database.IDERepo{
-			UserIDEID: userIDEID,
-			URI:       repo,
-		})
-		if dberr != nil {
-			return dberr
-		}
-	}
-	return nil
-}
-
-// AddIDERuntimeInstall adds ide runtime install to user profile
-func AddIDERuntimeInstall(userIDEID int64, runtimeInstallName string) *database.DBError {
-	tmuxRuntimeInstall := database.RuntimeInstall{}
-	dberr := dbs.FindBy(&tmuxRuntimeInstall, "name=$1", runtimeInstallName)
-	if dberr != nil {
-		return dberr
-	}
-	dberr = dbs.Save(&database.IDERuntimeInstall{
-		UserIDEID:        userIDEID,
-		RuntimeInstallID: tmuxRuntimeInstall.ID,
-	})
-
-	return dberr
-}
-
 func init() {
 	addCmd.AddCommand(addUserCmd)
 	addUserCmd.Flags().BoolVarP(&addUserCmdUseExistingKeys, "pki", "p", false, "use existing PKI or not")
 	addUserCmd.Flags().BoolVarP(&addUserCmdUseEmail, "email", "e", false, "use real email or not")
 	addUserCmd.Flags().StringVarP(&addUserCmdUsername, "username", "u", "", "specify username")
-	addUserCmd.Flags().StringArrayVarP(&addUserCmdRepos, "repo", "r", []string{}, "specify personal git repo")
 	addUserCmd.Flags().StringVarP(&addUserCmdRuntimeInstalls, "runtime-installs", "i", "tmux", "runtime installs")
 }

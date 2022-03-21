@@ -9,7 +9,7 @@ import (
 
 // createSchemaCmd represents the schema command
 var createSchemaCmd = &cobra.Command{
-	Use:   "platformctl-schema",
+	Use:   "platform-schema",
 	Short: "Creates database platformctl schema",
 	Long:  `Creates database paltformctl schema`,
 	Run: func(cmd *cobra.Command, args []string) {

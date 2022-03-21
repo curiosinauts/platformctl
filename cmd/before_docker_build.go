@@ -48,14 +48,14 @@ cert: false `, user.Password, "./config.yml")
 	name = {{.Username}}
 	email = {{.Email }}`, user, "./.gitconfig")
 
-		repositories, _ := dbs.FindUserIDERepoURIsByUserAndIDE(username, "vscode")
+		repositories := []string{user.GitRepoURI}
 		// repositories.txt
 		io.WriteTemplate(`{{range $val := .}}
 {{$val}}
 {{end}}`, repositories, "./repositories.txt")
 
 		runtimeInstalls := []database.RuntimeInstall{}
-		dbs.FindUserIDERuntimeInstallsByUsernameAndIDE(&runtimeInstalls, username, "vscode")
+		dbs.FindAllRuntimeInstallsForUser(&runtimeInstalls, username)
 		io.WriteTemplate(`#!/bin/zsh -e
     
 set -x

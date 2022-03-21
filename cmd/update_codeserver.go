@@ -28,7 +28,7 @@ var updateCodeserverCmd = &cobra.Command{
 		var dberr *database.DBError
 
 		if emailOrAll == "all" {
-			dberr = dbs.List("platformctl.user", &users)
+			dberr = dbs.List("users", &users)
 			eh.HandleError("retrieving all users", dberr)
 		} else {
 			user := database.User{}

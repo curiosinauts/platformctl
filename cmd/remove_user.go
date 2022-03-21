@@ -95,46 +95,11 @@ var removeUserCmd = &cobra.Command{
 		_, err = psql.DropUser(postgresUsername, debug)
 		eh.PrintError("dropping database user", err)
 
-		dberr = dbs.DeleteALLIDERuntimeInstallsForUser(user.ID)
-		eh.PrintError("delete user ide runtime installs", dberr)
-
-		dberr = dbs.DeleteALLIDEReposForUser(user.ID)
-		eh.PrintError("delete user ide repos", dberr)
-
-		dberr = dbs.DeleteALLUserIDEsForUser(user.ID)
-		eh.PrintError("delete user ides", dberr)
-
-		dberr = dbs.DeleteALLUserReposForUser(user.ID)
-		eh.PrintError("delete user repos", dberr)
-
 		dberr = dbs.Del(&user)
 		eh.PrintError("delete user", dberr)
 
 		msg.Success("removing user")
 	},
-}
-
-// RemoveIDERepos adds ide repos
-func RemoveIDERepos(userIDEID int64, repos []string) *database.DBError {
-	ideRepos := []database.IDERepo{}
-	dbs.ListBy("ide_repo", &ideRepos, "user_ide_id=$1", userIDEID)
-
-	nothingRemoved := true
-	for _, repo := range repos {
-		for _, ideRepo := range ideRepos {
-			if ideRepo.URI == repo {
-				dberr := dbs.Del(&ideRepo)
-				nothingRemoved = false
-				if dberr != nil {
-					return dberr
-				}
-			}
-		}
-	}
-	if nothingRemoved {
-		msg.Info("nothing to remove")
-	}
-	return nil
 }
 
 func init() {
