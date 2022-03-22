@@ -30,9 +30,8 @@ func NewUserServiceWithOptions(db *sqlx.DB, options ...DBOption) UserService {
 
 // FindUserIDERuntimeInstallsByUsernameAndIDE finds user installs by user and ide
 func (u UserService) FindAllRuntimeInstallsForUser(dest interface{}, username string) *DBError {
-	query := `
-		SELECT id FROM runtime_install WHERE name in ('tmux') ORDER BY name asc`
-	_, dberr := u.Select(dest, query, username)
+	query := `SELECT * FROM runtime_install WHERE name in ('tmux') ORDER BY name asc`
+	_, dberr := u.Select(dest, query)
 	return dberr
 }
 

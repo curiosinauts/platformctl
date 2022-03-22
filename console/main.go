@@ -215,8 +215,10 @@ func main() {
 
 		user, found := GetUserFromSession(session, userService)
 		runtimeInstalls := []database.RuntimeInstall{}
+		userService.Debug = true
 		dberr := userService.FindAllRuntimeInstallsForUser(&runtimeInstalls, user.Username)
 		if dberr == nil {
+			user.Installed = runtimeInstalls
 		}
 
 		if found {

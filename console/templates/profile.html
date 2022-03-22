@@ -20,13 +20,12 @@
     <ul>
       <li><strong>name:</strong>{{.Username}}</li>
       <li><strong>ide:</strong>vscode</li>
-      <li><strong>email:</strong>{{.Email}}</li>
-      <li><strong>runtime installs:</strong>{{range $element := .RuntimeInstalls}}
-        <pre>{{$element}}</pre>{{end}}
+      <li><strong>git repo:</strong>
+        <pre>{{.GitRepoURI}}</pre>
       </li>
-      <li><strong>repos:</strong>{{range $element := .Repos}}
-        <pre>{{$element}}</pre>{{end}}
-      </li>
+      <li><strong>runtime installs:</strong>{{range $element := .Installed}}
+        <pre>{{$element.ScriptBody}}</pre>{{end}}
+      </li>      
     </ul>
     {{ template "footer" }}
   </div>

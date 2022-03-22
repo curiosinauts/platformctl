@@ -14,10 +14,11 @@ type User struct {
 	PrivateKey       string `db:"private_key"`
 	PublicKey        string `db:"public_key"`
 	PublicKeyID      int64  `db:"public_key_id"`
-	DockerTag        string
 	GitRepoURI       string `db:"git_repo_uri"`
 	IDE              string `db:"ide"`
 	RuntimeInstalls  string `db:"runtime_installs"`
+	DockerTag        string
+	Installed        []RuntimeInstall
 	PostgresUsername string
 	PGHost           string
 	PGDBName         string
@@ -51,16 +52,20 @@ type RuntimeInstall struct {
 }
 
 // Meta provides mapping config specific to runtime install
-func (ur *RuntimeInstall) Meta() MappingConfig {
+func (ri RuntimeInstall) Meta() MappingConfig {
 	return MappingConfig{TableName: "runtime_install"}
 }
 
 // PrimaryKey returns primary key
-func (ur *RuntimeInstall) PrimaryKey() int64 {
-	return ur.ID
+func (ri RuntimeInstall) PrimaryKey() int64 {
+	return ri.ID
 }
 
 // SetPrimaryKey updates the primary key value after insert
-func (ur *RuntimeInstall) SetPrimaryKey(id int64) {
-	ur.ID = id
+func (ri RuntimeInstall) SetPrimaryKey(id int64) {
+	ri.ID = id
+}
+
+func (ri RuntimeInstall) String() string {
+	return fmt.Sprintf("%d: %s\n", ri.ID, ri.ScriptBody)
 }
