@@ -12,7 +12,7 @@ set -x
 
 base=0.1.1
 
-version=$2
+version=$(uuid)
 
 platformctl before docker-build ${username} ${version}
 

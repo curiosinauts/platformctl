@@ -5,6 +5,7 @@ import (
 	"log"
 	"strings"
 
+	"github.com/curiosinauts/platformctl/pkg/executil"
 	"github.com/curiosinauts/platformctl/pkg/giteautil"
 	"github.com/curiosinauts/platformctl/pkg/postgresutil"
 	pwd "github.com/sethvargo/go-password/password"
@@ -106,15 +107,10 @@ var addUserCmd = &cobra.Command{
 		_, err = psql.CreateUserSchema(postgresUsername, debug)
 		eh.HandleError("creating database user schema", err)
 
-		// jenkins, err := jenkinsutil.NewJenkins()
-		// eh.HandleError("accessing Jenkins job", err)
-
-		// params := map[string]string{
-		// 	"USERNAME": user.Username,
-		// 	"VERSION":  uuid.NewString(),
-		// }
-		// _, err = jenkins.BuildJob("codeserver", params)
-		// eh.HandleError("calling Jenkins job to build codeserver instance", err)
+		out, err := executil.ExecuteShell("containers/codeserver/build.sh "+user.Username, debug)
+		if debug {
+			fmt.Println(out)
+		}
 
 		msg.Success("adding user")
 	},
