@@ -17,13 +17,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var addUserCmdUseExistingKeys bool
-var addUserCmdUsername string
-var addUserCmdUseEmail bool
-var addUserCmdRuntimeInstalls string
+var createUserCmdUseExistingKeys bool
+var createUserCmdUsername string
+var createUserCmdUseEmail bool
+var createUserCmdRuntimeInstalls string
 
-// addUserCmd represents the user command
-var addUserCmd = &cobra.Command{
+// createUserCmd represents the user command
+var createUserCmd = &cobra.Command{
 	Use:     "user",
 	Short:   "Adds user",
 	Long:    `Adds user to the platform`,
@@ -35,8 +35,8 @@ var addUserCmd = &cobra.Command{
 		hashedEmail := crypto.Hashed(originalEmail)
 
 		username := haikunator.New().Haikunate()
-		if len(addUserCmdUsername) > 0 {
-			username = addUserCmdUsername
+		if len(createUserCmdUsername) > 0 {
+			username = createUserCmdUsername
 		}
 
 		password, err := pwd.Generate(32, 10, 0, false, false)
@@ -45,12 +45,12 @@ var addUserCmd = &cobra.Command{
 		}
 
 		email := fmt.Sprintf("%s@curiosityworks.org", username)
-		if addUserCmdUseEmail {
+		if createUserCmdUseEmail {
 			email = originalEmail
 		}
 
 		privateKey, publicKey := crypto.GenerateRSASSHKeys()
-		if addUserCmdUseExistingKeys {
+		if createUserCmdUseExistingKeys {
 			privateKey, publicKey = crypto.ReadExistingRSASSHKeys()
 		}
 
@@ -73,7 +73,7 @@ var addUserCmd = &cobra.Command{
 			IsActive:        true,
 			GitRepoURI:      fmt.Sprintf("ssh://gitea@git-ssh.curiosityworks.org:2222/%s/project.git", username),
 			IDE:             "vscode",
-			RuntimeInstalls: addUserCmdRuntimeInstalls,
+			RuntimeInstalls: createUserCmdRuntimeInstalls,
 		}
 
 		eh := ErrorHandler{"adding user"}
@@ -119,9 +119,9 @@ var addUserCmd = &cobra.Command{
 }
 
 func init() {
-	addCmd.AddCommand(addUserCmd)
-	addUserCmd.Flags().BoolVarP(&addUserCmdUseExistingKeys, "pki", "p", false, "use existing PKI or not")
-	addUserCmd.Flags().BoolVarP(&addUserCmdUseEmail, "email", "e", false, "use real email or not")
-	addUserCmd.Flags().StringVarP(&addUserCmdUsername, "username", "u", "", "specify username")
-	addUserCmd.Flags().StringVarP(&addUserCmdRuntimeInstalls, "runtime-installs", "i", "tmux", "runtime installs")
+	createCmd.AddCommand(createUserCmd)
+	createUserCmd.Flags().BoolVarP(&createUserCmdUseExistingKeys, "pki", "p", false, "use existing PKI or not")
+	createUserCmd.Flags().BoolVarP(&createUserCmdUseEmail, "email", "e", false, "use real email or not")
+	createUserCmd.Flags().StringVarP(&createUserCmdUsername, "username", "u", "", "specify username")
+	createUserCmd.Flags().StringVarP(&createUserCmdRuntimeInstalls, "runtime-installs", "i", "tmux", "runtime installs")
 }

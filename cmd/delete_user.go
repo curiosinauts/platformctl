@@ -16,10 +16,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var removeUserCmdUsername string
+var deleteUserCmdUsername string
 
-// removeUserCmd represents the user command
-var removeUserCmd = &cobra.Command{
+// deleteUserCmd represents the user command
+var deleteUserCmd = &cobra.Command{
 	Use:     "user <email>",
 	Short:   "Removes user from the platform",
 	Long:    `Removes user from the platform`,
@@ -41,8 +41,8 @@ var removeUserCmd = &cobra.Command{
 
 		var dberr *database.DBError
 
-		if len(removeUserCmdUsername) > 0 {
-			dberr = dbs.FindBy(&user, "username=$1", removeUserCmdUsername)
+		if len(deleteUserCmdUsername) > 0 {
+			dberr = dbs.FindBy(&user, "username=$1", deleteUserCmdUsername)
 			eh.PrintError("finding by username", dberr)
 		} else {
 			dberr := dbs.FindBy(&user, "hashed_email=$1", hashedEmail)
@@ -103,6 +103,6 @@ var removeUserCmd = &cobra.Command{
 }
 
 func init() {
-	removeCmd.AddCommand(removeUserCmd)
-	removeUserCmd.Flags().StringVarP(&removeUserCmdUsername, "username", "u", "", "userename")
+	deleteCmd.AddCommand(deleteUserCmd)
+	deleteUserCmd.Flags().StringVarP(&deleteUserCmdUsername, "username", "u", "", "userename")
 }
