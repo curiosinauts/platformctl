@@ -108,6 +108,8 @@ var addUserCmd = &cobra.Command{
 		eh.HandleError("creating database user schema", err)
 
 		out, err := executil.ExecuteShell("containers/codeserver/build.sh "+user.Username, debug)
+		eh.HandleError("creating database user schema", err)
+
 		if debug {
 			fmt.Println(out)
 		}

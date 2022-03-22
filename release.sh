@@ -17,4 +17,4 @@ git push origin --tags
 
 goreleaser release --rm-dist
 
-./platformctl run jenkins-job upgrade-platformctl -p PLATFORMCTL_VERSION="${version}"
+# ./platformctl run jenkins-job upgrade-platformctl -p PLATFORMCTL_VERSION="${version}"

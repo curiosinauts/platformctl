@@ -6,8 +6,7 @@ import (
 	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/curiosinauts/platformctl/pkg/crypto"
 	"github.com/curiosinauts/platformctl/pkg/database"
-	"github.com/curiosinauts/platformctl/pkg/jenkinsutil"
-	"github.com/google/uuid"
+	"github.com/curiosinauts/platformctl/pkg/executil"
 	"github.com/spf13/cobra"
 )
 
@@ -38,15 +37,11 @@ var updateCodeserverCmd = &cobra.Command{
 		}
 
 		for _, user := range users {
-			jenkins, err := jenkinsutil.NewJenkins()
-			eh.HandleError("accessing Jenkins job", err)
-
-			option := map[string]string{
-				"USERNAME": user.Username,
-				"VERSION":  uuid.NewString(),
+			out, err := executil.ExecuteShell("containers/codeserver/build.sh "+user.Username, debug)
+			eh.HandleError("updating user docker container", err)
+			if debug {
+				fmt.Println(out)
 			}
-			_, err = jenkins.BuildJob("codeserver", option)
-			eh.HandleError("calling Jenkins job to build codeserver instance", err)
 
 			msg.Success(fmt.Sprintf("updating code server for %s", user.Username))
 		}
