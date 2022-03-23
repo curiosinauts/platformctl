@@ -20,6 +20,8 @@ docker build --no-cache --build-arg BASE=${base} -t docker-registry.curiositywor
 
 docker push docker-registry.curiosityworks.org/curiosinauts/${service}:${version}
 
+kubectl apply -f ./vscode-${username}-secrets.yml
+
 kubectl apply -f ./vscode-${username}.yml
 
 platformctl after docker-build ${username}

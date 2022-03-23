@@ -70,6 +70,9 @@ var deleteUserCmd = &cobra.Command{
 		output, err = executil.Execute("kubectl delete deployment vscode-"+user.Username, debug)
 		eh.PrintErrorWithOutput("deleting deployment", err, output)
 
+		output, err = executil.Execute("kubectl delete secret vscode-secrets-"+user.Username, debug)
+		eh.PrintErrorWithOutput("deleting secret", err, output)
+
 		registryClient, err := regutil.NewRegistryClient(debug)
 		eh.PrintError("getting registry client", err)
 

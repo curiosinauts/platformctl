@@ -15,13 +15,15 @@ var afterDockerBuildCmd = &cobra.Command{
 	PreRunE: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 
+		// commented out files are generated during docker runtime
+
 		os.Remove("./.ssh/id_rsa")
 
 		os.Remove(".gitconfig")
 
-		os.Remove("config.yml")
+		// os.Remove("config.yml")
 
-		os.Remove("gotty.sh")
+		// os.Remove("gotty.sh")
 
 		os.Remove("repositories.txt")
 
@@ -30,6 +32,7 @@ var afterDockerBuildCmd = &cobra.Command{
 		if len(args) > 0 {
 			username := args[0]
 			os.Remove("vscode-" + username + ".yml")
+			os.Remove("vscode-" + username + "-secret.yml")
 		}
 
 		os.Remove(".exports")

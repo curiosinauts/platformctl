@@ -42,7 +42,7 @@ func (p *PSQLClient) CreateUser(username, password string, debug bool) (string, 
 
 // CreateUserSchema creates a schema for the given user
 func (p *PSQLClient) CreateUserSchema(username string, debug bool) (string, error) {
-	script := fmt.Sprintf("psql -d %s -c \"CREATE SCHEMA AUTHORIZATION %s;\"", p.DatabaseName, username)
+	script := fmt.Sprintf("psql -d %s -c \"CREATE SCHEMA IF NOT EXISTS AUTHORIZATION %s;\"", p.DatabaseName, username)
 	return p.ExecutePSQLScriptOverSSH(script, debug)
 }
 

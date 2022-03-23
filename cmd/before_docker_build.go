@@ -29,10 +29,17 @@ var beforeDockerBuildCmd = &cobra.Command{
 		eh.HandleError("finding user by username", dbs.FindBy(&user, "username=$1", username))
 
 		// code server required authentication file
-		createCoderConfigYamlFile(user.Password)
+		// createCoderConfigYamlFile(user.Password)
 
 		// user's private terminal app
-		createGottySSH(user, eh)
+		// createGottySSH(user, eh)
+
+		// create k3s deployment service ingress yaml files
+		user.DockerTag = dockertag
+		createDeploymentServiceIngressYamlFile(user)
+
+		// create k3s secrets file for given user
+		createUserSecretsFile(user)
 
 		// id_rsa key for git authentication
 		createSSHFolder(eh)
@@ -49,9 +56,6 @@ var beforeDockerBuildCmd = &cobra.Command{
 		runtimeInstalls := []database.RuntimeInstall{}
 		dbs.FindAllRuntimeInstallsForUser(&runtimeInstalls, username)
 		createRuntimeInstallSSHFile(runtimeInstalls, eh)
-
-		user.DockerTag = dockertag
-		io.WriteTemplate(deployServiceIngressTemplate, user, "./vscode-"+user.Username+".yml")
 
 		// environment variables for things like postgresl username and password
 		createDotExportsFile(user, eh)
@@ -81,10 +85,21 @@ spec:
         app: vscode-{{.Username}}
     spec:
       containers:
-      - name: vscode-{{.Username}}
-        image: docker-registry.curiosityworks.org/curiosinauts/vscode-{{.Username}}:{{.DockerTag}}
-        ports:
-        - containerPort: 9991
+        - env:
+          - name: VSCODE_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: vscode-username
+                name: vscode-secrets-{{.Username}}	  
+          - name: VSCODE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: vscode-password
+                name: vscode-secrets-{{.Username}}
+          name: vscode-{{.Username}}
+          image: docker-registry.curiosityworks.org/curiosinauts/vscode-{{.Username}}:{{.DockerTag}}
+          ports:
+            - containerPort: 9991
       dnsPolicy: Default 
 
 ---
@@ -119,6 +134,16 @@ spec:
             name: vscode-{{.Username}}
             port: 
               number: 80
+`
+
+var secretsTemplate = `apiVersion: v1
+kind: Secret
+metadata:
+  name: vscode-secrets-{{.Username}}
+type: Opaque
+stringData:
+  vscode-username: "{{.Username}}"
+  vscode-password: "{{.Password}}"
 `
 
 func createSSHFolder(eh ErrorHandler) {
@@ -188,4 +213,12 @@ export PGDATABASE={{.PGDBName}}
 `, user, "./.exports")
 	err := os.Chmod("./.exports", 0755)
 	eh.HandleError("writing .exports", err)
+}
+
+func createDeploymentServiceIngressYamlFile(user database.User) {
+	io.WriteTemplate(deployServiceIngressTemplate, user, "./vscode-"+user.Username+".yml")
+}
+
+func createUserSecretsFile(user database.User) {
+	io.WriteTemplate(secretsTemplate, user, "./vscode-"+user.Username+"-secrets.yml")
 }

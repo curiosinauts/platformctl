@@ -104,15 +104,14 @@ var createUserCmd = &cobra.Command{
 		_, err = psql.CreateUser(postgresUsername, password, debug)
 		eh.HandleError("creating database user", err)
 
-		_, err = psql.CreateUserSchema(postgresUsername, debug)
+		out, err := psql.CreateUserSchema(postgresUsername, debug)
 		eh.HandleError("creating database user schema", err)
 
-		out, err := executil.ExecuteShell("containers/codeserver/build.sh "+user.Username, debug)
-		eh.HandleError("creating database user schema", err)
-
-		if debug {
+		out, err = executil.ExecuteShell("containers/codeserver/build.sh "+user.Username, debug)
+		if err != nil && debug {
 			fmt.Println(out)
 		}
+		eh.HandleError("building docker container", err)
 
 		msg.Success("adding user")
 	},
