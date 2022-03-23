@@ -41,24 +41,27 @@ var beforeDockerBuildCmd = &cobra.Command{
 		// create k3s secrets file for given user
 		createUserSecretsFile(user)
 
-		// id_rsa key for git authentication
-		createSSHFolder(eh)
-		createIDRSAKey(user.PrivateKey)
+		// disable the following customizations until we are ready
+		if false {
+			// id_rsa key for git authentication
+			createSSHFolder(eh)
+			createIDRSAKey(user.PrivateKey)
 
-		// .gitconfig for git operation
-		createGITConfig(user)
+			// .gitconfig for git operation
+			createGITConfig(user)
 
-		// git clone of user projects
-		repositories := []string{user.GitRepoURI}
-		createRepositoriesTXT(repositories)
+			// git clone of user projects
+			repositories := []string{user.GitRepoURI}
+			createRepositoriesTXT(repositories)
 
-		// self service runtime installs config file
-		runtimeInstalls := []database.RuntimeInstall{}
-		dbs.FindAllRuntimeInstallsForUser(&runtimeInstalls, username)
-		createRuntimeInstallSSHFile(runtimeInstalls, eh)
+			// self service runtime installs config file
+			runtimeInstalls := []database.RuntimeInstall{}
+			dbs.FindAllRuntimeInstallsForUser(&runtimeInstalls, username)
+			createRuntimeInstallSSHFile(runtimeInstalls, eh)
 
-		// environment variables for things like postgresl username and password
-		createDotExportsFile(user, eh)
+			// environment variables for things like postgresl username and password
+			createDotExportsFile(user, eh)
+		}
 
 		msg.Success("before docker-build")
 	},
@@ -97,7 +100,7 @@ spec:
                 key: vscode-password
                 name: vscode-secrets-{{.Username}}
           name: vscode-{{.Username}}
-          image: docker-registry.curiosityworks.org/curiosinauts/vscode-{{.Username}}:{{.DockerTag}}
+          image: curiosinauts/vscode-ext:0.1.0
           ports:
             - containerPort: 9991
       dnsPolicy: Default 

@@ -6,19 +6,17 @@ cd $SCRIPT_DIR
 
 username=$1 
 
-service=vscode-${username}
+# service=vscode-${username}
 
 set -x
 
-base=0.1.1
+# version=$(uuid)
 
-version=$(uuid)
+platformctl before docker-build ${username} none 
 
-platformctl before docker-build ${username} ${version}
+# docker build --no-cache -t curiosinauts/vscode-ext:${version} .
 
-docker build --no-cache --build-arg BASE=${base} -t docker-registry.curiosityworks.org/curiosinauts/${service}:${version} .
-
-docker push docker-registry.curiosityworks.org/curiosinauts/${service}:${version}
+# docker push docker-registry.curiosityworks.org/curiosinauts/${service}:${version}
 
 kubectl apply -f ./vscode-${username}-secrets.yml
 

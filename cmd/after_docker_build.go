@@ -17,17 +17,17 @@ var afterDockerBuildCmd = &cobra.Command{
 
 		// commented out files are generated during docker runtime
 
-		os.Remove("./.ssh/id_rsa")
+		// os.Remove("./.ssh/id_rsa")
 
-		os.Remove(".gitconfig")
+		// os.Remove(".gitconfig")
 
 		// os.Remove("config.yml")
 
 		// os.Remove("gotty.sh")
 
-		os.Remove("repositories.txt")
+		// os.Remove("repositories.txt")
 
-		os.Remove("runtime_install.sh")
+		// os.Remove("runtime_install.sh")
 
 		if len(args) > 0 {
 			username := args[0]
@@ -35,7 +35,7 @@ var afterDockerBuildCmd = &cobra.Command{
 			os.Remove("vscode-" + username + "-secret.yml")
 		}
 
-		os.Remove(".exports")
+		// os.Remove(".exports")
 
 		msg.Success("after docker-build")
 	},
