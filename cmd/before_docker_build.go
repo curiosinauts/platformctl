@@ -71,7 +71,22 @@ func init() {
 	beforeCmd.AddCommand(beforeDockerBuildCmd)
 }
 
-var deployServiceIngressTemplate = `apiVersion: apps/v1
+var deployServiceIngressTemplate = `---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: local-path-pvc-{{.Username}}
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-path
+  resources:
+    requests:
+      storage: 2Gi
+
+---
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: vscode-{{.Username}}
@@ -88,21 +103,28 @@ spec:
         app: vscode-{{.Username}}
     spec:
       containers:
-        - env:
-          - name: VSCODE_USERNAME
-            valueFrom:
-              secretKeyRef:
-                key: vscode-username
-                name: vscode-secrets-{{.Username}}	  
-          - name: VSCODE_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: vscode-password
-                name: vscode-secrets-{{.Username}}
-          name: vscode-{{.Username}}
-          image: curiosinauts/vscode-ext:0.1.0
-          ports:
-            - containerPort: 9991
+      - name: vscode-{{.Username}}
+        image: curiosinauts/vscode-ext:0.1.0
+        env:
+        - name: VSCODE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: vscode-username
+              name: vscode-secrets-{{.Username}}	  
+        - name: VSCODE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: vscode-password
+              name: vscode-secrets-{{.Username}}
+        ports:
+        - containerPort: 9991
+        volumeMounts:
+        - name: volv
+          mountPath: /home/coder/workspace			
+      volumes:
+      - name: volv
+        persistentVolumeClaim:
+          claimName: local-path-pvc-{{.Username}}		
       dnsPolicy: Default 
 
 ---
