@@ -36,10 +36,10 @@ var beforeDockerBuildCmd = &cobra.Command{
 
 		// create k3s deployment service ingress yaml files
 		user.DockerTag = dockertag
-		createDeploymentServiceIngressYamlFile(user)
+		CreateDeploymentServiceIngressYamlFile(user)
 
 		// create k3s secrets file for given user
-		createUserSecretsFile(user)
+		CreateUserSecretsFile(user)
 
 		// disable the following customizations until we are ready
 		if false {
@@ -218,10 +218,10 @@ export PGDATABASE={{.PGDBName}}
 	eh.HandleError("writing .exports", err)
 }
 
-func createDeploymentServiceIngressYamlFile(user database.User) {
+func CreateDeploymentServiceIngressYamlFile(user database.User) {
 	io.WriteTemplate(deployServiceIngressTemplate, user, "./vscode-"+user.Username+".yml")
 }
 
-func createUserSecretsFile(user database.User) {
+func CreateUserSecretsFile(user database.User) {
 	io.WriteTemplate(secretsTemplate, user, "./vscode-"+user.Username+"-secrets.yml")
 }

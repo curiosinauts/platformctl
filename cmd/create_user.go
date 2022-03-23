@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/curiosinauts/platformctl/pkg/executil"
@@ -112,11 +113,24 @@ var createUserCmd = &cobra.Command{
 			}
 		}
 
-		out, err := executil.ExecuteShell("containers/codeserver/build.sh "+user.Username, debug)
+		CreateDeploymentServiceIngressYamlFile(user)
+
+		CreateUserSecretsFile(user)
+
+		out, err := executil.ExecuteShell("kubectl apply -f ./vscode-"+user.Username+"-secrets.yml", debug)
 		if err != nil && debug {
 			fmt.Println(out)
 		}
-		eh.HandleError("building docker container", err)
+		eh.HandleError("creating secrets", err)
+
+		out, err = executil.ExecuteShell("kubectl apply -f ./vscode-"+user.Username+".yml", debug)
+		if err != nil && debug {
+			fmt.Println(out)
+		}
+		eh.HandleError("creating deployment", err)
+
+		os.Remove("vscode-" + username + "-secrets.yml")
+		os.Remove("vscode-" + username + ".yml")
 
 		msg.Success("adding user")
 	},

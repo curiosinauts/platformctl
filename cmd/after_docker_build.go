@@ -32,7 +32,7 @@ var afterDockerBuildCmd = &cobra.Command{
 		if len(args) > 0 {
 			username := args[0]
 			os.Remove("vscode-" + username + ".yml")
-			os.Remove("vscode-" + username + "-secret.yml")
+			os.Remove("vscode-" + username + "-secrets.yml")
 		}
 
 		// os.Remove(".exports")
