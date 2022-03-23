@@ -7,8 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// dropSchemaCmd represents the schema command
-var dropSchemaCmd = &cobra.Command{
+// deleteSchemaCmd represents the schema command
+var deleteSchemaCmd = &cobra.Command{
 	Use:   "platform-schema",
 	Short: "Drops platform database schema",
 	Long:  `Drops platform database schema`,
@@ -23,5 +23,5 @@ var dropSchemaCmd = &cobra.Command{
 }
 
 func init() {
-	dropCmd.AddCommand(dropSchemaCmd)
+	deleteCmd.AddCommand(deleteSchemaCmd)
 }
