@@ -83,31 +83,36 @@ var createUserCmd = &cobra.Command{
 		eh.HandleError("user insert", dberr)
 		eh.HandleError("user id", err)
 
-		gitClient, err := giteautil.NewGitClient()
-		eh.HandleError("instantiating git client", err)
+		if false {
+			gitClient, err := giteautil.NewGitClient()
+			eh.HandleError("instantiating git client", err)
 
-		err = gitClient.AddUser(user)
-		eh.HandleError("adding user to gitea", err)
+			err = gitClient.AddUser(user)
+			eh.HandleError("adding user to gitea", err)
 
-		err = gitClient.CreateUserRepo(user.Username)
-		eh.HandleError("create user repo", err)
+			err = gitClient.CreateUserRepo(user.Username)
+			eh.HandleError("create user repo", err)
 
-		publicKeyID, err := gitClient.CreateUserPublicKey(user)
-		eh.HandleError("create user public key", err)
+			publicKeyID, err := gitClient.CreateUserPublicKey(user)
+			eh.HandleError("create user public key", err)
 
-		user.PublicKeyID = publicKeyID
-		_, dberr = dbs.UpdateProfile(user)
-		eh.HandleError("updating user profile", dberr)
+			user.PublicKeyID = publicKeyID
+			_, dberr = dbs.UpdateProfile(user)
+			eh.HandleError("updating user profile", dberr)
 
-		postgresUsername := strings.Replace(user.Username, "-", "", -1)
-		psql := postgresutil.NewPSQLClientForSharedDB()
-		_, err = psql.CreateUser(postgresUsername, password, debug)
-		eh.HandleError("creating database user", err)
+			postgresUsername := strings.Replace(user.Username, "-", "", -1)
+			psql := postgresutil.NewPSQLClientForSharedDB()
+			_, err = psql.CreateUser(postgresUsername, password, debug)
+			eh.HandleError("creating database user", err)
 
-		out, err := psql.CreateUserSchema(postgresUsername, debug)
-		eh.HandleError("creating database user schema", err)
+			out, err := psql.CreateUserSchema(postgresUsername, debug)
+			eh.HandleError("creating database user schema", err)
+			if err != nil && debug {
+				fmt.Println(out)
+			}
+		}
 
-		out, err = executil.ExecuteShell("containers/codeserver/build.sh "+user.Username, debug)
+		out, err := executil.ExecuteShell("containers/codeserver/build.sh "+user.Username, debug)
 		if err != nil && debug {
 			fmt.Println(out)
 		}
