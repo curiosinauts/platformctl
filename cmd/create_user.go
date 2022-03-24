@@ -117,17 +117,9 @@ var createUserCmd = &cobra.Command{
 
 		CreateUserSecretsFile(user)
 
-		out, err := executil.ExecuteShell("kubectl apply -f ./vscode-"+user.Username+"-secrets.yml", debug)
-		if err != nil && debug {
-			fmt.Println(out)
-		}
-		eh.HandleError("creating secrets", err)
+		ApplySecrets(user, eh)
 
-		out, err = executil.ExecuteShell("kubectl apply -f ./vscode-"+user.Username+".yml", debug)
-		if err != nil && debug {
-			fmt.Println(out)
-		}
-		eh.HandleError("creating deployment", err)
+		ApplyDeployment(user, eh)
 
 		os.Remove("vscode-" + username + "-secrets.yml")
 		os.Remove("vscode-" + username + ".yml")
@@ -142,4 +134,20 @@ func init() {
 	createUserCmd.Flags().BoolVarP(&createUserCmdUseEmail, "email", "e", false, "use real email or not")
 	createUserCmd.Flags().StringVarP(&createUserCmdUsername, "username", "u", "", "specify username")
 	createUserCmd.Flags().StringVarP(&createUserCmdRuntimeInstalls, "runtime-installs", "i", "tmux", "runtime installs")
+}
+
+func ApplySecrets(user database.User, eh ErrorHandler) {
+	out, err := executil.ExecuteShell("kubectl apply -f ./vscode-"+user.Username+"-secrets.yml", debug)
+	if err != nil && debug {
+		fmt.Println(out)
+	}
+	eh.HandleError("creating secrets", err)
+}
+
+func ApplyDeployment(user database.User, eh ErrorHandler) {
+	out, err := executil.ExecuteShell("kubectl apply -f ./vscode-"+user.Username+".yml", debug)
+	if err != nil && debug {
+		fmt.Println(out)
+	}
+	eh.HandleError("creating secrets", err)
 }

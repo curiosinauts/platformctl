@@ -2,18 +2,18 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/curiosinauts/platformctl/internal/msg"
 	"github.com/curiosinauts/platformctl/pkg/crypto"
 	"github.com/curiosinauts/platformctl/pkg/database"
-	"github.com/curiosinauts/platformctl/pkg/executil"
 	"github.com/spf13/cobra"
 )
 
 // updateCodeserverCmd represents the codeserver command
 var updateCodeserverCmd = &cobra.Command{
-	Use:     "codeserver",
-	Aliases: []string{"code-server"},
+	Use:     "codeserver <email|all>",
+	Aliases: []string{"code-server", "pod"},
 	Short:   "Updates code server for given user",
 	Long:    `Updates code server for given user`,
 	PreRunE: cobra.MinimumNArgs(1),
@@ -37,11 +37,17 @@ var updateCodeserverCmd = &cobra.Command{
 		}
 
 		for _, user := range users {
-			out, err := executil.ExecuteShell("containers/codeserver/build.sh "+user.Username, debug)
-			eh.HandleError("updating user docker container", err)
-			if debug {
-				fmt.Println(out)
-			}
+			CreateDeploymentServiceIngressYamlFile(user)
+
+			CreateUserSecretsFile(user)
+
+			ApplySecrets(user, eh)
+
+			ApplyDeployment(user, eh)
+
+			os.Remove("vscode-" + user.Username + "-secrets.yml")
+
+			os.Remove("vscode-" + user.Username + ".yml")
 
 			msg.Success(fmt.Sprintf("updating code server for %s", user.Username))
 		}
