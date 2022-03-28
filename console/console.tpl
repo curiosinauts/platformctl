@@ -42,7 +42,7 @@ spec:
                 key: console-session-key
                 name: console-secrets
           name: console
-          image: docker-registry.curiosityworks.org/curiosinauts/console:__tag__
+          image: curiosinauts/console:__tag__
           ports:
             - containerPort: 3000
       dnsPolicy: Default

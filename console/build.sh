@@ -8,15 +8,11 @@ cd $SCRIPT_DIR
 
 gox -osarch="linux/amd64"
 
-base_version=0.1.1
+version=0.1.0
 
-version=$(git log -1 --pretty=%h)
+docker build -t curiosinauts/console:${version} .
 
-service=console
-
-docker build --build-arg BASE_VERSION=${base_version} -t docker-registry.curiosityworks.org/curiosinauts/${service}:${version} .
-
-docker push docker-registry.curiosityworks.org/curiosinauts/${service}:${version}
+docker push curiosinauts/console:${version}
 
 cat console.tpl | sed 's/__tag__/'"${version}"'/g' > console.yml
 

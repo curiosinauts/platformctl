@@ -1,5 +1,4 @@
-ARG BASE_VERSION
-FROM docker-registry.curiosityworks.org/curiosinauts/base:${BASE_VERSION}
+FROM curiosinauts/vscode:0.1.0
 
 COPY --chown=coder:coder  console_linux_amd64  /console
 COPY --chown=coder:coder  entrypoint.sh        /entrypoint.sh
