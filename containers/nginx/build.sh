@@ -2,14 +2,10 @@
 
 set -x
 
-service=sites
+# version=$(platformctl next tag curiosinauts/sites)
+version=0.1.1
 
-cp ~/.ssh/authorized_keys .ssh/
+docker build -t curiosinauts/sites:"${version}" .
 
-version=$(platformctl next tag curiosinauts/sites)
-# version=0.1.0
-
-docker build -t docker-registry.curiosityworks.org/curiosinauts/${service}:"${version}" .
-
-docker push docker-registry.curiosityworks.org/curiosinauts/${service}:"${version}"
+docker push curiosinauts/sites:"${version}"
 

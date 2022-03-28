@@ -1,20 +1,15 @@
-FROM docker-registry.curiosityworks.org/curiosinauts/base:0.1.0
+FROM debian:10 
 
-ENV username=coder
-
-RUN apt-get update && apt-get install -y nginx
-
-COPY .ssh /home/${username}/.ssh
+RUN apt-get update && apt-get install -y nginx                                 
 
 COPY entrypoint.sh /
 COPY sites-available /etc/nginx/sites-available
 RUN set -x                                                      && \
     chmod +x  /entrypoint.sh                                    && \
-    chown -R ${username}:${username} /home/${username}          && \
-    sudo mkdir -p /var/www/www.curiosityworks.org/htdocs        && \
-    chown -R ${username}:${username} /var/www                   && \
-    sudo ln -s /etc/nginx/sites-available/www.curiosityworks.org   \
-               /etc/nginx/sites-enabled/www.curiosityworks.org  
+    mkdir -p /var/www/www.curiosityworks.org/htdocs             && \
+    chown -R root:root /var/www                                 && \
+    ln -s /etc/nginx/sites-available/www.curiosityworks.org        \
+          /etc/nginx/sites-enabled/www.curiosityworks.org  
 
 COPY sites/www.curiosityworks.org/public  /var/www/www.curiosityworks.org/htdocs 
 
