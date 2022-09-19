@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/curiosinauts/platformctl/internal/msg"
@@ -63,17 +64,8 @@ var deleteUserCmd = &cobra.Command{
 			eh.PrintError("removing user from gitea", err)
 		}
 
-		output, err := executil.Execute("kubectl delete ingress vscode-"+user.Username, debug)
-		eh.PrintErrorWithOutput("deleting ingress", err, output)
-
-		output, err = executil.Execute("kubectl delete service vscode-"+user.Username, debug)
-		eh.PrintErrorWithOutput("deleting service", err, output)
-
-		output, err = executil.Execute("kubectl delete deployment vscode-"+user.Username, debug)
-		eh.PrintErrorWithOutput("deleting deployment", err, output)
-
-		output, err = executil.Execute("kubectl delete secret vscode-secrets-"+user.Username, debug)
-		eh.PrintErrorWithOutput("deleting secret", err, output)
+		output, err := executil.Execute(fmt.Sprintf(`helm uninstall %s`, user.Username), debug)
+		eh.PrintErrorWithOutput("deleting user", err, output)
 
 		if false {
 			registryClient, err := regutil.NewRegistryClient(debug)

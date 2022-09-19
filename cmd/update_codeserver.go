@@ -37,10 +37,6 @@ var updateCodeserverCmd = &cobra.Command{
 		}
 
 		for _, user := range users {
-			CreateDeploymentServiceIngressYamlFile(user)
-
-			CreateUserSecretsFile(user)
-
 			ApplySecrets(user, eh)
 
 			ApplyDeployment(user, eh)

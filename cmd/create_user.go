@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"log"
-	"os"
 	"strings"
 
 	"github.com/curiosinauts/platformctl/pkg/executil"
@@ -113,16 +112,8 @@ var createUserCmd = &cobra.Command{
 			}
 		}
 
-		CreateDeploymentServiceIngressYamlFile(user)
-
-		CreateUserSecretsFile(user)
-
-		ApplySecrets(user, eh)
-
-		ApplyDeployment(user, eh)
-
-		os.Remove("vscode-" + username + "-secrets.yml")
-		os.Remove("vscode-" + username + ".yml")
+		output, err := executil.Execute(fmt.Sprintf(`helm install %s curiosinauts/code-server-python --set password="%s"`, user.Username, user.Password), debug)
+		eh.PrintErrorWithOutput("adding user", err, output)
 
 		msg.Success("adding user")
 	},

@@ -71,106 +71,6 @@ func init() {
 	beforeCmd.AddCommand(beforeDockerBuildCmd)
 }
 
-var deployServiceIngressTemplate = `---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: local-path-pvc-{{.Username}}
-  namespace: default
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: local-path
-  resources:
-    requests:
-      storage: 2Gi
-
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: vscode-{{.Username}}
-  labels:
-    app: vscode-{{.Username}}
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: vscode-{{.Username}}
-  template:
-    metadata:
-      labels:
-        app: vscode-{{.Username}}
-    spec:
-      containers:
-      - name: vscode-{{.Username}}
-        image: curiosinauts/vscode-ext:0.1.0
-        env:
-        - name: VSCODE_USERNAME
-          valueFrom:
-            secretKeyRef:
-              key: vscode-username
-              name: vscode-secrets-{{.Username}}	  
-        - name: VSCODE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: vscode-password
-              name: vscode-secrets-{{.Username}}
-        ports:
-        - containerPort: 9991
-        volumeMounts:
-        - name: volv
-          mountPath: /home/coder/workspace			
-      volumes:
-      - name: volv
-        persistentVolumeClaim:
-          claimName: local-path-pvc-{{.Username}}		
-      dnsPolicy: Default 
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: vscode-{{.Username}}
-spec:
-  selector:
-    app: vscode-{{.Username}}
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 9991
-
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: vscode-{{.Username}}
-  annotations:
-    kubernetes.io/ingress.class: "traefik"
-spec:
-  rules:
-  - host: vscode-{{.Username}}.curiosityworks.org
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: vscode-{{.Username}}
-            port: 
-              number: 80
-`
-
-var secretsTemplate = `apiVersion: v1
-kind: Secret
-metadata:
-  name: vscode-secrets-{{.Username}}
-type: Opaque
-stringData:
-  vscode-username: "{{.Username}}"
-  vscode-password: "{{.Password}}"
-`
-
 func createSSHFolder(eh ErrorHandler) {
 	if !io.DoesPathExists("./.ssh") {
 		err := os.Mkdir("./.ssh", 0755)
@@ -238,12 +138,4 @@ export PGDATABASE={{.PGDBName}}
 `, user, "./.exports")
 	err := os.Chmod("./.exports", 0755)
 	eh.HandleError("writing .exports", err)
-}
-
-func CreateDeploymentServiceIngressYamlFile(user database.User) {
-	io.WriteTemplate(deployServiceIngressTemplate, user, "./vscode-"+user.Username+".yml")
-}
-
-func CreateUserSecretsFile(user database.User) {
-	io.WriteTemplate(secretsTemplate, user, "./vscode-"+user.Username+"-secrets.yml")
 }
