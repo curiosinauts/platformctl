@@ -36,10 +36,6 @@ var beforeDockerBuildCmd = &cobra.Command{
 
 		// create k3s deployment service ingress yaml files
 		user.DockerTag = dockertag
-		CreateDeploymentServiceIngressYamlFile(user)
-
-		// create k3s secrets file for given user
-		CreateUserSecretsFile(user)
 
 		// disable the following customizations until we are ready
 		if false {
