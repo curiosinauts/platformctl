@@ -11,8 +11,8 @@ import (
 
 var dropSchema bool
 
-// deleteDBUserCmd represents the user schema command
-var deleteDBUserCmd = &cobra.Command{
+// dbDeleteUserCmd represents the user schema command
+var dbDeleteUserCmd = &cobra.Command{
 	Use:     "db-user <username> <host> <dbname>",
 	Aliases: []string{"dbuser"},
 	Short:   "Drops database user",
@@ -45,6 +45,6 @@ var deleteDBUserCmd = &cobra.Command{
 }
 
 func init() {
-	deleteCmd.AddCommand(deleteDBUserCmd)
-	deleteDBUserCmd.Flags().BoolVarP(&dropSchema, "schema", "s", false, "drop schema")
+	dbDeleteCmd.AddCommand(dbDeleteUserCmd)
+	dbDeleteUserCmd.Flags().BoolVarP(&dropSchema, "schema", "s", false, "drop schema")
 }

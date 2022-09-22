@@ -8,7 +8,7 @@ import (
 )
 
 // deleteSchemaCmd represents the schema command
-var deleteSchemaCmd = &cobra.Command{
+var dbDeletePlatformSchemaCmd = &cobra.Command{
 	Use:   "platform-schema",
 	Short: "Drops platform database schema",
 	Long:  `Drops platform database schema`,
@@ -23,5 +23,5 @@ var deleteSchemaCmd = &cobra.Command{
 }
 
 func init() {
-	deleteCmd.AddCommand(deleteSchemaCmd)
+	dbDeleteCmd.AddCommand(dbDeletePlatformSchemaCmd)
 }

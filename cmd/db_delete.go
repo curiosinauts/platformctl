@@ -5,12 +5,12 @@ import (
 )
 
 // backupCmd represents the backup command
-var backupCmd = &cobra.Command{
+var dbDeleteCmd = &cobra.Command{
 	Use:   "backup",
 	Short: "backup",
 	Long:  `backup`,
 }
 
 func init() {
-	rootCmd.AddCommand(backupCmd)
+	dbCmd.AddCommand(dbDeleteCmd)
 }

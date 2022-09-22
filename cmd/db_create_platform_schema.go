@@ -7,8 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// createSchemaCmd represents the schema command
-var createSchemaCmd = &cobra.Command{
+// dbCreateSchemaCmd represents the schema command
+var dbCreateSchemaCmd = &cobra.Command{
 	Use:   "platform-schema",
 	Short: "Creates database platformctl schema",
 	Long:  `Creates database paltformctl schema`,
@@ -23,5 +23,5 @@ var createSchemaCmd = &cobra.Command{
 }
 
 func init() {
-	createCmd.AddCommand(createSchemaCmd)
+	dbCreateCmd.AddCommand(dbCreateSchemaCmd)
 }

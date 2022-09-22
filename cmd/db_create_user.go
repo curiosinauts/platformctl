@@ -12,13 +12,12 @@ import (
 var createSchema bool
 
 // createDBUserCmd represents the user schema command
-var createDBUserCmd = &cobra.Command{
-	Use:     "db-user <username> <password> <host> <dbname>",
-	Aliases: []string{"dbuser"},
+var dbCreateUserCmd = &cobra.Command{
+	Use:     "user <username> <password> <host> <dbname>",
 	Short:   "Creates database user",
 	Long:    `Creates database user without any association to schema`,
 	Args:    cobra.MinimumNArgs(4),
-	Example: "platformctl create dbuser john pass1234 db.example.com devdb",
+	Example: "platformctl db create user john pass1234 db.example.com devdb",
 	Run: func(cmd *cobra.Command, args []string) {
 
 		username := args[0]
@@ -45,6 +44,6 @@ var createDBUserCmd = &cobra.Command{
 }
 
 func init() {
-	createCmd.AddCommand(createDBUserCmd)
-	createDBUserCmd.Flags().BoolVarP(&createSchema, "schema", "s", false, "create schema")
+	dbCreateCmd.AddCommand(dbCreateUserCmd)
+	dbCreateUserCmd.Flags().BoolVarP(&createSchema, "schema", "s", false, "create schema")
 }

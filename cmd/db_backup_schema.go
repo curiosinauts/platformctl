@@ -9,12 +9,12 @@ import (
 )
 
 // dbCmd represents the db command
-var backUpDBSchemaCmd = &cobra.Command{
-	Use:     "dbschema <username> <password> <host> <dbname> <schema>",
+var dbBackUpSchemaCmd = &cobra.Command{
+	Use:     "schema <username> <password> <host> <dbname> <schema>",
 	Aliases: []string{"db-schema"},
 	Short:   "backs up db schema with data",
 	Long:    `backs up db schema with data`,
-	Example: "platformctl backup dbschema john pass1234 db.example.com devdb john",
+	Example: "platformctl db backup schema john pass1234 db.example.com devdb john",
 	Args:    cobra.MinimumNArgs(5),
 	Run: func(cmd *cobra.Command, args []string) {
 		username := args[0]
@@ -35,5 +35,5 @@ var backUpDBSchemaCmd = &cobra.Command{
 }
 
 func init() {
-	backupCmd.AddCommand(backUpDBSchemaCmd)
+	dbBackupCmd.AddCommand(dbBackUpSchemaCmd)
 }

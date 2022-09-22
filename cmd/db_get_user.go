@@ -11,8 +11,8 @@ import (
 
 // listDBUserCmd represents the user schema command
 var listDBUserCmd = &cobra.Command{
-	Use:     "db-users <host> <dbname>",
-	Aliases: []string{"dbusers"},
+	Use:     "user <host> <dbname>",
+	Aliases: []string{"users"},
 	Short:   "Lists database users",
 	Long:    `Lists database users`,
 	Args:    cobra.MinimumNArgs(1),

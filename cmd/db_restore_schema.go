@@ -9,7 +9,7 @@ import (
 )
 
 // dbCmd represents the db command
-var restoreDBSchemaCmd = &cobra.Command{
+var dbRestoreSchemaCmd = &cobra.Command{
 	Use:     "dbschema <username> <password> <host> <dbname> <schema>",
 	Short:   "restores db schema",
 	Long:    `restores db schema`,
@@ -34,5 +34,5 @@ var restoreDBSchemaCmd = &cobra.Command{
 }
 
 func init() {
-	restoreCmd.AddCommand(restoreDBSchemaCmd)
+	dbRestoreCmd.AddCommand(dbRestoreSchemaCmd)
 }
