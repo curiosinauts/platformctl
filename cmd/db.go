@@ -6,9 +6,9 @@ import (
 
 // dbCmd represents the db command
 var dbCmd = &cobra.Command{
-	Use:   "backup",
-	Short: "backup",
-	Long:  `backup`,
+	Use:   "db",
+	Short: "db",
+	Long:  `db`,
 }
 
 func init() {
